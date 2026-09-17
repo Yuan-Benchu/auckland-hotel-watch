@@ -38,7 +38,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # 必须先 add 再比 —— git diff 对未跟踪的新文件是看不见的,
           # 首轮 rates.csv 还没被跟踪, 用 git diff 判断会误判成"无变化"。
-          git add data/rates.csv
+          git add data/
           if git diff --cached --quiet; then
             echo "本轮无新增, 不提交"
             exit 0

@@ -27,7 +27,11 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "data" / "rates.csv"
+# 每轮写自己的文件, 不追加到同一个 CSV。
+# 两轮同时跑时都往同一文件末尾追加, git rebase 必然冲突 —— 2026-09-17
+# 实际撞过一次, 整轮数据白采。按轮次分文件从结构上杜绝这种冲突:
+# 新文件之间永远能干净合并。分析时 glob data/*.csv 即可。
+DATA_DIR = ROOT / "data"
 ENDPOINT = "https://mcp.rollinggo.ai/mcp"
 
 HOTELS = [
@@ -129,8 +133,8 @@ def main():
         sys.exit(f"initialize 失败: {init['error']}")
     rpc("notifications/initialized", {}, sid)
 
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    new = not OUT.exists()
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    out = DATA_DIR / (datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M") + ".csv")
     rows, ok, bad = [], 0, 0
     for h in HOTELS:
         for ci in CHECKINS:
@@ -152,14 +156,15 @@ def main():
             ok += 1
             time.sleep(0.25)
 
-    with open(OUT, "a", encoding="utf-8", newline="") as f:
+    with open(out, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
-        if new:
-            w.writeheader()
+        w.writeheader()
         w.writerows(rows)
 
-    total = sum(1 for _ in open(OUT, encoding="utf-8")) - 1
-    print(f"{ts}  写入 {ok} 行, 无报价/失败 {bad}, 文件累计 {total} 行")
+    files = sorted(DATA_DIR.glob("*.csv"))
+    total = sum(sum(1 for _ in open(p, encoding="utf-8")) - 1 for p in files)
+    print(f"{ts}  写入 {ok} 行 -> {out.name}, 无报价/失败 {bad}, "
+          f"累计 {len(files)} 个文件 / {total} 行")
     if not rows:
         sys.exit("本轮一行都没拿到 —— 可能是 key 失效或接口变更")
 
