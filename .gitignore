@@ -29,3 +29,11 @@ local/*.bak3
 
 # 某个工具自动建的 worktree 副本, 不是项目内容
 .kilo/
+
+# 每次重建看板都会重新生成, 跟踪它们会让工作区永远是脏的,
+# 挡住 rebase / filter-branch。模板和数据都在库里, 随时能重建。
+local/data/dashboard_data.json
+local/data/timeline_data.json
+local/data/.cycle_done
+local/dashboards/dashboard_data.json
+local/dashboards/timeline_data.json
