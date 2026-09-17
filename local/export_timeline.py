@@ -144,8 +144,11 @@ print(f"v2 {len(v2)} 行 (可疑 {len(suspect)}) | v3 {len(v3)} 行 / {len(round
 
 
 # ---- 注入模板 ----
-TPL = BASE / "timeline_template.html"
-HTML = BASE / "auckland_timeline.html"
+# 模板与看板产物都在 local/dashboards/, 数据在 local/data/。
+# 搬家时这两行还指着 data/, 而代码是 if TPL.exists() 才生成 ——
+# 模板找不到就静默跳过, 不报错, 所以一直没被发现。
+TPL = HERE / "dashboards" / "timeline_template.html"
+HTML = HERE / "dashboards" / "auckland_timeline.html"
 if TPL.exists():
     tpl = TPL.read_text(encoding="utf-8")
     assert "/*__DATA__*/" in tpl, "模板里找不到 placeholder"
