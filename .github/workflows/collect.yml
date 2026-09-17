@@ -4,7 +4,9 @@ name: collect
 # 这正是本仓库存在的理由: 本地采集在关机/待机时必然停摆。
 on:
   schedule:
-    - cron: "5 * * * *"
+    # 整点和半点各一轮。半点那一轮只在 HALF_HOUR_UNTIL 之前执行,
+    # 之后自动降回每小时 —— 见下面的"判断本轮要不要跑"。
+    - cron: "5,35 * * * *"
   workflow_dispatch:          # 允许手动触发, 用于验证
 
 permissions:
@@ -21,16 +23,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 额度守门: 每轮计费 2 分钟(约 100 秒, 向上取整)。
+      #   每小时一轮 = 24x30x2 =  1440 分钟/月  -> 在 2000 免费额度内
+      #   每半小时   = 48x30x2 =  2880 分钟/月  -> 超额
+      # 所以半点那一轮只在下面这个日期之前跑, 到期自动只剩整点轮,
+      # 不需要任何人记得回来改。手动触发(workflow_dispatch)不受限制。
+      - name: 判断本轮要不要跑
+        id: gate
+        env:
+          HALF_HOUR_UNTIL: "2026-09-25T00:00:00Z"
+        run: |
+          minute=$(date -u +%M)
+          now=$(date -u +%s)
+          until=$(date -u -d "$HALF_HOUR_UNTIL" +%s)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "手动触发, 照跑"; echo "run=yes" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          # 半点轮: 分钟数 >= 30
+          if [ "$minute" -ge 30 ] && [ "$now" -ge "$until" ]; then
+            echo "半小时加密期已于 $HALF_HOUR_UNTIL 结束, 本轮(半点)跳过, 只保留整点轮"
+            echo "run=no" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "run=yes" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'yes'
         with:
           python-version: "3.12"
 
       - name: 采集
+        if: steps.gate.outputs.run == 'yes'
         env:
           DIDA_KEY: ${{ secrets.DIDA_KEY }}
         run: python collect.py
 
       - name: 提交数据
+        if: steps.gate.outputs.run == 'yes'
         run: |
           git config user.name  "auckland-hotel-watch"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
