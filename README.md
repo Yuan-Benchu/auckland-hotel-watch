@@ -1,0 +1,43 @@
+# auckland-hotel-watch
+
+每小时通过 **DIDA 官方 API** 采集奥克兰酒店报价。由 Claude 云端 routine 驱动，
+**不依赖任何本地机器** —— 这正是它存在的理由：本地采集在电脑关机/待机时必然停摆。
+
+## 为什么不抓 Google
+
+抓 Google Travel 违反其服务条款，云端 agent 会拒绝执行。DIDA 是官方 API，
+云端可以合法地定时调用。
+
+代价：DIDA 给的是 **B2B 批发价**，实测比 Google 零售价贵约 31%，且差值在
+−12 到 +174 NZD 之间浮动，**不能当作零售价的代理**。所以这份数据的用途是
+**观察价格随时间（尤其是小时）的变动规律**，不是用来决定订哪一家。
+价格水平请以本地 Google 采集的数据为准。
+
+## 数据
+
+`data/rates.csv`，每轮追加。字段：
+
+| 字段 | 说明 |
+|---|---|
+| `ts_utc` | 观测时刻（UTC） |
+| `hotel` / `checkin` | 酒店名 / 入住日 |
+| `room` | 当轮最便宜方案的房型 |
+| `price` / `currency` | **原值 USD**。DIDA 的 `localeParam.currency` 失效，请求 NZD 也返回 USD，所以不做换算，留到分析时处理 |
+| `cancelable` / `meal` | 取消政策 / 餐食 |
+| `n_plans` | 该酒店当时可选方案数 |
+
+## 采样设计
+
+11 家酒店 × 6 个固定入住日 = 每轮 66 次调用（约 2–3 分钟）。
+
+固定同一组组合反复观测，**小时维度才可比**。全日期覆盖由本地那套 Google
+采集负责，两边互补。
+
+其中 **Abstract Hotel** 只有 DIDA 有 —— Google 上查不到它的报价。
+
+## 凭据
+
+API key **不在仓库里**，由 routine 的环境变量 `DIDA_KEY` 注入。
+`key.txt` 已列入 `.gitignore`，仅供本地调试。
+
+只调用 `getHotelDetail`。**不下单、不取消、不碰任何 order 接口。**
