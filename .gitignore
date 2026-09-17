@@ -8,6 +8,10 @@ local/data/raw_archive/
 local/data/*.log
 local/data/alert_state.json
 local/data/overnight_report.md
+# 采集进程每 20 秒往这里追加一次, 跟踪它会让工作区永远是脏的,
+# 每次 git 操作都被挡。它是原始追加日志, 真正要保留的是 curate.py
+# 产出的 hotel_prices_curated.csv(已跟踪), 需要时重新生成并提交快照。
+local/data/hotel_prices_v3.csv
 # 已作废的原始数据(解析器有 bug, 见 local/data/CLEANING.md), 只保留 curated
 local/data/hotel_prices_v2.csv
 local/data/hotel_prices_fast.csv
