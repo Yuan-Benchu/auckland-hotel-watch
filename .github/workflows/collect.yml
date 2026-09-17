@@ -2,16 +2,24 @@ name: collect
 
 # 每 15 分钟采集一轮。跑在 GitHub 的机器上, 与用户的电脑无关 ——
 # 这正是本仓库存在的理由: 本地采集在关机/待机时必然停摆。
+#
+# 为什么不是"每 15 分钟触发一次, 每次采一轮":
+#   官方文档明说 schedule 在高负载时会被延迟, 高峰包括"每小时的开头",
+#   负载足够高时排队任务会被**直接丢弃**。实测 cron "5,35":
+#   2026-09-17 15:59 -> 22:42 共 6h43m 本该触发 13 次, 实际只到 2 次,
+#   另外 11 次无记录无报错。送达的两次分别晚 44 秒和 7 分 33 秒 ——
+#   所以是丢弃, 不是延迟。只靠调低 cron 间隔并不能堵住这种空档:
+#   丢一次就是一个 15 分钟的洞, 连丢十次就是上次那种 3 小时的洞。
+#
+# 所以采集节奏由**已经跑起来的这台机器**决定, 不由调度器决定:
+#   一次触发 = 一个约 55 分钟的循环, 内部每 15 分钟采一轮并各自提交。
+#   这样哪怕一小时里四次触发只送达一次, 那一小时仍有完整的 4 个样本。
+#   concurrency 保证不会两个循环同时跑; 触发落在循环期间会排队,
+#   等当前循环结束立刻接上, 覆盖是连续的。
 on:
   schedule:
-    # 每 15 分钟一轮。仓库为公开仓库, Actions 分钟数不限, 无需额度守门。
-    #
-    # 用 7,22,37,52 而不是 0,15,30,45: 官方文档说 schedule 在高负载时会
-    # 被延迟, 负载高峰包括"每小时的开头", 且负载足够高时排队任务会被直接
-    # 丢弃, 并建议避开整点。实测 2026-09-17 那段 cron "5,35": 6h43m 内
-    # 本该触发 13 次, 实际只到了 2 次, 另外 11 次无记录无报错 —— 丢弃,
-    # 不是延迟(送达的两次分别晚 44 秒和 7.5 分钟)。
-    # 提到 4 次/小时既是按需要提频, 也让丢弃率有足够样本可测。
+    # 仍然每 15 分钟给一次机会 —— 多一次触发就多一次"循环没跑时能重新起来"。
+    # 用 7,22,37,52 而不是 0,15,30,45: 文档建议避开整点高峰。
     - cron: "7,22,37,52 * * * *"
   workflow_dispatch:          # 允许手动触发, 用于验证
 
@@ -25,7 +33,8 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 8        # 卡住就杀掉, 免得空烧免费额度
+    # 循环上限 55 分钟, 留足单轮(约 2.5 分钟)和收尾的余量。
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
 
@@ -33,23 +42,53 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: 采集
+      - name: 循环采集
         env:
           DIDA_KEY: ${{ secrets.DIDA_KEY }}
-        run: python collect.py
-
-      - name: 提交数据
         run: |
+          set -uo pipefail
           git config user.name  "auckland-hotel-watch"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # 必须先 add 再比 —— git diff 对未跟踪的新文件是看不见的,
-          # 首轮 rates.csv 还没被跟踪, 用 git diff 判断会误判成"无变化"。
-          git add data/
-          if git diff --cached --quiet; then
-            echo "本轮无新增, 不提交"
-            exit 0
-          fi
-          git commit -m "采集 $(date -u '+%Y-%m-%d %H:%M UTC')"
-          # 并发轮次之间可能撞车, 先 rebase 再推
-          git pull --rebase --autostash origin main
-          git push
+
+          END=$(( $(date +%s) + 55 * 60 ))
+          round=0
+          ok=0
+          while :; do
+            round=$(( round + 1 ))
+            echo "──────── 第 $round 轮  $(date -u '+%Y-%m-%d %H:%M:%S') UTC ────────"
+
+            if python collect.py; then
+              ok=$(( ok + 1 ))
+            else
+              echo "本轮采集失败, 不中断整个循环 —— 下一轮照常"
+            fi
+
+            # 必须先 add 再比: git diff 看不见未跟踪的新文件,
+            # 用 git diff 判断会把"新采了一整轮"误判成"无变化"。
+            git add data/
+            if git diff --cached --quiet; then
+              echo "本轮无新增, 不提交"
+            else
+              git commit -q -m "采集 $(date -u '+%Y-%m-%d %H:%M UTC')"
+              pushed=0
+              for i in 1 2 3; do
+                # 每轮一个新文件, 合并天然无冲突; rebase 只为跟上别的提交。
+                if git pull -q --rebase --autostash origin main && git push -q; then
+                  pushed=1; break
+                fi
+                echo "第 $i 次推送未成功, 重试"; sleep 5
+              done
+              [ "$pushed" = 1 ] || echo "三次推送均失败, 数据留在本地这一轮丢失"
+            fi
+
+            # 对齐到下一个 :07/:22/:37/:52 —— 与 cron 同相位, 这样
+            # 循环采样点和调度采样点重合, 不会出现相隔两分钟的两个样本。
+            now=$(date +%s)
+            next=$(( ( (now - 420) / 900 + 1 ) * 900 + 420 ))
+            if [ "$next" -ge "$END" ]; then
+              echo "已到 55 分钟上限, 本次循环结束 —— 共 $round 轮, 成功 $ok 轮"
+              break
+            fi
+            echo "等到 $(date -u -d "@$next" '+%H:%M:%S') UTC 再采下一轮"
+            sleep $(( next - now ))
+          done
