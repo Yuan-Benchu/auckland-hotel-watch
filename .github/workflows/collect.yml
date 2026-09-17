@@ -1,0 +1,45 @@
+name: collect
+
+# 每小时整点采集一次。跑在 GitHub 的机器上, 与用户的电脑无关 ——
+# 这正是本仓库存在的理由: 本地采集在关机/待机时必然停摆。
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch:          # 允许手动触发, 用于验证
+
+permissions:
+  contents: write             # 需要把数据提交回仓库
+
+concurrency:
+  group: collect
+  cancel-in-progress: false   # 采集不可并发, 但也别取消正在跑的那轮
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8        # 卡住就杀掉, 免得空烧免费额度
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 采集
+        env:
+          DIDA_KEY: ${{ secrets.DIDA_KEY }}
+        run: python collect.py
+
+      - name: 提交数据
+        run: |
+          if git diff --quiet -- data/rates.csv; then
+            echo "本轮无新增, 不提交"
+            exit 0
+          fi
+          git config user.name  "auckland-hotel-watch"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/rates.csv
+          git commit -m "采集 $(date -u '+%Y-%m-%d %H:%M UTC')"
+          # 并发轮次之间可能撞车, 先 rebase 再推
+          git pull --rebase --autostash origin main
+          git push
