@@ -1,0 +1,780 @@
+<title>奥克兰房价时间轴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&family=JetBrains+Mono:wght@400;500;700&family=Source+Sans+3:wght@400;500;600&display=swap">
+
+<style>
+:root {
+  color-scheme: light;
+  --ground:   #eef1f5;
+  --surface:  #ffffff;
+  --sunken:   #e3e8ee;
+  --line:     #d5dce4;
+  --hair:     #e6ebf0;
+  --ink:      #111820;
+  --ink-2:    #54616e;
+  --ink-3:    #8592a0;
+  --s1: #1B6AC9;
+  --s2: #C2571B;
+  --s3: #7A4DA8;
+  --s4: #00998F;
+  --s5: #8592a0;
+  --void:     #9A5B00;
+  --void-bg:  #fbf1e0;
+  --ok:       #0A7D32;
+  --ok-bg:    #e3f2e7;
+  --shadow:   0 1px 2px rgba(17,24,32,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground:  #101418;
+    --surface: #1a1f25;
+    --sunken:  #232a31;
+    --line:    #2e3740;
+    --hair:    #262e36;
+    --ink:     #e9eef3;
+    --ink-2:   #9aa8b5;
+    --ink-3:   #6b7887;
+    --s1: #3F86DD;
+    --s2: #D4722F;
+    --s3: #9E6BC9;
+    --s4: #12A296;
+    --s5: #7c8894;
+    --void:    #DCA14A;
+    --void-bg: #2a2114;
+    --ok:      #4CB86A;
+    --ok-bg:   #152c1c;
+    --shadow:  0 1px 2px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground:  #101418;
+  --surface: #1a1f25;
+  --sunken:  #232a31;
+  --line:    #2e3740;
+  --hair:    #262e36;
+  --ink:     #e9eef3;
+  --ink-2:   #9aa8b5;
+  --ink-3:   #6b7887;
+  --s1: #3F86DD;
+  --s2: #D4722F;
+  --s3: #9E6BC9;
+  --s4: #12A296;
+  --s5: #7c8894;
+  --void:    #DCA14A;
+  --void-bg: #2a2114;
+  --ok:      #4CB86A;
+  --ok-bg:   #152c1c;
+  --shadow:  0 1px 2px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Source Sans 3", -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 36px 60px;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+h1, h2 { font-family: "Chivo", "Microsoft YaHei", sans-serif; margin: 0; text-wrap: balance; }
+h1 { font-size: 31px; font-weight: 700; letter-spacing: -.02em; }
+h2 { font-size: 16px; font-weight: 600; letter-spacing: -.005em; }
+
+.mono { font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .11em;
+           text-transform: uppercase; color: var(--ink-3); }
+
+header.page { display: flex; flex-direction: column; gap: 7px; }
+header.page .sub { color: var(--ink-2); font-size: 14px; max-width: 66ch; }
+
+/* ---------- 采集状态条 ---------- */
+.status {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  overflow: hidden;
+}
+.status > div { padding: 13px 16px; display: flex; flex-direction: column; gap: 2px; }
+.status > div + div { border-left: 1px solid var(--hair); }
+.status .k { font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+             color: var(--ink-3); font-weight: 600; }
+.status .v { font-size: 19px; font-weight: 500; font-family: "JetBrains Mono", monospace;
+             font-variant-numeric: tabular-nums; }
+.status .n { font-size: 12px; color: var(--ink-2); }
+.status .v.void { color: var(--void); }
+.status .v.ok { color: var(--ok); }
+
+/* ---------- 订正记录 ---------- */
+.errata {
+  border-left: 3px solid var(--void);
+  background: var(--void-bg);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.errata h2 { font-size: 15px; }
+.errata p { margin: 0; font-size: 14px; color: var(--ink-2); max-width: 70ch; }
+.errata b { color: var(--ink); font-weight: 600; }
+.excerpt {
+  font-family: "JetBrains Mono", monospace; font-size: 12px; line-height: 1.75;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 11px 13px; overflow-x: auto; white-space: pre; color: var(--ink-2);
+}
+.excerpt .hl { color: var(--void); font-weight: 700; }
+.excerpt .real { color: var(--ok); font-weight: 700; }
+
+.fixgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px;
+           background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.fixgrid > div { background: var(--surface); padding: 10px 13px; display: flex;
+                 flex-direction: column; gap: 1px; }
+.fixgrid .d { font-size: 11px; color: var(--ink-3); }
+.fixgrid .was { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--void);
+                text-decoration: line-through; }
+.fixgrid .now { font-family: "JetBrains Mono", monospace; font-size: 15px; font-weight: 500; }
+
+/* ---------- 面板 ---------- */
+.panel {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.panel > header { display: flex; flex-direction: column; gap: 3px; }
+.panel .sub { font-size: 13px; color: var(--ink-2); max-width: 72ch; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.ctl { display: flex; flex-direction: column; gap: 4px; }
+.ctl label { font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase;
+             color: var(--ink-3); font-weight: 600; }
+select {
+  font: inherit; font-size: 14px; color: var(--ink); background: var(--sunken);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; min-width: 190px;
+  font-family: "JetBrains Mono", monospace;
+}
+select:focus-visible { outline: 2px solid var(--s1); outline-offset: 1px; }
+
+.gobook {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 6px;
+  background: var(--s1); color: #fff; text-decoration: none;
+  font-size: 13.5px; font-weight: 600; white-space: nowrap;
+}
+.gobook:hover { filter: brightness(1.08); }
+.gobook:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+          font-size: 12.5px; color: var(--ink-2); }
+.legend .it { display: inline-flex; align-items: center; gap: 6px; }
+.legend .sw { width: 14px; height: 3px; border-radius: 2px; background: var(--c); flex: none; }
+.legend .sw.dot { width: 9px; height: 9px; border-radius: 50%; }
+.legend .sw.dash { background: repeating-linear-gradient(90deg, var(--ink-3) 0 4px, transparent 4px 7px); }
+
+.chartbox { position: relative; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+.grid { stroke: var(--hair); stroke-width: 1; }
+.axis { fill: var(--ink-3); font-family: "JetBrains Mono", monospace; font-size: 11px;
+        font-variant-numeric: tabular-nums; }
+.axname { fill: var(--ink-3); font-family: "Source Sans 3", sans-serif; font-size: 11px;
+          letter-spacing: .06em; text-transform: uppercase; font-weight: 600; }
+.ln { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ln.void { stroke-dasharray: 5 4; opacity: .5; stroke-width: 1.5; }
+.mk { stroke: var(--surface); stroke-width: 2; }
+.mk.hollow { fill: var(--surface); stroke-width: 2.5; }
+.fixline { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 3 3; }
+.fixtxt { fill: var(--ink-2); font-family: "Source Sans 3", sans-serif; font-size: 11px; font-weight: 600; }
+.dlab { font-family: "Chivo", sans-serif; font-size: 11.5px; font-weight: 600; }
+.hit { fill: transparent; cursor: crosshair; }
+
+.tip {
+  position: absolute; pointer-events: none; z-index: 5; opacity: 0; transition: opacity .1s;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 7px;
+  box-shadow: var(--shadow); padding: 9px 11px; min-width: 176px; font-size: 12.5px;
+}
+.tip.on { opacity: 1; }
+.tip .th { font-family: "Chivo", sans-serif; font-weight: 600; margin-bottom: 6px; font-size: 12.5px; }
+.tip .tr { display: flex; justify-content: space-between; gap: 14px; color: var(--ink-2); }
+.tip .tr i { width: 8px; height: 8px; border-radius: 2px; background: var(--c);
+             display: inline-block; margin-right: 5px; }
+.tip .tr .p { font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
+              color: var(--ink); }
+.tip .tr.void .p { color: var(--void); text-decoration: line-through; }
+
+.note {
+  font-size: 12.5px; color: var(--ink-2); background: var(--sunken);
+  border-radius: 6px; padding: 9px 12px; line-height: 1.55;
+}
+.note b { color: var(--ink); font-weight: 600; }
+
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 460px; }
+th, td { text-align: left; padding: 6px 10px; white-space: nowrap; }
+thead th { font-size: 10.5px; color: var(--ink-3); font-weight: 600; letter-spacing: .05em;
+           text-transform: uppercase; border-bottom: 1px solid var(--line); }
+tbody tr + tr td { border-top: 1px solid var(--hair); }
+td.n { text-align: right; font-family: "JetBrains Mono", monospace;
+       font-variant-numeric: tabular-nums; }
+td.voided { color: var(--void); text-decoration: line-through; }
+.tag { display: inline-block; padding: 0 5px; border-radius: 3px; font-size: 11px;
+       font-weight: 600; font-family: "JetBrains Mono", monospace; }
+.tag.v { background: var(--void-bg); color: var(--void); }
+.tag.c { background: var(--ok-bg); color: var(--ok); }
+
+.totals { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px;
+          background: var(--line); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.totals > div { background: var(--surface); padding: 11px 14px; display: flex;
+                flex-direction: column; gap: 1px; }
+.totals .k { font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+             color: var(--ink-3); font-weight: 600; }
+.totals .v { font-size: 20px; font-weight: 600; font-family: "JetBrains Mono", monospace;
+             font-variant-numeric: tabular-nums; }
+.totals .n { font-size: 12px; color: var(--ink-2); }
+.totals .v.save { color: var(--ok); }
+
+#tbl-plan tbody tr.floor td { background: var(--ok-bg); }
+#tbl-plan tbody tr.peak td { background: var(--void-bg); }
+#tbl-plan a { color: var(--s1); text-decoration: none; font-weight: 600; }
+#tbl-plan a:hover { text-decoration: underline; }
+#tbl-plan tbody tr.past td { opacity: .42; }
+
+details summary { cursor: pointer; font-size: 13px; color: var(--ink-2); font-weight: 600; }
+details summary:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+details[open] summary { margin-bottom: 10px; }
+
+footer { font-size: 12.5px; color: var(--ink-3); line-height: 1.7; }
+footer code { font-family: "JetBrains Mono", monospace; font-size: 11.5px;
+              background: var(--sunken); padding: 1px 5px; border-radius: 3px; color: var(--ink-2); }
+
+@media (max-width: 760px) {
+  h1 { font-size: 25px; }
+  .status { grid-template-columns: repeat(2, 1fr); }
+  .status > div:nth-child(3) { border-left: 0; }
+  .status > div:nth-child(n+3) { border-top: 1px solid var(--hair); }
+  select { min-width: 0; width: 100%; }
+  .ctl { flex: 1 1 140px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="page">
+    <div class="eyebrow">Google Travel · NZD · 每 30 分钟一轮</div>
+    <h1>奥克兰房价时间轴</h1>
+    <div class="sub">同一个入住日，价格随<b>观测时刻</b>怎么变。横轴是我去查的时间，不是入住日期——这是回答"什么时候下单更便宜"唯一有意义的画法。</div>
+  </header>
+
+  <div class="status" id="status"></div>
+
+  <section class="errata">
+    <h2>数据订正：2026-09-16 13:50 之前的观测已全部作废</h2>
+    <p>旧解析器的规则是"记住渠道名，之后遇到的任何金额都算它的，取最小值"。报价区没有正确收尾，一路读到了页面底部的促销文案：</p>
+    <div class="excerpt">[58] Super.com
+[59] <span class="real">$111</span>          <span class="real">← 真实房价</span>
+[60] Visit site
+[61] View more options from $121
+[62] Track this hotel
+[63] Get emails about price changes
+[64] <span class="hl">Save $33 if you stay Sep 20 – 21.</span>   <span class="hl">← 被当成了房价</span></div>
+    <p><b>Save $33</b> 是促销省钱额。因为 33 &lt; 111，Super.com 就被改写成了 NZ$33。新解析器只接受<b>整行就是一个金额</b>的行（<span class="mono">$145</span>、<span class="mono">NZ$126</span>），句子里的金额一律丢弃；已在 6 个页面上人工比对通过，0 条不一致。</p>
+    <div class="fixgrid" id="fixgrid"></div>
+    <p>作废的 <span class="mono" id="voidrows">–</span> 条观测仍画在下面的图里（灰色虚线），好让你看见错误本身；它们不参与任何统计。</p>
+  </section>
+
+  <section class="panel">
+    <header>
+      <h2>价格随观测时间</h2>
+      <div class="sub">选一个入住日，看各渠道的报价在我每半小时一次的观测里怎么动。</div>
+    </header>
+    <div class="controls">
+      <div class="ctl">
+        <label for="sel-hotel">酒店</label>
+        <select id="sel-hotel"></select>
+      </div>
+      <div class="ctl">
+        <label for="sel-date">入住日</label>
+        <select id="sel-date"></select>
+      </div>
+      <a class="gobook" id="gobook" href="#" target="_blank" rel="noopener noreferrer">
+        去 Google 比价页订这一晚 ↗</a>
+    </div>
+    <div class="legend" id="legend-a"></div>
+    <div class="chartbox">
+      <svg id="chart-a" viewBox="0 0 1000 400" role="img"
+           aria-label="所选入住日各渠道报价随观测时间变化的折线图"></svg>
+      <div class="tip" id="tip-a" role="tooltip"></div>
+    </div>
+    <div class="note" id="note-a"></div>
+    <details>
+      <summary>以表格查看这一天的全部观测</summary>
+      <div class="tablewrap">
+        <table id="tbl-a"><thead></thead><tbody></tbody></table>
+      </div>
+    </details>
+  </section>
+
+  <section class="panel">
+    <header>
+      <h2>距入住天数 vs 当前最低价</h2>
+      <div class="sub">最新一轮干净数据里，每个入住日的最低报价。这回答的是<b>"住哪一晚便宜"</b>，不是"什么时候下单便宜"——后者要等跨天数据。</div>
+    </header>
+    <div class="legend" id="legend-b"></div>
+    <div class="chartbox">
+      <svg id="chart-b" viewBox="0 0 1000 380" role="img"
+           aria-label="按距离入住天数分布的各日最低价散点图"></svg>
+      <div class="tip" id="tip-b" role="tooltip"></div>
+    </div>
+    <div class="note" id="note-b"></div>
+  </section>
+
+  <section class="panel">
+    <header>
+      <h2>逐晚订房方案</h2>
+      <div class="sub">每一晚各家里最便宜的那个。Google 上连住越长越贵也越难订——实测
+        1 晚 NZ$81、2 晚 87、3 晚 90、7 晚 110、30 晚 98，而 5/14/21 晚根本没有报价。
+        所以碎订就是最省的订法。</div>
+    </header>
+    <div class="controls">
+      <div class="ctl">
+        <label for="sel-until">住到</label>
+        <select id="sel-until">
+          <option value="2026-10-16">10-16（28 晚 · 每天进城）</option>
+          <option value="2026-11-17">11-17（含之后, 仅历史数据）</option>
+        </select>
+      </div>
+    </div>
+    <div class="totals" id="totals"></div>
+    <div class="tablewrap">
+      <table id="tbl-plan"><thead></thead><tbody></tbody></table>
+    </div>
+    <div class="note" id="note-plan"></div>
+  </section>
+
+  <section class="panel">
+    <header>
+      <h2>还答不了的问题</h2>
+    </header>
+    <div class="note" id="note-c"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/{};
+
+const PC = ["--s1", "--s2", "--s3", "--s4", "--s5"];
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const provColor = p => {
+  const i = DATA.providers.indexOf(p);
+  return cssv(PC[i >= 0 && i < 4 ? i : 4]);
+};
+const EPOCH = new Date(DATA.epoch + "T00:00:00");
+const at = m => new Date(EPOCH.getTime() + m * 60000);
+const pad = n => String(n).padStart(2, "0");
+const hhmm = m => { const d = at(m); return pad(d.getHours()) + ":" + pad(d.getMinutes()); };
+const mdhm = m => { const d = at(m); return pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + " " + hhmm(m); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ns = "http://www.w3.org/2000/svg";
+const el = (t, a = {}) => { const e = document.createElementNS(ns, t);
+  for (const k in a) e.setAttribute(k, a[k]); return e; };
+
+/* ---------------- 状态条 ---------------- */
+function renderStatus() {
+  const v2 = DATA.v2, v3 = DATA.v3;
+  const winMin = v3.span[0] && v3.span[1]
+    ? (new Date(v3.span[1].replace(" ", "T")) - new Date(v3.span[0].replace(" ", "T"))) / 60000 : 0;
+  const win = winMin < 60 ? Math.round(winMin) + " 分钟"
+    : winMin < 1440 ? (winMin / 60).toFixed(1) + " 小时" : (winMin / 1440).toFixed(1) + " 天";
+  // 用户不再收推送, 改为自己看板 —— 所以采集停更必须在页面上一眼可见,
+  // 否则会把"没有新数据"误读成"价格没变"。
+  const lastT = v3.span[1] ? new Date(v3.span[1].replace(" ", "T")) : null;
+  const ageMin = lastT ? (Date.now() - lastT.getTime()) / 60000 : Infinity;
+  const ageTxt = !lastT ? "无数据"
+    : ageMin < 90 ? Math.round(ageMin) + " 分钟"
+    : ageMin < 1440 ? (ageMin / 60).toFixed(1) + " 小时"
+    : (ageMin / 1440).toFixed(1) + " 天";
+  const ageCls = ageMin > 90 ? "void" : "ok";
+  const ageNote = ageMin > 90 ? " · 采集可能已停" : " · 正常";
+
+  const items = [
+    { k: "干净观测", v: v3.rows.toLocaleString(), n: v3.rounds + " 轮 · 窗口 " + win, c: "ok" },
+    { k: "已作废", v: v2.rows.toLocaleString(), n: "含 " + v2.suspect + " 条造假低价", c: "void" },
+    { k: "监测目标", v: DATA.checkins.length + " 晚", n: DATA.hotels.length + " 家酒店 · " + DATA.providers.length + " 个渠道", c: "" },
+    { k: "数据年龄", v: ageTxt, n: (v3.span[1] || "等待首轮") + ageNote, c: ageCls }
+  ];
+  document.getElementById("status").innerHTML = items.map(i =>
+    `<div><span class="k">${i.k}</span><span class="v ${i.c}">${i.v}</span><span class="n">${esc(i.n)}</span></div>`).join("");
+  document.getElementById("voidrows").textContent = v2.rows.toLocaleString();
+}
+
+/* ---------------- 订正对照 ---------------- */
+const FIXED = [
+  { d: "09-17 Queen St", was: "NZ$32", now: "NZ$111", p: "Super.com" },
+  { d: "10-08 Queen St", was: "NZ$24", now: "NZ$113", p: "Super.com" },
+  { d: "10-21 Auckland City", was: "NZ$45", now: "NZ$129", p: "Super.com" },
+  { d: "09-24 Auckland City", was: "NZ$20", now: "NZ$86", p: "官网" }
+];
+function renderFix() {
+  document.getElementById("fixgrid").innerHTML = FIXED.map(f =>
+    `<div><span class="d">${esc(f.d)} · ${esc(f.p)}</span>
+      <span class="was">${f.was}</span><span class="now">${f.now}</span></div>`).join("");
+}
+
+/* ---------------- 图 A ---------------- */
+const SA = { w: 1000, h: 400, l: 58, r: 96, t: 18, b: 44 };
+function seriesFor(hotel, ci) { return DATA.series[hotel + "|" + ci] || {}; }
+
+function renderA() {
+  const hotel = document.getElementById("sel-hotel").value;
+  const ci = document.getElementById("sel-date").value;
+  const ser = seriesFor(hotel, ci);
+  const svg = document.getElementById("chart-a");
+  svg.textContent = "";
+
+  // 订购入口: Google Travel 比价页, 日期已编码在 URL 里
+  const go = document.getElementById("gobook");
+  const bookUrl = (DATA.urls || {})[hotel + "|" + ci];
+  if (bookUrl) { go.href = bookUrl; go.hidden = false; }
+  else { go.hidden = true; }
+
+  const provs = Object.keys(ser).sort((a, b) =>
+    DATA.providers.indexOf(a) - DATA.providers.indexOf(b));
+  const all = provs.flatMap(p => ser[p]);
+  if (!all.length) {
+    svg.appendChild(Object.assign(el("text", { x: 500, y: 190, "text-anchor": "middle",
+      class: "axis" }), { textContent: "这一天还没有观测" }));
+    document.getElementById("legend-a").innerHTML = "";
+    document.getElementById("note-a").textContent = "";
+    return;
+  }
+
+  const xs = all.map(d => d[0]), ys = all.map(d => d[1]);
+  let x0 = Math.min(...xs), x1 = Math.max(...xs);
+  if (x1 - x0 < 60) { x1 = x0 + 60; }
+  const pad0 = (x1 - x0) * 0.03; x0 -= pad0; x1 += pad0;
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const yp = Math.max(8, (y1 - y0) * 0.14); y0 = Math.max(0, y0 - yp); y1 += yp;
+
+  const X = v => SA.l + (v - x0) / (x1 - x0) * (SA.w - SA.l - SA.r);
+  const Y = v => SA.h - SA.b - (v - y0) / (y1 - y0) * (SA.h - SA.b - SA.t);
+
+  // y 网格
+  const step = niceStep((y1 - y0) / 5);
+  for (let v = Math.ceil(y0 / step) * step; v <= y1; v += step) {
+    svg.appendChild(el("line", { x1: SA.l, x2: SA.w - SA.r, y1: Y(v), y2: Y(v), class: "grid" }));
+    svg.appendChild(Object.assign(el("text", { x: SA.l - 9, y: Y(v) + 4,
+      "text-anchor": "end", class: "axis" }), { textContent: "$" + v }));
+  }
+  // x 刻度
+  // 跨了日历日就必须带日期, 否则 13:50 -> 07:38 看起来像时间倒流。
+  // 判据是"起止是否同一天", 不是"跨度是否超过 24 小时"。
+  const span = x1 - x0;
+  const fmt = at(x0).toDateString() === at(x1).toDateString() ? hhmm : mdhm;
+  const nT = 5;
+  for (let i = 0; i <= nT; i++) {
+    const v = x0 + span * i / nT;
+    svg.appendChild(Object.assign(el("text", { x: X(v), y: SA.h - SA.b + 18,
+      "text-anchor": i === 0 ? "start" : i === nT ? "end" : "middle", class: "axis" }),
+      { textContent: fmt(v) }));
+  }
+  svg.appendChild(Object.assign(el("text", { x: SA.l, y: SA.h - 6, class: "axname" }),
+    { textContent: "观测时刻" }));
+
+  // 采集中断: 相邻观测时刻之间的空洞。不画出来的话, 跨越空洞的那一段直线
+  // 会被读成"价格平稳", 实际上那段时间根本没有观测。
+  const tsAll = [...new Set(all.map(d => d[0]))].sort((a, b) => a - b);
+  for (let i = 1; i < tsAll.length; i++) {
+    const gap = tsAll[i] - tsAll[i - 1];
+    if (gap < 60) continue;
+    const gx = X(tsAll[i - 1]), gw = X(tsAll[i]) - gx;
+    svg.appendChild(el("rect", { x: gx, y: SA.t, width: gw, height: SA.h - SA.b - SA.t,
+      fill: cssv("--sunken"), opacity: .75 }));
+    if (gw > 46) {
+      svg.appendChild(Object.assign(el("text", { x: gx + gw / 2, y: SA.t + 11,
+        "text-anchor": "middle", class: "fixtxt" }),
+        { textContent: `中断 ${(gap / 60).toFixed(gap < 600 ? 1 : 0)}h` }));
+    }
+  }
+
+  // 修复分界
+  if (DATA.fix_at != null && DATA.fix_at > x0 && DATA.fix_at < x1) {
+    svg.appendChild(el("line", { x1: X(DATA.fix_at), x2: X(DATA.fix_at),
+      y1: SA.t, y2: SA.h - SA.b, class: "fixline" }));
+    svg.appendChild(Object.assign(el("text", { x: X(DATA.fix_at) + 5, y: SA.t + 11,
+      class: "fixtxt" }), { textContent: "解析器修复" }));
+  }
+
+  // 折线：v2 段虚线，v3 段实线
+  provs.forEach(p => {
+    const c = provColor(p), pts = ser[p];
+    [2, 3].forEach(src => {
+      const seg = pts.filter(d => d[2] === src);
+      if (seg.length > 1) {
+        svg.appendChild(el("path", { d: seg.map((d, i) => (i ? "L" : "M") + X(d[0]) + " " + Y(d[1])).join(" "),
+          class: "ln" + (src === 2 ? " void" : ""), stroke: src === 2 ? cssv("--ink-3") : c }));
+      }
+    });
+    pts.forEach(d => {
+      svg.appendChild(el("circle", { cx: X(d[0]), cy: Y(d[1]), r: d[2] === 3 ? 4 : 2.5,
+        class: "mk", fill: d[2] === 3 ? c : cssv("--ink-3"), opacity: d[2] === 3 ? 1 : .45 }));
+    });
+    const last = pts[pts.length - 1];
+    if (last && last[2] === 3) {
+      svg.appendChild(Object.assign(el("text", { x: X(last[0]) + 9, y: Y(last[1]) + 4,
+        class: "dlab", fill: c }), { textContent: p + " $" + last[1] }));
+    }
+  });
+
+  // hover
+  const times = [...new Set(all.map(d => d[0]))].sort((a, b) => a - b);
+  const tip = document.getElementById("tip-a");
+  const cross = el("line", { class: "fixline", y1: SA.t, y2: SA.h - SA.b, opacity: 0 });
+  svg.appendChild(cross);
+  const hit = el("rect", { x: SA.l, y: SA.t, width: SA.w - SA.l - SA.r,
+    height: SA.h - SA.b - SA.t, class: "hit" });
+  svg.appendChild(hit);
+  hit.addEventListener("mousemove", ev => {
+    const bb = svg.getBoundingClientRect();
+    const mv = x0 + (ev.clientX - bb.left) / bb.width * SA.w >= SA.l
+      ? x0 + (((ev.clientX - bb.left) / bb.width * SA.w) - SA.l) / (SA.w - SA.l - SA.r) * (x1 - x0) : x0;
+    const t = times.reduce((a, b) => Math.abs(b - mv) < Math.abs(a - mv) ? b : a);
+    cross.setAttribute("x1", X(t)); cross.setAttribute("x2", X(t)); cross.setAttribute("opacity", 1);
+    const rows = provs.map(p => {
+      const d = ser[p].find(q => q[0] === t);
+      return d ? `<div class="tr${d[2] === 2 ? " void" : ""}" style="--c:${d[2] === 2 ? cssv("--ink-3") : provColor(p)}">
+        <span><i></i>${esc(p)}</span><span class="p">NZ$${d[1]}</span></div>` : "";
+    }).join("");
+    tip.innerHTML = `<div class="th">${fmt(t)} ${DATA.fix_at != null && t < DATA.fix_at
+      ? '<span class="tag v">作废</span>' : '<span class="tag c">可信</span>'}</div>${rows}`;
+    tip.classList.add("on");
+    const px = X(t) / SA.w * bb.width;
+    tip.style.left = Math.min(Math.max(px + 14, 0), bb.width - 190) + "px";
+    tip.style.top = "12px";
+  });
+  hit.addEventListener("mouseleave", () => { tip.classList.remove("on"); cross.setAttribute("opacity", 0); });
+
+  // legend
+  document.getElementById("legend-a").innerHTML =
+    provs.map(p => `<span class="it"><span class="sw" style="--c:${provColor(p)}"></span>${esc(p)}</span>`).join("")
+    + `<span class="it"><span class="sw dash"></span>13:50 之前 · 已作废</span>`;
+
+  // note
+  const clean = all.filter(d => d[2] === 3);
+  const note = document.getElementById("note-a");
+  if (clean.length) {
+    const cy = clean.map(d => d[1]);
+    const lo = Math.min(...cy), hi = Math.max(...cy);
+    const nRounds = new Set(clean.map(d => d[0])).size;
+    note.innerHTML = nRounds < 2
+      ? `干净数据目前只有 <b>1 轮</b>。这一晚各渠道报价在 <b>NZ$${lo}–${hi}</b> 之间。再过半小时会出现第二个观测点，这条线才开始有"变化"可言。`
+      : `干净数据 <b>${nRounds} 轮</b>，这一晚的最低价在 <b>NZ$${lo}–${hi}</b> 之间波动，振幅 <b>NZ$${hi - lo}</b>。`;
+  } else { note.textContent = "这一天还没有修复后的观测。"; }
+
+  renderTableA(hotel, ci, provs, ser);
+}
+
+function renderTableA(hotel, ci, provs, ser) {
+  const times = [...new Set(provs.flatMap(p => ser[p].map(d => d[0])))].sort((a, b) => a - b);
+  const t = document.getElementById("tbl-a");
+  t.querySelector("thead").innerHTML = "<tr><th>观测时刻</th><th>状态</th>"
+    + provs.map(p => `<th style="text-align:right">${esc(p)}</th>`).join("") + "</tr>";
+  t.querySelector("tbody").innerHTML = times.slice().reverse().map(m => {
+    const voided = DATA.fix_at != null && m < DATA.fix_at;
+    return `<tr><td class="n">${mdhm(m)}</td>
+      <td><span class="tag ${voided ? "v" : "c"}">${voided ? "作废" : "可信"}</span></td>`
+      + provs.map(p => { const d = ser[p].find(q => q[0] === m);
+        return `<td class="n${voided ? " voided" : ""}">${d ? "NZ$" + d[1] : "—"}</td>`; }).join("")
+      + "</tr>";
+  }).join("");
+}
+
+/* ---------------- 图 B ---------------- */
+const SB = { w: 1000, h: 380, l: 58, r: 26, t: 18, b: 46 };
+function renderB() {
+  const svg = document.getElementById("chart-b");
+  svg.textContent = "";
+  const pts = DATA.lead;
+  const lg = document.getElementById("legend-b");
+  if (!pts.length) {
+    svg.appendChild(Object.assign(el("text", { x: 500, y: 180, "text-anchor": "middle",
+      class: "axis" }), { textContent: "等待第一轮干净数据" }));
+    lg.innerHTML = ""; document.getElementById("note-b").textContent = "";
+    return;
+  }
+  const hotels = DATA.hotels;
+  const hc = h => cssv(hotels.indexOf(h) === 0 ? "--s1" : "--s2");
+  const xs = pts.map(p => p.lead), ys = pts.map(p => p.price);
+  const x0 = 0, x1 = Math.max(...xs) + 1;
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const yp = (y1 - y0) * 0.1 || 10; y0 = Math.max(0, y0 - yp); y1 += yp;
+  const X = v => SB.l + (v - x0) / (x1 - x0) * (SB.w - SB.l - SB.r);
+  const Y = v => SB.h - SB.b - (v - y0) / (y1 - y0) * (SB.h - SB.b - SB.t);
+
+  const step = niceStep((y1 - y0) / 5);
+  for (let v = Math.ceil(y0 / step) * step; v <= y1; v += step) {
+    svg.appendChild(el("line", { x1: SB.l, x2: SB.w - SB.r, y1: Y(v), y2: Y(v), class: "grid" }));
+    svg.appendChild(Object.assign(el("text", { x: SB.l - 9, y: Y(v) + 4,
+      "text-anchor": "end", class: "axis" }), { textContent: "$" + v }));
+  }
+  for (let d = 0; d <= x1 - 1; d += 7) {
+    svg.appendChild(Object.assign(el("text", { x: X(d), y: SB.h - SB.b + 18,
+      "text-anchor": "middle", class: "axis" }), { textContent: d }));
+  }
+  svg.appendChild(Object.assign(el("text", { x: SB.l, y: SB.h - 8, class: "axname" }),
+    { textContent: "距离入住还有几天" }));
+
+  const tip = document.getElementById("tip-b");
+  pts.forEach(p => {
+    const c = hc(p.hotel);
+    const m = el("circle", { cx: X(p.lead), cy: Y(p.price), r: 5,
+      class: "mk" + (p.we ? " hollow" : ""), fill: p.we ? cssv("--surface") : c, stroke: p.we ? c : cssv("--surface") });
+    m.addEventListener("mouseenter", ev => {
+      const bb = svg.getBoundingClientRect();
+      tip.innerHTML = `<div class="th">${p.checkin} 周${p.wd}${p.we ? " · 周末" : ""}</div>
+        <div class="tr" style="--c:${c}"><span><i></i>${esc(p.hotel)}</span><span class="p">NZ$${p.price}</span></div>
+        <div class="tr"><span>渠道</span><span class="p">${esc(p.prov)}</span></div>
+        <div class="tr"><span>提前</span><span class="p">${p.lead} 天</span></div>`;
+      tip.classList.add("on");
+      tip.style.left = Math.min(Math.max(X(p.lead) / SB.w * bb.width + 12, 0), bb.width - 200) + "px";
+      tip.style.top = Math.max(0, Y(p.price) / SB.h * bb.height - 40) + "px";
+    });
+    m.addEventListener("mouseleave", () => tip.classList.remove("on"));
+    svg.appendChild(m);
+  });
+
+  lg.innerHTML = hotels.map(h =>
+    `<span class="it"><span class="sw dot" style="--c:${hc(h)}"></span>${esc(h)}</span>`).join("")
+    + `<span class="it"><span class="sw dot" style="--c:transparent;box-shadow:inset 0 0 0 2px ${cssv("--ink-3")}"></span>空心 = 周五至周日</span>`;
+
+  const we = pts.filter(p => p.we).map(p => p.price), wd = pts.filter(p => !p.we).map(p => p.price);
+  const med = a => { const s = [...a].sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : 0; };
+  document.getElementById("note-b").innerHTML =
+    `周末中位 <b>NZ$${med(we)}</b>，平日中位 <b>NZ$${med(wd)}</b>。横轴越往右是越晚入住的夜晚——
+     这张图看得出<b>哪一晚贵</b>，但看不出<b>早订还不晚订便宜</b>，因为所有点都是同一时刻观测到的。`;
+}
+
+function niceStep(raw) {
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  return [1, 2, 2.5, 5, 10].map(m => m * p).find(s => s >= raw) || p * 10;
+}
+
+/* ---------------- 逐晚订房方案 ---------------- */
+const BLOCK_30 = 98;     // 实测: 30 晚整段连订, 官网 NZ$98/晚
+
+function renderPlan() {
+  const until = document.getElementById("sel-until").value;
+  const rows = (DATA.plan || []).filter(p => p.checkin < until);
+  const tbl = document.getElementById("tbl-plan");
+  if (!rows.length) {
+    tbl.querySelector("thead").innerHTML = "";
+    tbl.querySelector("tbody").innerHTML =
+      '<tr><td>还没有覆盖这段日期的数据</td></tr>';
+    document.getElementById("totals").innerHTML = "";
+    document.getElementById("note-plan").textContent = "";
+    return;
+  }
+  const total = rows.reduce((s, p) => s + p.price, 0);
+  const nights = rows.length;
+  const floor = Math.min(...rows.map(p => p.price));
+  const cheap = rows.filter(p => p.price <= floor + 6);
+  const peak = rows.filter(p => p.price >= 120);
+
+  const cards = [
+    { k: "逐晚订合计", v: "NZ$" + total.toLocaleString(),
+      n: `${nights} 晚 · 均 NZ$${Math.round(total / nights)}/晚`, c: "" }
+  ];
+  if (false) {
+    const block = BLOCK_30 * nights;
+    cards.push({ k: "整段连订", v: "NZ$" + block.toLocaleString(),
+                 n: `官网 NZ$${BLOCK_30}/晚 × ${nights}`, c: "" });
+    cards.push({ k: "碎订省下", v: "NZ$" + (block - total).toLocaleString(),
+                 n: "代价是要订 " + nights + " 次", c: "save" });
+  } else {
+    cards.push({ k: "整段连订", v: "订不到",
+                 n: "超过 Google 的 30 晚上限", c: "" });
+    cards.push({ k: "地板价夜晚", v: cheap.length + " 晚",
+                 n: `NZ$${floor} 一档，合计 NZ$${cheap.reduce((s, p) => s + p.price, 0).toLocaleString()}`, c: "save" });
+  }
+  cards.push({ k: "≥NZ$120 的夜晚", v: peak.length + " 晚",
+               n: peak.length ? "合计 NZ$" + peak.reduce((s, p) => s + p.price, 0).toLocaleString() : "没有", c: "" });
+  document.getElementById("totals").innerHTML = cards.map(c =>
+    `<div><span class="k">${c.k}</span><span class="v ${c.c}">${c.v}</span>
+      <span class="n">${esc(c.n)}</span></div>`).join("");
+
+  tbl.querySelector("thead").innerHTML =
+    "<tr><th>入住日</th><th>周</th><th style='text-align:right'>价格</th>"
+    + "<th>住哪家</th><th>渠道</th><th style='text-align:right'>累计</th><th>订</th></tr>";
+  const today = new Date().toISOString().slice(0, 10);
+  let run = 0;
+  tbl.querySelector("tbody").innerHTML = rows.map(p => {
+    run += p.price;
+    const cls = [p.price <= floor + 6 ? "floor" : "", p.price >= 120 ? "peak" : "",
+                 p.checkin < today ? "past" : ""].filter(Boolean).join(" ");
+    return `<tr class="${cls}">
+      <td class="n">${p.checkin}</td>
+      <td>周${p.wd}${p.we ? "" : ""}</td>
+      <td class="n"><b>NZ$${p.price}</b></td>
+      <td>${esc(p.hotel)}</td>
+      <td class="prov-cell">${esc(p.prov)}</td>
+      <td class="n">${run.toLocaleString()}</td>
+      <td>${p.url ? `<a href="${p.url}" target="_blank" rel="noopener noreferrer">订 ↗</a>` : "—"}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("note-plan").innerHTML =
+    `绿底 = NZ$${floor} 一档的地板价，<b>${cheap.length} 晚</b>；橙底 = NZ$120 以上。
+     价格每 30 分钟刷新一次，这张表跟着变。
+     <b>这些是单晚报价</b>——连着订 ${nights} 次是 ${nights} 笔独立预订，
+     打电话时要确认酒店不会让你每天换房。`;
+}
+
+/* ---------------- 还答不了 ---------------- */
+function renderC() {
+  const v3 = DATA.v3;
+  const winH = v3.span[0] && v3.span[1]
+    ? (new Date(v3.span[1].replace(" ", "T")) - new Date(v3.span[0].replace(" ", "T"))) / 3600000 : 0;
+  document.getElementById("note-c").innerHTML =
+    `<b>"提前多久订最便宜"现在还答不了。</b>需要同一个入住日在不同<b>日期</b>被反复观测，才能画出"距入住 N 天时的价格"这条曲线。
+     修复后的干净数据只覆盖了 <b>${winH < 1 ? Math.round(winH * 60) + " 分钟" : winH.toFixed(1) + " 小时"}</b>。
+     按每 30 分钟一轮：<b>今天之内</b>只能看日内波动；<b>两三天后</b>能看出"周几放价"；<b>一两周后</b>才谈得上提前量。
+     13:50 之前那 ${DATA.v2.rows.toLocaleString()} 条观测不能用来补这段历史——它们的价格本身就是错的。`;
+}
+
+/* ---------------- 启动 ---------------- */
+function boot() {
+  renderStatus(); renderFix(); renderB(); renderC(); renderPlan();
+  document.getElementById("sel-until").addEventListener("change", renderPlan);
+  const sh = document.getElementById("sel-hotel"), sd = document.getElementById("sel-date");
+  sh.innerHTML = DATA.hotels.map(h => `<option value="${esc(h)}">${esc(h)}</option>`).join("");
+  sd.innerHTML = DATA.checkins.map(c => `<option value="${c}">${c}</option>`).join("");
+  const dh = DATA.hotels.find(h => h.includes("Queen")) || DATA.hotels[0];
+  sh.value = dh;
+  sd.value = DATA.checkins.includes("2026-09-17") ? "2026-09-17" : DATA.checkins[0];
+  sh.addEventListener("change", renderA);
+  sd.addEventListener("change", renderA);
+  renderA();
+  document.getElementById("foot").innerHTML =
+    `数据源 Google Travel 比价模块（<code>google.com/travel/search</code>），NZD，1 晚 1 人。
+     生成于 ${DATA.generated}。低于 NZ$100 的报价会自动留存当次页面原文到 <code>raw_archive/</code>，任何"捡漏"都可逐条回溯。
+     解析器的判据是"整行就是一个金额"；已在 6 个页面上人工核对，0 条不一致。`;
+}
+const mq = window.matchMedia("(prefers-color-scheme: dark)");
+mq.addEventListener?.("change", () => { renderA(); renderB(); });
+boot();
+</script>

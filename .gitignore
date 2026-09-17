@@ -1,2 +1,27 @@
 key.txt
 __pycache__/
+
+# ---- 本地采集 (local/) ----
+# 页面存档: 1100+ 个文件 / 17MB 且持续增长, 是复核证据但不适合进 git
+local/data/raw_archive/
+# 运行时产物与日志
+local/data/*.log
+local/data/alert_state.json
+local/data/overnight_report.md
+# 已作废的原始数据(解析器有 bug, 见 local/data/CLEANING.md), 只保留 curated
+local/data/hotel_prices_v2.csv
+local/data/hotel_prices_fast.csv
+local/data/hotel_prices.csv
+local/data/hotel_prices_merged.csv
+local/data/hotel_prices_clean.csv
+# 看板产物(可由模板+数据重新生成)
+local/dashboards/_built.html
+local/dashboards/auckland_*.html
+# 凭据与备份
+local/dida_key.txt
+local/*.bak
+local/*.bak2
+local/*.bak3
+
+# 某个工具自动建的 worktree 副本, 不是项目内容
+.kilo/
