@@ -42,3 +42,6 @@ local/dashboards/timeline_data.json
 # 看门狗运行日志与 PID 文件, 属于运行时状态, 不入库
 local/data/watchdog.log
 local/data/runner.pid
+
+# 巡检状态: 上次看到的价格, 用来算"这次动了什么"。运行时状态, 不入库。
+local/data/.watch_state.json

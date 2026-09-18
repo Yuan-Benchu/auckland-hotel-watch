@@ -35,6 +35,10 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 CLOUD_DIR = REPO / "data"
 SNAP_DIR = HERE / "data" / "snapshots"
+# 上次巡检看到的最后一轮 + 当时的价格。用来回答"**这次**动了什么",
+# 而不是"整段观测里动过什么" —— 后者是个累计量, 报过一次之后每轮都会再报,
+# 巡检就变成了噪音。被 .gitignore 排除, 属于运行时状态。
+STATE = HERE / "data" / ".watch_state.json"
 
 # 住宿区间 —— 跟 export_stay_plan.py 保持一致
 CHECKIN, CHECKOUT = dt.date(2026, 9, 20), dt.date(2026, 10, 9)
@@ -118,6 +122,56 @@ def cloud_movement(rows):
     return out
 
 
+def load_state():
+    try:
+        return json.loads(STATE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def save_state(rows):
+    """记下每个(酒店,入住日)在最后一轮的价格, 供下次巡检比对。"""
+    last = {}
+    for r in rows:
+        k = f'{r["hotel"]}|{r["checkin"]}'
+        cur = last.get(k)
+        if cur is None or r["ts_utc"] > cur[0]:
+            last[k] = (r["ts_utc"], r["_p"])
+        elif r["ts_utc"] == cur[0]:
+            last[k] = (cur[0], min(cur[1], r["_p"]))
+    try:
+        STATE.parent.mkdir(parents=True, exist_ok=True)
+        STATE.write_text(json.dumps(
+            {"seen_at": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+             "last": {k: v[1] for k, v in last.items()},
+             "last_ts": max((v[0] for v in last.values()), default=None)},
+            ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+
+
+def since_last(rows, state):
+    """跟上次巡检相比动了多少。这才是每轮该看的量。"""
+    prev = (state or {}).get("last") or {}
+    if not prev:
+        return None
+    now = {}
+    for r in rows:
+        k = f'{r["hotel"]}|{r["checkin"]}'
+        cur = now.get(k)
+        if cur is None or r["ts_utc"] > cur[0]:
+            now[k] = (r["ts_utc"], r["_p"])
+        elif r["ts_utc"] == cur[0]:
+            now[k] = (cur[0], min(cur[1], r["_p"]))
+    out = []
+    for k, (_, v) in now.items():
+        if k in prev and abs(v - prev[k]) >= 1:
+            h, d = k.split("|")
+            out.append({"hotel": h, "checkin": d, "was": prev[k], "now": v,
+                        "delta": round(v - prev[k], 2)})
+    return sorted(out, key=lambda x: -abs(x["delta"]))
+
+
 def retail_snapshots():
     out = []
     for f in sorted(SNAP_DIR.glob("hotel_prices_v3_*.csv")):
@@ -136,6 +190,10 @@ def main():
     health = cloud_health(rows)
     move = cloud_movement(rows)
     snaps = retail_snapshots()
+    state = load_state()
+    inwin = [r for r in rows
+             if CHECKIN.isoformat() <= r["checkin"] < CHECKOUT.isoformat()]
+    delta = since_last(inwin, state)
 
     print("═══ 云端 DIDA 采集 (不依赖开机; USD 批发价, 只看动没动) ═══")
     if not health.get("rounds"):
@@ -171,6 +229,17 @@ def main():
                   f"极差 {cur}{worst['spread']:.0f}。")
             print("     这只说明市场在动, 换算不出零售价 —— 要下单还得看零售快照。")
 
+    print("\n═══ 跟上次巡检相比 ═══")
+    if delta is None:
+        print("  没有上次巡检的记录 —— 这一轮只建基线, 下一轮起才能报'动了什么'")
+    elif not delta:
+        print(f"  上次巡检 {state.get('seen_at', '?')} UTC 以来, 住宿区间内没有任何变动。")
+    else:
+        print(f"  上次巡检 {state.get('seen_at', '?')} UTC 以来有 {len(delta)} 个组合变动:")
+        for d in delta:
+            print(f"     {d['hotel']:<38}{d['checkin']}  {d['was']:.0f} → {d['now']:.0f}"
+                  f"  ({d['delta']:+.0f})")
+
     print("\n═══ 本地零售快照 (看板的数据源, 依赖 Yuan 的电脑开着) ═══")
     for s in snaps:
         print(f"  {s['file']}   {s['bytes']//1024} KB")
@@ -180,9 +249,11 @@ def main():
         print(f"  最新快照日期 {snaps[-1]['date']}。要刷新看板, 先在本地跑一轮采集并")
         print("  更新 local/data/snapshots/, 再跑 python local/export_stay_plan.py")
 
+    save_state(inwin)
+
     if args.json:
         Path(args.json).write_text(json.dumps(
-            {"health": health, "movement": move, "snapshots": snaps,
+            {"health": health, "movement": move, "delta": delta, "snapshots": snaps,
              "generated": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")},
             ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"\n-> {args.json}")
