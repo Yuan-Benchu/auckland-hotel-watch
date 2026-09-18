@@ -73,7 +73,11 @@ jobs:
 
             # 必须先 add 再比: git diff 看不见未跟踪的新文件,
             # 用 git diff 判断会把"新采了一整轮"误判成"无变化"。
-            git add data/
+            #
+            # 只收 *.csv, 不用 `git add data/` —— 后者会把任何掉进这个
+            # 目录的东西一并提交。本地就发生过一次: 看门狗脚本路径解析
+            # 出错, 把自己的日志写进了 data/, 差点进了数据集。
+            git add data/*.csv
             if git diff --cached --quiet; then
               echo "本轮无新增, 不提交"
             else
