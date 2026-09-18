@@ -21,6 +21,7 @@ local/data/hotel_prices_clean.csv
 # 看板产物(可由模板+数据重新生成)
 local/dashboards/_built.html
 local/dashboards/auckland_*.html
+local/dashboards/stay_plan.html
 # 凭据与备份
 local/dida_key.txt
 local/*.bak

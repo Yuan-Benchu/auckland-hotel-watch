@@ -1,0 +1,743 @@
+<title>奥克兰 19 晚订房</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground:      #f4f6f8;
+    --panel:       #ffffff;
+    --panel-sunk:  #eef1f5;
+    --rule:        #dde2e8;
+    --rule-strong: #c3ccd6;
+    --ink:         #131920;
+    --ink-2:       #566270;
+    --ink-3:       #8492a1;
+    --accent:      #2a78d6;
+    --accent-soft: #e7f0fc;
+    --good:        #1f7a4d;
+    --warn:        #9a5b00;
+    --crit:        #b0332f;
+    --warn-soft:   #fdf2e0;
+    --crit-soft:   #fbeceb;
+    --good-soft:   #e6f3ec;
+
+    /* 顺序色阶: 价格越高越深 (蓝, 单色) */
+    --q1: #cde2fb; --q2: #9ec5f4; --q3: #86b6ef; --q4: #6da7ec;
+    --q5: #3987e5; --q6: #256abf; --q7: #184f95; --q8: #0d366b;
+    --q1-ink:#123; --q2-ink:#123; --q3-ink:#123; --q4-ink:#0b1d33;
+    --q5-ink:#fff; --q6-ink:#fff; --q7-ink:#fff; --q8-ink:#fff;
+
+    /* 分类色: 按文档给定的固定顺序取前 4 槽 (相邻配对下通过 CVD 闸门, 必须配直标) */
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --s1-ink: #fff; --s2-ink: #fff; --s3-ink: #06231a; --s4-ink: #2a1c00;
+    --dim: #aab4c0;
+
+    --shadow: 0 1px 2px rgba(19,25,32,.05), 0 8px 24px -12px rgba(19,25,32,.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #14171b;
+      --panel:       #1b1f24;
+      --panel-sunk:  #23282e;
+      --rule:        #2e343b;
+      --rule-strong: #414a54;
+      --ink:         #eef2f6;
+      --ink-2:       #a4b0bd;
+      --ink-3:       #75828f;
+      --accent:      #5d9bec;
+      --accent-soft: #1d2b3e;
+      --good:        #4cbb87;
+      --warn:        #d79a3a;
+      --crit:        #e8736e;
+      --warn-soft:   #2e2617;
+      --crit-soft:   #33201f;
+      --good-soft:   #16291f;
+
+      /* 深色底上顺序色阶反过来走亮度: 越贵越亮, 才拉得开跟底色的差 */
+      --q1: #12325c; --q2: #17406f; --q3: #1d5087; --q4: #25639f;
+      --q5: #3079bd; --q6: #4a91d5; --q7: #74afe6; --q8: #a6cdf4;
+      --q1-ink:#dce9f8; --q2-ink:#e4eefb; --q3-ink:#eaf3fd; --q4-ink:#f2f8ff;
+      --q5-ink:#08121e; --q6-ink:#08121e; --q7-ink:#08121e; --q8-ink:#08121e;
+
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+      --s1-ink: #06121e; --s2-ink: #fff; --s3-ink: #041a12; --s4-ink: #1d1300;
+      --dim: #59636e;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:      #14171b;
+    --panel:       #1b1f24;
+    --panel-sunk:  #23282e;
+    --rule:        #2e343b;
+    --rule-strong: #414a54;
+    --ink:         #eef2f6;
+    --ink-2:       #a4b0bd;
+    --ink-3:       #75828f;
+    --accent:      #5d9bec;
+    --accent-soft: #1d2b3e;
+    --good:        #4cbb87;
+    --warn:        #d79a3a;
+    --crit:        #e8736e;
+    --warn-soft:   #2e2617;
+    --crit-soft:   #33201f;
+    --good-soft:   #16291f;
+    --q1: #12325c; --q2: #17406f; --q3: #1d5087; --q4: #25639f;
+    --q5: #3079bd; --q6: #4a91d5; --q7: #74afe6; --q8: #a6cdf4;
+    --q1-ink:#dce9f8; --q2-ink:#e4eefb; --q3-ink:#eaf3fd; --q4-ink:#f2f8ff;
+    --q5-ink:#08121e; --q6-ink:#08121e; --q7-ink:#08121e; --q8-ink:#08121e;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s1-ink: #06121e; --s2-ink: #fff; --s3-ink: #041a12; --s4-ink: #1d1300;
+    --dim: #59636e;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont,
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+                 "Noto Sans CJK SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 0 72px; }
+
+  /* ---------------------------------------------------------- 排版 */
+  h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 600; letter-spacing: -.012em; }
+  h1 { font-size: clamp(26px, 5vw, 38px); line-height: 1.15; }
+  h2 { font-size: 19px; }
+  h3 { font-size: 15px; }
+  p  { margin: 0; }
+
+  .num { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+         font-variant-numeric: tabular-nums; }
+
+  .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+
+  .lede { color: var(--ink-2); max-width: 64ch; }
+  .fine { font-size: 13px; color: var(--ink-2); }
+  .finer { font-size: 12px; color: var(--ink-3); }
+
+  a { color: var(--accent); text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px;
+  }
+
+  /* ---------------------------------------------------------- 页头 */
+  header.masthead { padding-block: 40px 28px; border-bottom: 1px solid var(--rule); }
+  .masthead h1 { margin-top: 10px; }
+  .masthead .lede { margin-top: 12px; }
+
+  .provenance {
+    margin-top: 20px; display: flex; flex-wrap: wrap; gap: 6px 22px;
+    font-size: 12px; color: var(--ink-3);
+  }
+  .provenance b { color: var(--ink-2); font-weight: 500; }
+
+  section { padding-block: 40px; border-bottom: 1px solid var(--rule); }
+  section:last-of-type { border-bottom: 0; }
+  .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 6px; }
+  .sec-note { margin-bottom: 22px; }
+
+  /* ---------------------------------------------------------- 结论卡 */
+  .verdict {
+    margin-top: 32px; background: var(--panel); border: 1px solid var(--rule);
+    border-radius: 10px; box-shadow: var(--shadow); overflow: hidden;
+  }
+  .verdict-top {
+    display: grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr);
+    gap: 28px; padding: 26px 26px 24px;
+  }
+  @media (max-width: 720px) { .verdict-top { grid-template-columns: 1fr; gap: 20px; } }
+
+  .verdict h2 { font-size: 24px; margin-top: 8px; letter-spacing: -.02em; }
+  .verdict .addr { margin-top: 6px; font-size: 13px; color: var(--ink-2); }
+  .verdict .why { margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+
+  .bignum { display: flex; align-items: baseline; gap: 8px; }
+  .bignum .cur { font-size: 17px; color: var(--ink-2); font-weight: 500; }
+  .bignum .val { font-size: clamp(42px, 9vw, 58px); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+  .bignum .unit { font-size: 14px; color: var(--ink-2); }
+
+  .verdict-side { border-left: 1px solid var(--rule); padding-left: 28px; }
+  @media (max-width: 720px) {
+    .verdict-side { border-left: 0; border-top: 1px solid var(--rule); padding-left: 0; padding-top: 20px; }
+  }
+  .kv { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; font-size: 14px; }
+  .kv + .kv { border-top: 1px dashed var(--rule); }
+  .kv .k { color: var(--ink-2); }
+  .kv .v { font-weight: 500; }
+
+  .verdict-foot {
+    background: var(--panel-sunk); border-top: 1px solid var(--rule);
+    padding: 16px 26px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px; text-decoration: none;
+    background: var(--accent); color: #fff; border-radius: 7px;
+    padding: 9px 15px; font-size: 13.5px; font-weight: 500;
+  }
+  :root[data-theme="dark"] .btn, :root:not([data-theme="light"]) .btn { color: #08121e; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .btn { color: #fff; } }
+  .btn:hover { filter: brightness(1.07); }
+
+  /* ---------------------------------------------------------- 指标行 */
+  .kpis {
+    margin-top: 28px; display: grid; gap: 1px; background: var(--rule);
+    border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  @media (max-width: 760px) { .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  .kpi { background: var(--panel); padding: 16px 18px 18px; }
+  .kpi .k { font-size: 12px; color: var(--ink-2); }
+  .kpi .v { margin-top: 5px; font-size: 25px; font-weight: 600; letter-spacing: -.02em; }
+  .kpi .s { margin-top: 3px; font-size: 12px; color: var(--ink-3); }
+
+  /* ---------------------------------------------------------- 热力图 */
+  .scroller { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; }
+  .heat { border-collapse: separate; border-spacing: 2px; min-width: 900px; }
+  .heat th, .heat td { padding: 0; }
+  .heat .rowlab {
+    text-align: right; padding-right: 12px; font-size: 13px; white-space: nowrap;
+    position: sticky; left: 0; background: var(--ground); z-index: 2;
+  }
+  .heat .rowlab .badge { display: inline-block; margin-left: 6px; }
+  .heat .collab { font-size: 11px; font-weight: 500; color: var(--ink-2); line-height: 1.25; padding-bottom: 6px; }
+  .heat .collab .dow { display: block; font-size: 10px; color: var(--ink-3); }
+  .heat .collab.wknd .dow { color: var(--warn); }
+  .heat .cell {
+    width: 44px; height: 34px; border-radius: 4px; text-align: center;
+    font-size: 12.5px; font-weight: 500; cursor: default;
+  }
+  .heat .cell.best { box-shadow: inset 0 0 0 2px var(--ink); }
+  .heat .cell.thin::after {
+    content: ""; position: absolute; inset: 0; border-radius: 4px;
+    background: repeating-linear-gradient(135deg, transparent 0 4px, rgba(255,255,255,.45) 4px 5px);
+  }
+  .heat td.c { position: relative; }
+  .heat .out { opacity: .45; }
+  .heat .sumcol { font-size: 12.5px; font-weight: 600; padding-left: 12px; white-space: nowrap; }
+  .heat tr.hi .rowlab { color: var(--ink); font-weight: 600; }
+  .heat .divider { width: 10px; }
+
+  .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 16px; font-size: 12px; color: var(--ink-2); }
+  .ramp { display: flex; align-items: center; gap: 4px; }
+  .ramp i { width: 22px; height: 11px; border-radius: 2px; display: block; }
+  .key { display: inline-flex; align-items: center; gap: 6px; }
+  .key .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1px solid var(--rule-strong); }
+  .key .sw.hatch { background: repeating-linear-gradient(135deg, var(--panel-sunk) 0 4px, var(--rule-strong) 4px 5px); }
+  .key .sw.ring { background: transparent; box-shadow: inset 0 0 0 2px var(--ink); border: 0; }
+
+  /* ---------------------------------------------------------- tooltip */
+  #tip {
+    position: fixed; z-index: 90; pointer-events: none; opacity: 0; transition: opacity .1s;
+    background: var(--panel); color: var(--ink); border: 1px solid var(--rule-strong);
+    border-radius: 8px; box-shadow: var(--shadow); padding: 11px 13px; font-size: 12.5px;
+    max-width: 280px; line-height: 1.5;
+  }
+  #tip.on { opacity: 1; }
+  #tip .t-h { font-weight: 600; margin-bottom: 2px; }
+  #tip .t-d { color: var(--ink-3); font-size: 11.5px; margin-bottom: 7px; }
+  #tip .t-row { display: flex; justify-content: space-between; gap: 14px; }
+  #tip .t-row.top { font-weight: 600; }
+  #tip .t-f { margin-top: 7px; padding-top: 6px; border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 11.5px; }
+
+  /* ---------------------------------------------------------- 折线 */
+  .chartbox { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 16px 10px; }
+  svg.line { display: block; width: 100%; height: auto; }
+  svg.line text { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; }
+
+  /* ---------------------------------------------------------- 方案 */
+  .plans { display: flex; flex-direction: column; gap: 10px; }
+  .plan {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 9px;
+    padding: 14px 16px; display: grid; gap: 4px 18px;
+    grid-template-columns: minmax(0,1fr) auto;
+  }
+  .plan.pick { border-color: var(--accent); background: var(--accent-soft); }
+  .plan .pname { font-weight: 600; font-size: 14.5px; }
+  .plan .ptot { text-align: right; font-weight: 600; font-size: 17px; white-space: nowrap; }
+  .plan .pdelta { text-align: right; font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+  .plan .track { grid-column: 1 / -1; display: flex; gap: 2px; margin-top: 8px; height: 26px; }
+  .plan .seg {
+    display: flex; align-items: center; justify-content: center; border-radius: 4px;
+    font-size: 11px; font-weight: 500; white-space: nowrap; padding-inline: 4px; min-width: 0;
+  }
+  .plan .legs { grid-column: 1 / -1; margin-top: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .plan .legs div { display: flex; justify-content: space-between; gap: 12px; padding: 2px 0; }
+
+  /* ---------------------------------------------------------- 表格 */
+  table.grid { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 620px; }
+  table.grid th, table.grid td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--rule); }
+  table.grid th { font-weight: 500; color: var(--ink-2); font-size: 12px; position: sticky; top: 0; background: var(--ground); }
+  table.grid td:first-child, table.grid th:first-child { text-align: left; }
+  table.grid tbody tr:hover { background: var(--panel-sunk); }
+
+  .badge {
+    display: inline-block; font-size: 10.5px; font-weight: 600; padding: 1px 6px;
+    border-radius: 4px; letter-spacing: .02em; vertical-align: 1px;
+  }
+  .badge.ok   { background: var(--good-soft); color: var(--good); }
+  .badge.warn { background: var(--warn-soft); color: var(--warn); }
+  .badge.bad  { background: var(--crit-soft); color: var(--crit); }
+
+  /* ---------------------------------------------------------- 注意事项 */
+  .caveats { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+  @media (max-width: 760px) { .caveats { grid-template-columns: 1fr; } }
+  .cav {
+    background: var(--panel); border: 1px solid var(--rule); border-left: 3px solid var(--rule-strong);
+    border-radius: 0 8px 8px 0; padding: 13px 15px;
+  }
+  .cav.stop { border-left-color: var(--crit); }
+  .cav.check { border-left-color: var(--warn); }
+  .cav.fyi { border-left-color: var(--accent); }
+  .cav h3 { font-size: 13.5px; }
+  .cav p { margin-top: 5px; font-size: 13px; color: var(--ink-2); }
+
+  details.tablewrap { margin-top: 18px; }
+  details.tablewrap summary { cursor: pointer; font-size: 13.5px; color: var(--accent); padding: 4px 0; }
+
+  footer { padding-block: 28px 8px; font-size: 12px; color: var(--ink-3); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">奥克兰 CBD · 零售价 · NZD</div>
+    <h1 id="h-title">9 月 20 日到 10 月 9 日，住哪家</h1>
+    <p class="lede" id="h-lede"></p>
+    <div class="provenance" id="prov"></div>
+  </header>
+
+  <section id="s-verdict">
+    <div class="sec-head"><h2>结论</h2><span class="finer">按最后一轮抓取的跨渠道最低价</span></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section id="s-heat">
+    <div class="sec-head"><h2>逐晚价格表</h2><span class="finer">9 家 × 20 晚，每格是那一晚全渠道最低价</span></div>
+    <p class="sec-note fine" id="heat-note"></p>
+    <div class="scroller"><table class="heat" id="heat"></table></div>
+    <div class="legend" id="heat-legend"></div>
+  </section>
+
+  <section id="s-line">
+    <div class="sec-head"><h2>三个候选的逐晚走势</h2><span class="finer">虚线为 9 家当晚中位数</span></div>
+    <p class="sec-note fine" id="line-note"></p>
+    <div class="chartbox"><svg class="line" id="linechart" role="img" aria-labelledby="lc-title"><title id="lc-title">三家候选酒店在 9/20–10/8 每晚的最低价走势，以及 9 家的中位数</title></svg></div>
+  </section>
+
+  <section id="s-plans">
+    <div class="sec-head"><h2>换店换来多少钱</h2><span class="finer">同样 19 晚，不同换店次数下最省的住法</span></div>
+    <p class="sec-note fine" id="plan-note"></p>
+    <div class="plans" id="plans"></div>
+  </section>
+
+  <section id="s-trust">
+    <div class="sec-head"><h2>这些数字核过没有</h2><span class="finer">解析出的最低价 vs 页面上 Google 自己印的头条价</span></div>
+    <p class="sec-note fine" id="trust-note"></p>
+    <div class="scroller"><table class="grid" id="trust"></table></div>
+    <details class="tablewrap">
+      <summary>展开完整数据表（9 家 × 20 晚，含渠道与订房链接）</summary>
+      <div class="scroller" style="margin-top:12px"><table class="grid" id="fulltable"></table></div>
+    </details>
+  </section>
+
+  <section id="s-cav">
+    <div class="sec-head"><h2>下单之前</h2></div>
+    <p class="sec-note fine">按会不会让你订错分档：红 = 不改就会错，黄 = 必须自己再核一遍，蓝 = 知道就行。</p>
+    <div class="caveats" id="caveats"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<div id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+const D = /*__DATA__*/{};
+
+const NZ  = n => "NZ$" + Math.round(n).toLocaleString("en-NZ");
+const NZ1 = n => "NZ$" + n.toFixed(1);
+const md  = d => (+d.slice(5, 7)) + "/" + (+d.slice(8, 10));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* 短名: 表格和图例里用得下的长度 */
+const SHORT = {
+  "Ascotia Off Queen Auckland":          "Ascotia Off Queen",
+  "ibis budget Auckland Central":        "ibis budget Central",
+  "Albion Hotel Auckland":               "Albion",
+  "Shakespeare Hotel Auckland":          "Shakespeare",
+  "VR Queen Street Auckland":            "VR Queen Street",
+  "Auckland City Hotel":                 "Auckland City Hotel",
+  "VR Auckland City":                    "VR Auckland City",
+  "The Quadrant Hotel & Suites Auckland":"Quadrant",
+  "Copthorne Hotel Auckland City":       "Copthorne",
+};
+const short = h => SHORT[h] || h;
+
+const ADDR = {
+  "Ascotia Off Queen Auckland":   "5 Scotia Place, Auckland CBD",
+  "ibis budget Auckland Central": "20 Wyndham Street, Auckland CBD",
+  "Albion Hotel Auckland":        "119 Hobson Street, Auckland CBD",
+  "Shakespeare Hotel Auckland":   "61 Albert Street, Auckland CBD",
+};
+
+/* 解析价跟页面头条价对不上的那几家, 由导出脚本判定, 不进推荐。 */
+const UNTRUSTED = new Set(D.untrusted);
+
+const nights = D.nights, dates = D.dates, hotels = D.hotels;
+const lastNight = nights[nights.length - 1];
+const cell = (h, d) => D.cells[h + "|" + d];
+const price = (h, d) => D.grid[h][d];
+
+/* ---------------------------------------------------------------- 色阶 */
+const BREAKS = [70, 80, 90, 105, 125, 150, 200];   // 8 档
+function qi(v) { let i = 0; while (i < BREAKS.length && v >= BREAKS[i]) i++; return i + 1; }
+
+/* ---------------------------------------------------------------- 页头 */
+const M = D.meta;
+document.getElementById("h-lede").textContent =
+  `${nights.length} 晚（${md(nights[0])} 入住，${md(M.checkout)} 退房）。` +
+  `${hotels.length} 家 CBD 酒店，每晚取全渠道最低的可订价，` +
+  `再算“全程不换”和“换店”各要多少钱。`;
+
+document.getElementById("prov").innerHTML = [
+  ["数据", `${M.snapshot}（Google 零售价）`],
+  ["可用行数", `${M.rows_used.toLocaleString()} / ${M.rows_total.toLocaleString()}`],
+  ["观测窗口", `${M.first_ts.slice(5, 16)} → ${M.last_ts.slice(5, 16)}`],
+  ["最后一轮", `${M.last_scrape_min.slice(5, 16)} → ${M.last_scrape_max.slice(5, 16)}`],
+].map(([k, v]) => `<span><b>${k}</b> ${esc(v)}</span>`).join("");
+
+/* ---------------------------------------------------------------- 结论 */
+const ranked = D.singles.filter(([, h]) => !UNTRUSTED.has(h));
+const [bestTotal, bestHotel] = ranked[0];
+const [nextTotal, nextHotel] = ranked[1];
+const floor = D.floor;
+const maxSave = bestTotal - floor;
+
+/* 换店最少的那个非零档: 每换一次店买到的钱最多, 拿它当「值不值得动」的参照 */
+const mid = D.frontier.find(p => p.switches > 0) || D.frontier[0];
+const most = D.frontier[D.frontier.length - 1];
+
+document.getElementById("verdict").innerHTML = `
+  <div class="verdict-top">
+    <div>
+      <div class="eyebrow">整段住同一家，最省的是</div>
+      <h2>${esc(bestHotel)}</h2>
+      <div class="addr num">${esc(ADDR[bestHotel] || "Auckland CBD")}</div>
+      <p class="why">
+        ${nights.length} 晚里有 ${nights.filter(d => hotels.every(h => UNTRUSTED.has(h) || price(bestHotel, d) <= price(h, d))).length} 晚它就是全场最低。
+        第二名 ${esc(short(nextHotel))} 要 ${NZ(nextTotal)}，贵 ${NZ(nextTotal - bestTotal)}。
+        <b>就算每晚都换到当晚最便宜的那家，也只省 ${NZ(maxSave)}（${(100 * maxSave / bestTotal).toFixed(1)}%）</b> ——
+        为这点钱搬 ${most.switches} 次行李不划算。
+      </p>
+    </div>
+    <div class="verdict-side">
+      <div class="bignum"><span class="cur">NZ$</span><span class="val num">${Math.round(bestTotal).toLocaleString()}</span></div>
+      <div class="finer" style="margin-top:4px">${nights.length} 晚合计</div>
+      <div style="margin-top:14px">
+        <div class="kv"><span class="k">平均每晚</span><span class="v num">${NZ1(bestTotal / nights.length)}</span></div>
+        <div class="kv"><span class="k">最便宜的一晚</span><span class="v num">${NZ(Math.min(...nights.map(d => price(bestHotel, d))))} · ${md(nights.reduce((a, d) => price(bestHotel, d) < price(bestHotel, a) ? d : a, nights[0]))}</span></div>
+        <div class="kv"><span class="k">最贵的一晚</span><span class="v num">${NZ(Math.max(...nights.map(d => price(bestHotel, d))))} · ${md(nights.reduce((a, d) => price(bestHotel, d) > price(bestHotel, a) ? d : a, nights[0]))}</span></div>
+        <div class="kv"><span class="k">观测期内波动</span><span class="v num">中位 ±${NZ(D.vol[bestHotel].median)}</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict-foot">
+    <a class="btn" href="${D.segurls[bestHotel + "|" + nights[0] + "|" + M.checkout] || D.urls[bestHotel + "|" + nights[0]]}" target="_blank" rel="noopener">
+      用 ${md(nights[0])}–${md(M.checkout)} 连住日期打开 Google Travel →
+    </a>
+    <span class="finer">链接按整段连住构造。<b>页面打开后先核对 check-in / check-out 两个输入框的实际值</b> —— Google 会静默改日期。</span>
+  </div>`;
+
+document.getElementById("kpis").innerHTML = [
+  [`全程不换（${short(bestHotel)}）`, NZ(bestTotal), `均 ${NZ1(bestTotal / nights.length)}／晚`],
+  [`换 ${mid.switches} 次店`, NZ(mid.total), `只省 ${NZ(bestTotal - mid.total)}`],
+  ["每晚都换到最便宜", NZ(floor), `省 ${NZ(maxSave)}，要换 ${most.switches} 次店`],
+  ["最贵的选法", NZ(D.singles[D.singles.length - 1][0]), `${short(D.singles[D.singles.length - 1][1])}，多花 ${NZ(D.singles[D.singles.length - 1][0] - bestTotal)}`],
+].map(([k, v, s]) => `<div class="kpi"><div class="k">${esc(k)}</div><div class="v num">${v}</div><div class="s">${esc(s)}</div></div>`).join("");
+
+/* ---------------------------------------------------------------- 热力图 */
+/* 住宿期内的尖峰 (退房日单独说) */
+const spike = D.spikes.filter(d => d !== M.checkout);
+const medOf = h => { const v = nights.map(d => price(h, d)).sort((a, b) => a - b); return v[(v.length - 1) >> 1]; };
+const upCount = d => hotels.filter(h => price(h, d) >= medOf(h) * 1.3).length;
+
+document.getElementById("heat-note").innerHTML =
+  `颜色越深越贵。黑框 = 那一晚的全场最低。斜纹 = 最后一轮只抓到 ≤2 个渠道，信心低。` +
+  spike.map(d => `<b>${md(d)} 那晚 ${hotels.length} 家里有 ${upCount(d)} 家比自己的常态高出三成以上</b>`).join("，") +
+  ` —— 按项目的判据（一两家异常是漏抓，整排一起动才是真涨价），这是真实涨价，不是解析 bug。` +
+  `最右一列 ${md(M.checkout)} 是退房日、不住，放在这里只为说明一件事：那天别住。`;
+
+const rowOrder = D.singles.map(([, h]) => h);
+let html = "<thead><tr><th></th>";
+dates.forEach((d, i) => {
+  if (d === lastNight) html += `<th class="divider"></th>`;
+  const w = D.weekday[d], wknd = (w === "六" || w === "日");
+  html += `<th class="collab${wknd ? " wknd" : ""}${d === M.checkout ? " out" : ""}">${md(d)}<span class="dow">周${w}</span></th>`;
+});
+html += `<th class="collab" style="text-align:right">19 晚<span class="dow">合计</span></th></tr></thead><tbody>`;
+
+rowOrder.forEach(h => {
+  const bad = UNTRUSTED.has(h);
+  const tot = nights.reduce((s, d) => s + price(h, d), 0);
+  html += `<tr class="${h === bestHotel ? "hi" : ""}"><td class="rowlab">${esc(short(h))}` +
+          (bad ? ` <span class="badge bad">数据存疑</span>` : "") +
+          (h === bestHotel ? ` <span class="badge ok">推荐</span>` : "") + `</td>`;
+  dates.forEach(d => {
+    if (d === lastNight) html += `<td class="divider"></td>`;
+    const c = cell(h, d), v = c.p, q = qi(v);
+    const isBest = d !== M.checkout && !bad &&
+      v === Math.min(...hotels.filter(x => !UNTRUSTED.has(x)).map(x => price(x, d)));
+    html += `<td class="c"><div class="cell${isBest ? " best" : ""}${c.n <= 2 ? " thin" : ""}${d === M.checkout ? " out" : ""}"
+      style="background:var(--q${q});color:var(--q${q}-ink)"
+      data-h="${esc(h)}" data-d="${d}" tabindex="0"
+      aria-label="${esc(short(h))} ${md(d)} ${NZ(v)}">${Math.round(v)}</div></td>`;
+  });
+  html += `<td class="sumcol num">${NZ(tot)}</td></tr>`;
+});
+document.getElementById("heat").innerHTML = html + "</tbody>";
+
+const rampLabels = ["<70", "70", "80", "90", "105", "125", "150", "200+"];
+document.getElementById("heat-legend").innerHTML =
+  `<span class="ramp"><span class="finer" style="margin-right:2px">便宜</span>` +
+  [1, 2, 3, 4, 5, 6, 7, 8].map(i => `<i style="background:var(--q${i})" title="${rampLabels[i - 1]}"></i>`).join("") +
+  `<span class="finer" style="margin-left:2px">贵</span></span>` +
+  `<span class="finer num">NZ$ ${rampLabels.join(" · ")}</span>` +
+  `<span class="key"><span class="sw ring"></span>当晚全场最低</span>` +
+  `<span class="key"><span class="sw hatch"></span>渠道 ≤2，信心低</span>`;
+
+/* ---------------------------------------------------------------- tooltip */
+const tip = document.getElementById("tip");
+function showTip(el, ev) {
+  const h = el.dataset.h, d = el.dataset.d, c = cell(h, d);
+  const rows = c.all.slice(0, 5).map((kv, i) =>
+    `<div class="t-row${i === 0 ? " top" : ""}"><span>${esc(kv[0])}</span><span class="num">${NZ(kv[1])}</span></div>`).join("");
+  tip.innerHTML =
+    `<div class="t-h">${esc(short(h))}</div>` +
+    `<div class="t-d">${d} 周${D.weekday[d]}${d === M.checkout ? "（退房日，不住）" : ""} · 抓取于 ${c.ts.slice(5, 16)}</div>` +
+    rows +
+    (c.all.length > 5 ? `<div class="finer" style="margin-top:4px">…另有 ${c.all.length - 5} 个渠道</div>` : "") +
+    `<div class="t-f">观测期内这一格走过 ${NZ(c.lo)} – ${NZ(c.hi)}（${c.obs} 次抓取）` +
+    (c.n <= 2 ? `<br><b>只抓到 ${c.n} 个渠道，信心低</b>` : "") + `</div>`;
+  tip.classList.add("on"); tip.setAttribute("aria-hidden", "false");
+  const r = el.getBoundingClientRect(), tr = tip.getBoundingClientRect();
+  let x = (ev ? ev.clientX : r.left + r.width / 2) + 14, y = r.top - tr.height - 8;
+  if (x + tr.width > innerWidth - 8) x = innerWidth - tr.width - 8;
+  if (y < 8) y = r.bottom + 8;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = y + "px";
+}
+function hideTip() { tip.classList.remove("on"); tip.setAttribute("aria-hidden", "true"); }
+document.getElementById("heat").addEventListener("mouseover", e => {
+  const el = e.target.closest(".cell"); if (el) showTip(el, e);
+});
+document.getElementById("heat").addEventListener("mouseout", e => {
+  if (e.target.closest(".cell")) hideTip();
+});
+document.getElementById("heat").addEventListener("focusin", e => {
+  const el = e.target.closest(".cell"); if (el) showTip(el, null);
+});
+document.getElementById("heat").addEventListener("focusout", hideTip);
+
+/* ---------------------------------------------------------------- 折线 */
+const FOCUS = ranked.slice(0, 3).map(([, h]) => h);
+const SCOL = ["var(--s1)", "var(--s2)", "var(--s3)"];
+
+/* 9 家当晚价格的中位数 —— 只作参照, 说明「整片一起动」还是「这家单独动」 */
+const medianAt = d => {
+  const v = hotels.map(h => price(h, d)).sort((a, b) => a - b);
+  return v[(v.length - 1) >> 1];
+};
+
+(function drawLine() {
+  /* 只画实际要住的 19 晚。退房日 10/9 全线冲到 NZ$300+, 放进来会把 y 轴拉到
+     三条候选线全挤在底部 20% —— 那正是这张图唯一要看清的地方。10/9 留给
+     热力图和下面那句话交代。 */
+  const xs = nights;
+  const W = 880, H = 320, L = 46, R = 96, T = 18, B = 42;
+  const iw = W - L - R, ih = H - T - B;
+  const series = FOCUS.map(h => xs.map(d => price(h, d)));
+  const refs = xs.map(medianAt);
+  const lo = Math.min(...series.flat(), ...refs), hi = Math.max(...series.flat(), ...refs);
+  const step = 20;
+  const ymin = Math.floor(lo / step) * step - step, ymax = Math.ceil(hi / step) * step;
+  const X = i => L + i * iw / (xs.length - 1);
+  const Y = v => T + ih - (v - ymin) / (ymax - ymin) * ih;
+  const path = vals => vals.map((v, i) => (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+
+  let s = "";
+  for (let v = ymin; v <= ymax; v += step) {
+    s += `<line x1="${L}" y1="${Y(v)}" x2="${L + iw}" y2="${Y(v)}" stroke="var(--rule)" stroke-width="1"/>` +
+         `<text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v}</text>`;
+  }
+  // 尖峰日整列压一层底色, 让「那晚整片抬起来」自己看得见
+  spike.forEach(d => {
+    const i = xs.indexOf(d); if (i < 0) return;
+    const half = iw / (xs.length - 1) / 2;
+    s += `<rect x="${X(i) - half}" y="${T}" width="${half * 2}" height="${ih}" fill="var(--warn)" opacity=".1"/>` +
+         `<text x="${X(i)}" y="${T + 11}" text-anchor="middle" font-size="9.5" fill="var(--warn)">整片涨价</text>`;
+  });
+
+  xs.forEach((d, i) => {
+    if (i % 2) return;
+    const wknd = D.weekday[d] === "六" || D.weekday[d] === "日";
+    s += `<text x="${X(i)}" y="${H - B + 15}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${md(d)}</text>` +
+         `<text x="${X(i)}" y="${H - B + 27}" text-anchor="middle" font-size="9" fill="${wknd ? "var(--warn)" : "var(--ink-3)"}">${D.weekday[d]}</text>`;
+  });
+
+  s += `<path d="${path(refs)}" fill="none" stroke="var(--dim)" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/>`;
+  series.forEach((vals, k) => {
+    s += `<path d="${path(vals)}" fill="none" stroke="${SCOL[k]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` +
+         `<circle cx="${X(xs.length - 1)}" cy="${Y(vals[vals.length - 1])}" r="4.5" fill="${SCOL[k]}" stroke="var(--panel)" stroke-width="2"/>`;
+  });
+
+  // 端点直标, 收敛时用引出线分开, 不直接挪文字
+  const ends = FOCUS.map((h, k) => ({ h, k, y: Y(series[k][xs.length - 1]) })).sort((a, b) => a.y - b.y);
+  let prev = -99;
+  ends.forEach(e => {
+    const y = Math.max(e.y, prev + 13); prev = y;
+    s += `<line x1="${X(xs.length - 1) + 6}" y1="${e.y}" x2="${L + iw + 8}" y2="${y}" stroke="${SCOL[e.k]}" stroke-width="1" opacity=".55"/>` +
+         `<text x="${L + iw + 12}" y="${y + 3.5}" font-size="10.5" fill="var(--ink-2)">${esc(short(e.h))}</text>`;
+  });
+
+  const sv = document.getElementById("linechart");
+  sv.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  sv.insertAdjacentHTML("beforeend", s);
+})();
+
+document.getElementById("line-note").innerHTML =
+  `只画实际要住的 ${nights.length} 晚 —— 退房日 ${md(M.checkout)} 全线冲到 ` +
+  `${NZ(Math.max(...hotels.map(h => price(h, M.checkout))))}，放进来会把这三条线全压扁，` +
+  `那天的情况看热力图最后一列就行。虚线是 ${hotels.length} 家当晚价格的中位数。` +
+  `看点：<b>三条线几乎平行</b> —— 贵的那几晚是整片一起贵，` +
+  `不是“换一家就能躲开”，这正是换店省不下钱的原因。`;
+
+const legendLine = FOCUS.map((h, k) =>
+  `<span class="key"><span class="sw" style="background:${SCOL[k]};border-color:${SCOL[k]}"></span>${esc(short(h))}</span>`).join("") +
+  `<span class="key"><span class="sw" style="background:transparent;border-color:var(--dim);border-style:dashed"></span>9 家中位数</span>`;
+document.getElementById("s-line").querySelector(".chartbox")
+  .insertAdjacentHTML("beforeend", `<div class="legend" style="margin-top:4px">${legendLine}</div>`);
+
+/* ---------------------------------------------------------------- 方案 */
+/* 方案里真正出现过的酒店, 按整段总价排序取固定色槽 —— 与折线图共用前三槽 */
+const PLANHOTELS = rowOrder.filter(h => D.frontier.some(p => p.legs.some(l => l.hotel === h)));
+const SEGCOL = {};
+PLANHOTELS.forEach((h, i) => {
+  const k = i < 4 ? i + 1 : 0;
+  SEGCOL[h] = k ? { bg: `var(--s${k})`, ink: `var(--s${k}-ink)` } : { bg: "var(--dim)", ink: "var(--ink)" };
+});
+
+/* 观测期内这几家自己的日常波动, 作为「省下这点钱有没有意义」的参照系 */
+const volRef = Math.round(PLANHOTELS.reduce((s, h) => s + D.vol[h].median, 0) / PLANHOTELS.length);
+document.getElementById("plan-note").innerHTML =
+  `每多换一次店，省下的钱越来越少：换 ${mid.switches} 次省 ${NZ(bestTotal - mid.total)}，` +
+  `一路换到 ${most.switches} 次也只多省 ${NZ(mid.total - floor)}。` +
+  `参照系 —— 这些酒店在观测期内每晚的价格<b>自己就在 ±${NZ(volRef)} 上下晃</b>，` +
+  `而整段 19 晚换来换去的全部收益是 ${NZ(maxSave)}。` +
+  `换句话说，<b>换店赚的那点差价，跟等两天价格自己的漂移是同一个量级</b>。`;
+
+document.getElementById("plans").innerHTML = D.frontier.map(p => {
+  const pick = p.switches === 0;
+  const track = p.legs.map(l =>
+    `<div class="seg" style="flex:${l.nights};background:${SEGCOL[l.hotel].bg};color:${SEGCOL[l.hotel].ink}"
+       title="${esc(short(l.hotel))} ${md(l.from)}–${md(l.to)} · ${l.nights} 晚">${l.nights >= 4 ? esc(short(l.hotel)) : l.nights >= 2 ? l.nights + "晚" : ""}</div>`).join("");
+  const legs = p.legs.map(l =>
+    `<div><span>${esc(short(l.hotel))} <span class="num">${md(l.from)}–${md(l.to)}</span> · ${l.nights} 晚</span><span class="num">${NZ(l.sum)}</span></div>`).join("");
+  return `<div class="plan${pick ? " pick" : ""}">
+      <div class="pname">${p.switches === 0 ? "全程不换" : "换 " + p.switches + " 次店"}${pick ? ' <span class="badge ok">推荐</span>' : ""}</div>
+      <div class="ptot num">${NZ(p.total)}</div>
+      <div class="finer">${p.legs.length} 段</div>
+      <div class="pdelta num">${p.total === bestTotal ? "—" : "省 " + NZ(bestTotal - p.total)}</div>
+      <div class="track">${track}</div>
+      <div class="legs">${legs}</div>
+    </div>`;
+}).join("");
+
+document.getElementById("plans").insertAdjacentHTML("afterend",
+  `<div class="legend">` + PLANHOTELS.map(h =>
+    `<span class="key"><span class="sw" style="background:${SEGCOL[h].bg};border-color:${SEGCOL[h].bg}"></span>${esc(short(h))}</span>`
+  ).join("") + `<span class="finer">色块宽度 = 住的晚数</span></div>`);
+
+/* ---------------------------------------------------------------- 复核 */
+if (D.verify) {
+  const rows = Object.entries(D.verify).sort((a, b) => (b[1][0] / b[1][1]) - (a[1][0] / a[1][1]));
+  const tot = rows.reduce((s, r) => [s[0] + r[1][0], s[1] + r[1][1]], [0, 0]);
+  document.getElementById("trust-note").innerHTML =
+    `Google 在酒店页地址行下面印了一个头条最低价。拿 <code>raw_archive.tgz</code> 里的 ` +
+    `<b>${tot[1].toLocaleString()} 次页面存档</b>逐次对账，解析结果跟页面上印的数字一致的占 ` +
+    `<b>${(100 * tot[0] / tot[1]).toFixed(1)}%</b>。` +
+    `唯一大面积对不上的是 VR Auckland City —— 它的头条价含被我们剔掉的机场店报价，` +
+    `但加回去也只解释了一半，剩下的没查清，所以这家<b>不进推荐</b>。`;
+  document.getElementById("trust").innerHTML =
+    `<thead><tr><th>酒店</th><th>核对次数</th><th>与页面一致</th><th>一致率</th><th>19 晚合计</th><th>每晚波动（中位／最大）</th></tr></thead><tbody>` +
+    rows.map(([h, [ok, n]]) => {
+      const r = ok / n, t = nights.reduce((s, d) => s + price(h, d), 0);
+      const b = r >= .99 ? ["ok", "可用"] : r >= .9 ? ["warn", "基本可用"] : ["bad", "存疑"];
+      return `<tr><td>${esc(short(h))} <span class="badge ${b[0]}">${b[1]}</span></td>` +
+             `<td class="num">${n.toLocaleString()}</td><td class="num">${ok.toLocaleString()}</td>` +
+             `<td class="num">${(100 * r).toFixed(1)}%</td><td class="num">${NZ(t)}</td>` +
+             `<td class="num">±${NZ(D.vol[h].median)} ／ ±${NZ(D.vol[h].max)}</td></tr>`;
+    }).join("") + "</tbody>";
+}
+
+document.getElementById("fulltable").innerHTML =
+  `<thead><tr><th>日期</th>` + rowOrder.map(h => `<th>${esc(short(h))}</th>`).join("") + `<th>当晚最低</th></tr></thead><tbody>` +
+  dates.map(d => {
+    const lo = Math.min(...hotels.filter(h => !UNTRUSTED.has(h)).map(h => price(h, d)));
+    const loH = hotels.filter(h => !UNTRUSTED.has(h)).find(h => price(h, d) === lo);
+    return `<tr${d === M.checkout ? ' style="opacity:.55"' : ""}><td class="num">${md(d)} 周${D.weekday[d]}${d === M.checkout ? " · 退房" : ""}</td>` +
+      rowOrder.map(h => {
+        const c = cell(h, d);
+        return `<td class="num"><a href="${D.urls[h + "|" + d]}" target="_blank" rel="noopener" title="${esc(c.prov)}（渠道名可能错位，以页面为准）">${Math.round(c.p)}</a></td>`;
+      }).join("") +
+      `<td class="num">${NZ(lo)} · ${esc(short(loH))}</td></tr>`;
+  }).join("") + "</tbody>";
+
+/* ---------------------------------------------------------------- 注意 */
+const CAV = [
+  ["stop", "这些是「住 1 晚」的报价，不是连住 19 晚的报价",
+   `采集器固定用 <code>NIGHTS = 1</code> 逐晚查价，上面所有合计都是 19 个单晚价相加。
+    连住可能有长住折扣（更便宜），也可能某几晚根本没房（订不成）。
+    <b>下单前必须用 ${md(nights[0])}–${md(M.checkout)} 的连住日期在页面上重查一次。</b>`],
+  ["stop", "云端那套 DIDA 数据一个数字都没用",
+   `<code>data/*.csv</code> 是 DIDA 的 <b>USD 批发价</b>，实测比 Google 零售价贵约 31%，
+    且价差在 −12 到 +174 NZD 之间浮动。按 CLAUDE.md 的规矩，两套价格不混进同一张图。
+    这页只用本地 Google 零售价。`],
+  ["check", "价格每天都在动，这是三天前的快照",
+   `观测窗口 ${M.first_ts.slice(5, 10)} – ${M.last_ts.slice(5, 10)}，最后一轮抓取停在
+    ${M.last_scrape_max.slice(5, 16)}。同一格跨天能差 NZ$50。
+    这张表回答的是<b>“哪家便宜、哪几晚贵”</b>，不是“今天多少钱”。`],
+  ["check", "渠道名可能错位，价格对但别照着渠道去订",
+   `解析器在 All options 区遇到不在白名单里的渠道（Hotelscombined、6E Hotels 等）时会跳过名字
+    但不跳价格，导致名字和价格错开一位。抽查 ${md("2026-09-30")} Ascotia：
+    记的是 Expedia $64，页面实际是 Hotelscombined $64 —— <b>数字对，卖家不对</b>。`],
+  ["fyi", `${spike.map(md).join("、")} 是真涨价，不是抓错`,
+   `判据是覆盖度：整排<b>一起</b>涨、且每家有好几个渠道彼此对得上，才算真的；
+    只有一两家异常那是漏抓。${spike.map(md).join("、")} 那晚 ${hotels.length} 家里
+    ${spike.map(upCount).join("、")} 家同时抬起来，所以是真的 —— 别指望换家店躲过去。
+    ${md(M.checkout)}（退房日）涨得更凶，${hotels.length} 家全线抬起，最低都要
+    ${NZ(Math.min(...hotels.map(h => price(h, M.checkout))))} —— 幸好你那天走。`],
+  ["fyi", "VR Auckland City 已从推荐里剔除",
+   `它的 "Official site" 位挂的是 VR Auckland <b>Airport</b>（Mangere，不在 CBD），这一对已剔掉；
+    但剔掉之后解析价跟页面头条价仍只有 50% 对得上，加回机场价也只解释一半。
+    没查清之前不拿它下单。`],
+];
+document.getElementById("caveats").innerHTML = CAV.map(([k, h, p]) =>
+  `<div class="cav ${k}"><h3>${h}</h3><p>${p}</p></div>`).join("");
+
+document.getElementById("foot").innerHTML =
+  `由 <code>local/export_stay_plan.py</code> 生成于 ${M.generated} · 数据 <code>${M.snapshot}</code> · ` +
+  `价格单位 NZD，均为可直接下单的零售价 · 已剔除 (VR Auckland City, Official site) 共 ${M.dropped} 行`;
+</script>
