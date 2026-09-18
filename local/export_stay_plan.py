@@ -19,14 +19,10 @@ import argparse
 import base64
 import collections
 import csv
-import glob
 import json
-import os
 import re
 import statistics
 import sys
-import tarfile
-import tempfile
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -47,27 +43,21 @@ WD = "一二三四五六日"
 # 机场店在 Mangere —— 那个价不属于本监测对象, 任何统计前先剔掉。
 DROP = {("VR Auckland City", "Official site")}
 
-# 剔掉上面那一对之后, 这家的解析最低价跟页面头条价仍只有 50% 对得上
-# (把机场价加回去也只解释一半, 剩下的没查清)。还画在热力图里, 但
-# 不参与「订哪家」的任何计算 —— 没核实的数字不拿来做决定。
-UNTRUSTED = {"VR Auckland City"}
+# 2026-09-18 更正: 一度把 VR Auckland City 整家标成「数据存疑」并排除出推荐,
+# 那是**比错了**。它的页面头条价就是上面那条机场店报价, 而我们的数据已经把
+# 机场店剔掉了 —— 拿"剔过的最低价"去对"没剔的头条价", 当然对不上。
+# 用 audit_offers 重新核对: 795 张归档页里 Official site 的价 == 头条价的有
+# 757 张, 剔掉它之后最便宜的是 Super.com(741 张)。价格本身跟别家一样可信。
+#
+# 留下的真实限制只有一条: **这家没法用头条价做交叉校验**, 因为头条就是被剔的
+# 那一条。所以它照常参与选店, 只在核对表里标明"头条价不可用作校验"。
+NO_HEADLINE_CHECK = {"VR Auckland City"}
+UNTRUSTED = set()          # 目前没有需要整家排除的酒店
 
-# 归档文件名前 12 个字符 -> 酒店全名
-ARCHIVE_PREFIX = {
-    "Ascotia_Off_": "Ascotia Off Queen Auckland",
-    "ibis_budget_": "ibis budget Auckland Central",
-    "Albion_Hotel": "Albion Hotel Auckland",
-    "Shakespeare_": "Shakespeare Hotel Auckland",
-    "Auckland_Cit": "Auckland City Hotel",
-    "Copthorne_Ho": "Copthorne Hotel Auckland City",
-    "The_Quadrant": "The Quadrant Hotel & Suites Auckland",
-    "VR_Queen_Str": "VR Queen Street Auckland",
-    "VR_Auckland_": "VR Auckland City",
-}
-
-ADDR_RE = re.compile(r"Auckland (?:CBD|Central|1010|1011)")
-HEAD_RE = re.compile(r"^\$(\d[\d,]*)$")
-FNAME_RE = re.compile(r"(.{12})_(2026-\d\d-\d\d)_(\d{4})-(\d{6})\.txt")
+# CSV 里的渠道名不可信(白名单解析器造成的错位, 见 offer_parse 的模块说明)。
+# 价格是对的, "这个价是谁家的"是错的。看板据此提示不要照着渠道名去订。
+PROVIDER_NOTE = ("CSV 里记的渠道名来自旧的白名单解析器, 会把名单外渠道的价格"
+                 "记到上一个渠道头上 —— 价格对, 卖家不对。渠道以页面为准。")
 
 # ---------------------------------------------------------------- Google URL
 # 跟 hotel_fast.build_url 同一套 protobuf/base64 构造, 在这里重抄一遍是为了
@@ -195,69 +185,14 @@ def to_legs(seq, nights, grid):
 
 
 # ---------------------------------------------------------------- 页面复核
+# 核对逻辑整个搬到了 audit_offers.py: 它同时回答「价格对不对」和「渠道认全没有」,
+# 两边各写一份必然会漂。这里只负责调用。
 
-def verify(rows, dates, archive):
-    """逐次抓取比对: 我们解析的最低价 == Google 页面上印的头条最低价?
 
-    对不上不一定是我们错 —— VR Auckland City 的头条价含被剔除的机场店报价,
-    那是我们故意不要的。所以同时统计「加回 Official site 就对得上」的条数。
-    """
-    if not archive or not archive.exists():
-        return None
-
-    want = set(dates)
-    kept = collections.defaultdict(dict)
-    for r in rows:
-        if r["checkin"] in want:
-            kept[(r["hotel"], r["checkin"])].setdefault(r["timestamp"], {})[r["provider"]] = r["price"]
-
-    def parse_ts(s):
-        return datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
-
-    stat = collections.defaultdict(lambda: [0, 0])
-    with tempfile.TemporaryDirectory(prefix="stayplan_raw_") as tmp:
-        with tarfile.open(archive, "r:gz") as tf:
-            # filter= 是 3.12 才有的参数, 旧版本没有但默认行为一致
-            try:
-                tf.extractall(tmp, filter="data")
-            except TypeError:
-                tf.extractall(tmp)
-
-        for f in glob.glob(os.path.join(tmp, "**", "*.txt"), recursive=True):
-            m = FNAME_RE.match(os.path.basename(f))
-            if not m:
-                continue
-            pre, ci, md, hms = m.groups()
-            hotel = ARCHIVE_PREFIX.get(pre)
-            if not hotel or ci not in want:
-                continue
-            ft = parse_ts(f"2026-{md[:2]}-{md[2:]} {hms[:2]}:{hms[2:4]}:{hms[4:]}")
-            by_ts = kept.get((hotel, ci))
-            if not by_ts:
-                continue
-            # 归档文件名的时刻和写 CSV 的时刻差几秒, 取最近的那一次抓取
-            ts = min(by_ts, key=lambda t: abs((parse_ts(t) - ft).total_seconds()))
-            if abs((parse_ts(ts) - ft).total_seconds()) > 180:
-                continue
-
-            head = None
-            with open(f, encoding="utf-8", errors="replace") as fh:
-                lines = [ln.strip() for ln in fh]
-            for i, ln in enumerate(lines):
-                if ADDR_RE.search(ln) and "•" in ln:
-                    for j in range(i + 1, min(i + 4, len(lines))):
-                        mm = HEAD_RE.match(lines[j])
-                        if mm:
-                            head = float(mm.group(1).replace(",", ""))
-                            break
-                    break
-            if head is None:
-                continue
-            stat[hotel][1] += 1
-            if abs(min(by_ts[ts].values()) - head) < 0.5:
-                stat[hotel][0] += 1
-
-    return dict(stat)
+def verify(snapshot):
+    sys.path.insert(0, str(HERE))
+    import audit_offers
+    return audit_offers.run_audit(snapshot=snapshot)
 
 
 # ---------------------------------------------------------------- 主流程
@@ -305,7 +240,11 @@ def main():
     spikes = [d for d in dates
               if sum(1 for h in hotels if grid[h][d] >= med[h] * 1.3) >= len(hotels) * 2 / 3]
 
-    ver = None if args.no_verify else verify(rows, dates, SNAP_DIR / "raw_archive.tgz")
+    ver = None if args.no_verify else verify(snap)
+
+    # 旧 CSV 里每个渠道有多少行 —— 跟新解析「在本店报价区见过几张页面」并排放,
+    # 一眼能看出哪些是污染(行数很多但报价区里几乎没出现过, 比如 Wotif)。
+    old_provider_rows = collections.Counter(r["provider"] for r in raw if r.get("price_nzd"))
 
     urls = {f"{h}|{d}": build_url(h, date.fromisoformat(d)) for h in hotels for d in dates}
     seg = {}
@@ -324,11 +263,14 @@ def main():
         "grid": grid,
         "singles": [[t, h] for t, h in singles],
         "untrusted": sorted(UNTRUSTED & set(hotels)),
+        "no_headline_check": sorted(NO_HEADLINE_CHECK & set(hotels)),
+        "provider_note": PROVIDER_NOTE,
+        "old_provider_rows": dict(old_provider_rows),
         "spikes": spikes,
         "floor": floor,
         "frontier": frontier,
         "vol": vol,
-        "verify": ver,
+        "audit": ver,
         "urls": urls,
         "segurls": seg,
         "meta": {
@@ -359,14 +301,15 @@ def main():
         print(f"  {h:<38} NZ${t:>7.0f}   均 {t/len(nights):>5.1f}/晚")
     cheapest = min(t for t, h in singles if h in pick)
     print(f"\n  不参与选店(数据存疑): {', '.join(sorted(UNTRUSTED & set(hotels))) or '无'}")
+    print(f"  头条价不可用作校验:   {', '.join(sorted(NO_HEADLINE_CHECK & set(hotels))) or '无'}")
     print(f"  理论下限(每晚都换到最便宜) NZ${floor:.0f}")
     print(f"  换店最多能省             NZ${cheapest-floor:.0f}"
           f"  ({100*(cheapest-floor)/cheapest:.1f}%)")
     print(f"  整排一起涨的尖峰日: {', '.join(spikes) or '无'}")
     if ver:
-        print("\n页面原文复核 (解析最低价 == Google 头条最低价):")
-        for h, (ok, n) in sorted(ver.items(), key=lambda kv: -kv[1][0] / max(kv[1][1], 1)):
-            print(f"  {h:<38} {ok:>4}/{n:<4} {100*ok/max(n,1):>5.1f}%")
+        import audit_offers
+        print()
+        audit_offers.report(ver)
     print(f"\n看板 -> {OUT}")
 
 

@@ -344,6 +344,13 @@
     <div class="plans" id="plans"></div>
   </section>
 
+  <section id="s-chan">
+    <div class="sec-head"><h2>渠道</h2><span class="finer">页面上出现过的每一个卖家</span></div>
+    <p class="sec-note fine" id="chan-note"></p>
+    <div class="scroller"><table class="grid" id="chantable"></table></div>
+    <div class="caveats" id="chan-cav" style="margin-top:18px"></div>
+  </section>
+
   <section id="s-trust">
     <div class="sec-head"><h2>这些数字核过没有</h2><span class="finer">解析出的最低价 vs 页面上 Google 自己印的头条价</span></div>
     <p class="sec-note fine" id="trust-note"></p>
@@ -670,26 +677,87 @@ document.getElementById("plans").insertAdjacentHTML("afterend",
     `<span class="key"><span class="sw" style="background:${SEGCOL[h].bg};border-color:${SEGCOL[h].bg}"></span>${esc(short(h))}</span>`
   ).join("") + `<span class="finer">色块宽度 = 住的晚数</span></div>`);
 
+/* ---------------------------------------------------------------- 渠道 */
+const NOHEAD = new Set(D.no_headline_check || []);
+const A = D.audit;
+
+if (A) {
+  const inpanel = Object.entries(A.inpanel).sort((a, b) => b[1] - a[1]);
+  const cheap = A.cheapest;
+  const topCheap = Object.entries(cheap).sort((a, b) => b[1] - a[1]);
+  const cheapTot = Object.values(cheap).reduce((s, v) => s + v, 0);
+
+  document.getElementById("chan-note").innerHTML =
+    `把 <code>raw_archive.tgz</code> 里 <b>${A.pages.toLocaleString()} 张页面存档</b>重新解析了一遍，` +
+    `用结构判断认渠道（不是白名单），于是名单外的卖家也认得出来。` +
+    `一共 <b>${inpanel.length} 个渠道</b>在这 9 家酒店自己的报价区里出现过。` +
+    `其中 <b>${topCheap[0][0]} 在 ${(100 * topCheap[0][1] / cheapTot).toFixed(1)}% 的页面上是最便宜的</b>，` +
+    `所以先看它，但剩下那 ${(100 - 100 * topCheap[0][1] / cheapTot).toFixed(1)}% 也是真金白银。`;
+
+  document.getElementById("chantable").innerHTML =
+    `<thead><tr><th>渠道</th><th>出现过的页数</th><th>占比</th><th>它最便宜的页数</th><th>旧数据里的行数</th></tr></thead><tbody>` +
+    inpanel.map(([p, n]) => {
+      const old = (D.old_provider_rows || {})[p];
+      const ghost = old && n <= 2;
+      return `<tr><td>${esc(p)}${ghost ? ' <span class="badge bad">旧数据里是污染</span>' : ""}</td>` +
+             `<td class="num">${n.toLocaleString()}</td>` +
+             `<td class="num">${(100 * n / A.pages).toFixed(1)}%</td>` +
+             `<td class="num">${(cheap[p] || 0).toLocaleString()}</td>` +
+             `<td class="num">${old ? old.toLocaleString() : "—"}</td></tr>`;
+    }).join("") + "</tbody>";
+
+  const mf = A.more_from;
+  document.getElementById("chan-cav").innerHTML = [
+    ["fyi", "页面没显示的渠道，不会更便宜",
+     `每张页面底部都有一行 "View more options from $X" —— 还有渠道没渲染出来。
+      抓不到它们，但 <b>${(mf.ge + mf.lt).toLocaleString()} 张页面里有 ${mf.ge.toLocaleString()} 张
+      满足 X ≥ 页面已显示的最低价，例外 ${mf.lt} 张</b>。Google 按价格升序排，
+      所以结论是：<b>渠道清单不完整，但最低价是完整的</b>。上面所有合计都不受影响。`],
+    ["check", "Wotif 在旧数据里有 1857 行，实际几乎不存在",
+     `旧解析器的报价区起点匹配 "prices"，而搜索结果页顶部的 "View prices" 就含这个词 ——
+      于是<b>整个搜索结果列表（别家酒店）都被圈进了本店报价区</b>。
+      "Wotif.co.nz" 正是出现在那些赞助位和相似酒店块里：
+      ${A.pages.toLocaleString()} 张页面中，它真正出现在本店报价区的只有
+      <b>${(A.inpanel["Wotif"] || 0)} 张</b>。已修复，新数据不会再有。`],
+  ].map(([k, h, p]) => `<div class="cav ${k}"><h3>${h}</h3><p>${p}</p></div>`).join("");
+}
+
 /* ---------------------------------------------------------------- 复核 */
-if (D.verify) {
-  const rows = Object.entries(D.verify).sort((a, b) => (b[1][0] / b[1][1]) - (a[1][0] / a[1][1]));
-  const tot = rows.reduce((s, r) => [s[0] + r[1][0], s[1] + r[1][1]], [0, 0]);
+if (A) {
+  const rows = Object.entries(A.per_hotel)
+    .map(([h, c]) => [h, c["新解析==头条"] || 0, c["页数"] || 0, c["老解析==头条"] || 0, c["可比"] || 0])
+    .sort((a, b) => (b[1] / (b[2] || 1)) - (a[1] / (a[2] || 1)));
+  const tot = rows.reduce((s, r) => [s[0] + r[1], s[1] + r[2], s[2] + r[3], s[3] + r[4]], [0, 0, 0, 0]);
+
   document.getElementById("trust-note").innerHTML =
-    `Google 在酒店页地址行下面印了一个头条最低价。拿 <code>raw_archive.tgz</code> 里的 ` +
-    `<b>${tot[1].toLocaleString()} 次页面存档</b>逐次对账，解析结果跟页面上印的数字一致的占 ` +
-    `<b>${(100 * tot[0] / tot[1]).toFixed(1)}%</b>。` +
-    `唯一大面积对不上的是 VR Auckland City —— 它的头条价含被我们剔掉的机场店报价，` +
-    `但加回去也只解释了一半，剩下的没查清，所以这家<b>不进推荐</b>。`;
+    `Google 在酒店页地址行下面印了一个头条最低价。拿 <b>${tot[1].toLocaleString()} 张页面存档</b>` +
+    `逐张对账：<b>新解析一致率 ${(100 * tot[0] / tot[1]).toFixed(1)}%</b>，` +
+    `旧解析 ${(100 * tot[2] / tot[3]).toFixed(1)}%。` +
+    `<b>VR Auckland City 是个例外，但不是它的数据有问题</b> —— 它的头条价就是被我们剔掉的那条
+     机场店报价，拿“剔过的最低价”去对“没剔的头条价”当然对不上。改用未剔除的结果重核，
+     795 张里有 757 张对得上。所以它照常参与选店，只是<b>没法用头条价给它做交叉校验</b>。
+     Copthorne 一张存档都没有（只有出现过 NZ$100 以下报价的页面才会存档，它最低也要 NZ$103），
+     所以它<b>完全没被核对过</b>——不过它是最贵的一家，本来也不在候选里。`;
+
   document.getElementById("trust").innerHTML =
-    `<thead><tr><th>酒店</th><th>核对次数</th><th>与页面一致</th><th>一致率</th><th>19 晚合计</th><th>每晚波动（中位／最大）</th></tr></thead><tbody>` +
-    rows.map(([h, [ok, n]]) => {
-      const r = ok / n, t = nights.reduce((s, d) => s + price(h, d), 0);
-      const b = r >= .99 ? ["ok", "可用"] : r >= .9 ? ["warn", "基本可用"] : ["bad", "存疑"];
+    `<thead><tr><th>酒店</th><th>存档页数</th><th>新解析一致</th><th>一致率</th><th>旧解析一致</th><th>19 晚合计</th><th>每晚波动（中位／最大）</th></tr></thead><tbody>` +
+    rows.map(([h, ok, n, ook, on]) => {
+      const r = ok / (n || 1), t = nights.reduce((s, d) => s + price(h, d), 0);
+      const b = NOHEAD.has(h) ? ["warn", "头条价不可校验"]
+              : r >= .99 ? ["ok", "已核对"] : ["warn", "部分不符"];
       return `<tr><td>${esc(short(h))} <span class="badge ${b[0]}">${b[1]}</span></td>` +
              `<td class="num">${n.toLocaleString()}</td><td class="num">${ok.toLocaleString()}</td>` +
-             `<td class="num">${(100 * r).toFixed(1)}%</td><td class="num">${NZ(t)}</td>` +
+             `<td class="num">${(100 * r).toFixed(1)}%</td>` +
+             `<td class="num">${on ? (100 * ook / on).toFixed(1) + "%" : "—"}</td>` +
+             `<td class="num">${NZ(t)}</td>` +
              `<td class="num">±${NZ(D.vol[h].median)} ／ ±${NZ(D.vol[h].max)}</td></tr>`;
-    }).join("") + "</tbody>";
+    }).join("") +
+    (hotels.filter(h => !A.per_hotel[h]).map(h =>
+      `<tr><td>${esc(short(h))} <span class="badge bad">无存档，未核对</span></td>` +
+      `<td class="num">0</td><td class="num">—</td><td class="num">—</td><td class="num">—</td>` +
+      `<td class="num">${NZ(nights.reduce((s, d) => s + price(h, d), 0))}</td>` +
+      `<td class="num">±${NZ(D.vol[h].median)} ／ ±${NZ(D.vol[h].max)}</td></tr>`).join("")) +
+    "</tbody>";
 }
 
 document.getElementById("fulltable").innerHTML =
@@ -719,20 +787,22 @@ const CAV = [
    `观测窗口 ${M.first_ts.slice(5, 10)} – ${M.last_ts.slice(5, 10)}，最后一轮抓取停在
     ${M.last_scrape_max.slice(5, 16)}。同一格跨天能差 NZ$50。
     这张表回答的是<b>“哪家便宜、哪几晚贵”</b>，不是“今天多少钱”。`],
-  ["check", "渠道名可能错位，价格对但别照着渠道去订",
-   `解析器在 All options 区遇到不在白名单里的渠道（Hotelscombined、6E Hotels 等）时会跳过名字
-    但不跳价格，导致名字和价格错开一位。抽查 ${md("2026-09-30")} Ascotia：
-    记的是 Expedia $64，页面实际是 Hotelscombined $64 —— <b>数字对，卖家不对</b>。`],
+  ["check", "热力图里的渠道名不可信，价格可信",
+   `${D.provider_note || ""}
+    抽查 ${md("2026-09-30")} Ascotia：旧数据记的是 Expedia $64，页面实际是 Hotelscombined $64
+    —— <b>数字对，卖家不对</b>。解析器已换成结构判断（见下面「渠道」一节），
+    但<b>这张表里的历史数据仍是旧口径</b>，要按渠道下单请到页面上看。`],
   ["fyi", `${spike.map(md).join("、")} 是真涨价，不是抓错`,
    `判据是覆盖度：整排<b>一起</b>涨、且每家有好几个渠道彼此对得上，才算真的；
     只有一两家异常那是漏抓。${spike.map(md).join("、")} 那晚 ${hotels.length} 家里
     ${spike.map(upCount).join("、")} 家同时抬起来，所以是真的 —— 别指望换家店躲过去。
     ${md(M.checkout)}（退房日）涨得更凶，${hotels.length} 家全线抬起，最低都要
     ${NZ(Math.min(...hotels.map(h => price(h, M.checkout))))} —— 幸好你那天走。`],
-  ["fyi", "VR Auckland City 已从推荐里剔除",
-   `它的 "Official site" 位挂的是 VR Auckland <b>Airport</b>（Mangere，不在 CBD），这一对已剔掉；
-    但剔掉之后解析价跟页面头条价仍只有 50% 对得上，加回机场价也只解释一半。
-    没查清之前不拿它下单。`],
+  ["fyi", "VR Auckland City：之前说它「数据存疑」是我比错了",
+   `它的 "Official site" 位挂的是 VR Auckland <b>Airport</b>（Mangere，不在 CBD），这一对必须剔掉 ——
+    这点没变。但我一度拿“剔过的最低价”去对“没剔的头条价”，对不上就把整家标成存疑，
+    <b>那是错的</b>：795 张存档里有 757 张的头条价就等于那条机场报价。
+    它的价格跟别家一样可信，照常参与选店（排第 7，本来也不是候选）。`],
 ];
 document.getElementById("caveats").innerHTML = CAV.map(([k, h, p]) =>
   `<div class="cav ${k}"><h3>${h}</h3><p>${p}</p></div>`).join("");
