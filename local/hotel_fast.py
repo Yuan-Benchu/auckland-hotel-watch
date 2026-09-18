@@ -54,6 +54,14 @@ HOTELS = [
     # 卫浴情况未知 —— 那是订房前打电话确认的事, 不是不监测的理由。
     "Albion Hotel Auckland",
     "Ascotia Off Queen Auckland",
+    # 2026-09-18 补: 云端 collect.py 盯 11 家, 这边只有 9 家 —— 差的两家里
+    # Abstract Hotel 确认 Google 不卖(已记在 CLAUDE.md), 但 Edit Auckland
+    # Central 只是**从来没加进来过**, 不是查过没有。
+    # 而云端 DIDA 显示它跟目前的头名在同一个价位段(住宿区间内的三个入住日,
+    # USD 批发价 73/57/53, 对比 Ascotia 的 72/59/49) —— 批发价不能换算成
+    # 零售价, 但"在同一段"足够说明它值得抓一次零售价来看。
+    # **位置与卫浴均未核实**: 名字里的 "Central" 不等于在 CBD, 下单前要自己查。
+    "Edit Auckland Central",
 ]
 
 # Google 把 VR Auckland Airport (bookings.vrhotels.co.nz hotelID=116052) 的订房引擎
