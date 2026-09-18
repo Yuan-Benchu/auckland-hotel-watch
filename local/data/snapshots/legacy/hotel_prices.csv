@@ -1,0 +1,507 @@
+﻿timestamp,hotel,checkin,provider,price_nzd
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-10-16,Hotels.com,150
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-10-16,Booking.com,209
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-10-16,Wotif,249
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-10-24,Hotels.com,245
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-10-24,Wotif,385
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-10-24,Booking.com,549
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-01,Hotels.com,121
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-01,Booking.com,259
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-01,Wotif,427
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-10,Wotif,125
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-10,Expedia,131
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-10,Hotels.com,215
+2026-09-16 02:28:36,VR Queen Street Auckland,2026-11-10,Booking.com,259
+2026-09-16 02:28:36,VR Auckland City,2026-10-16,Official site,102
+2026-09-16 02:28:36,VR Auckland City,2026-10-16,Wotif,153
+2026-09-16 02:28:36,VR Auckland City,2026-10-16,Hotels.com,185
+2026-09-16 02:28:36,VR Auckland City,2026-10-16,Booking.com,209
+2026-09-16 02:28:36,VR Auckland City,2026-10-24,Hotels.com,160
+2026-09-16 02:28:36,VR Auckland City,2026-10-24,Expedia,311
+2026-09-16 02:28:36,VR Auckland City,2026-10-24,Official site,385
+2026-09-16 02:28:36,VR Auckland City,2026-10-24,Wotif,387
+2026-09-16 02:28:36,VR Auckland City,2026-10-24,Booking.com,549
+2026-09-16 02:28:36,VR Auckland City,2026-11-01,Official site,107
+2026-09-16 02:28:36,VR Auckland City,2026-11-01,Hotels.com,151
+2026-09-16 02:28:36,VR Auckland City,2026-11-01,Wotif,185
+2026-09-16 02:28:36,VR Auckland City,2026-11-01,Booking.com,259
+2026-09-16 02:28:36,VR Auckland City,2026-11-10,Official site,107
+2026-09-16 02:28:36,VR Auckland City,2026-11-10,Wotif,125
+2026-09-16 02:28:36,VR Auckland City,2026-11-10,Booking.com,259
+2026-09-16 02:28:36,VR Auckland City,2026-11-10,Hotels.com,413
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-16,Expedia,133
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-16,Hotels.com,185
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-16,Wotif,185
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-16,Booking.com,209
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-24,Hotels.com,215
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-24,Wotif,277
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-10-24,Booking.com,549
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-11-01,Hotels.com,116
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-11-01,Booking.com,259
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-11-01,Wotif,427
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-11-10,Wotif,125
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-11-10,Hotels.com,215
+2026-09-16 02:32:44,VR Queen Street Auckland,2026-11-10,Booking.com,259
+2026-09-16 02:34:07,VR Queen Street Auckland,2026-09-16,Wotif,117
+2026-09-16 02:34:07,VR Queen Street Auckland,2026-09-16,Hotels.com,145
+2026-09-16 02:34:07,VR Queen Street Auckland,2026-09-16,Booking.com,199
+2026-09-16 02:34:21,VR Queen Street Auckland,2026-09-17,Hotels.com,127
+2026-09-16 02:34:21,VR Queen Street Auckland,2026-09-17,Wotif,141
+2026-09-16 02:34:21,VR Queen Street Auckland,2026-09-17,Booking.com,219
+2026-09-16 02:34:34,VR Queen Street Auckland,2026-09-18,Hotels.com,144
+2026-09-16 02:34:34,VR Queen Street Auckland,2026-09-18,Wotif,145
+2026-09-16 02:34:34,VR Queen Street Auckland,2026-09-18,Booking.com,199
+2026-09-16 02:34:46,VR Queen Street Auckland,2026-09-19,Hotels.com,152
+2026-09-16 02:34:46,VR Queen Street Auckland,2026-09-19,Wotif,152
+2026-09-16 02:34:46,VR Queen Street Auckland,2026-09-19,Booking.com,239
+2026-09-16 02:35:01,VR Queen Street Auckland,2026-09-20,Hotels.com,87
+2026-09-16 02:35:01,VR Queen Street Auckland,2026-09-20,Wotif,154
+2026-09-16 02:35:01,VR Queen Street Auckland,2026-09-20,Booking.com,219
+2026-09-16 02:35:16,VR Queen Street Auckland,2026-09-21,Hotels.com,87
+2026-09-16 02:35:16,VR Queen Street Auckland,2026-09-21,Wotif,154
+2026-09-16 02:35:16,VR Queen Street Auckland,2026-09-21,Booking.com,199
+2026-09-16 02:35:29,VR Queen Street Auckland,2026-09-22,Hotels.com,90
+2026-09-16 02:35:29,VR Queen Street Auckland,2026-09-22,Wotif,119
+2026-09-16 02:35:29,VR Queen Street Auckland,2026-09-22,Booking.com,199
+2026-09-16 02:35:42,VR Queen Street Auckland,2026-09-23,Hotels.com,98
+2026-09-16 02:35:42,VR Queen Street Auckland,2026-09-23,Wotif,215
+2026-09-16 02:35:42,VR Queen Street Auckland,2026-09-23,Booking.com,219
+2026-09-16 02:35:56,VR Queen Street Auckland,2026-09-24,Hotels.com,87
+2026-09-16 02:35:56,VR Queen Street Auckland,2026-09-24,Wotif,185
+2026-09-16 02:35:56,VR Queen Street Auckland,2026-09-24,Booking.com,219
+2026-09-16 02:36:09,VR Queen Street Auckland,2026-09-25,Expedia,136
+2026-09-16 02:36:09,VR Queen Street Auckland,2026-09-25,Wotif,187
+2026-09-16 02:36:09,VR Queen Street Auckland,2026-09-25,Booking.com,219
+2026-09-16 02:36:09,VR Queen Street Auckland,2026-09-25,Hotels.com,247
+2026-09-16 02:36:21,VR Queen Street Auckland,2026-09-26,Hotels.com,131
+2026-09-16 02:36:21,VR Queen Street Auckland,2026-09-26,Wotif,192
+2026-09-16 02:36:21,VR Queen Street Auckland,2026-09-26,Booking.com,399
+2026-09-16 02:36:34,VR Queen Street Auckland,2026-09-27,Expedia,102
+2026-09-16 02:36:34,VR Queen Street Auckland,2026-09-27,Hotels.com,185
+2026-09-16 02:36:34,VR Queen Street Auckland,2026-09-27,Wotif,187
+2026-09-16 02:36:34,VR Queen Street Auckland,2026-09-27,Booking.com,199
+2026-09-16 02:36:47,VR Queen Street Auckland,2026-09-28,Expedia,91
+2026-09-16 02:36:47,VR Queen Street Auckland,2026-09-28,Wotif,133
+2026-09-16 02:36:47,VR Queen Street Auckland,2026-09-28,Hotels.com,156
+2026-09-16 02:36:47,VR Queen Street Auckland,2026-09-28,Booking.com,199
+2026-09-16 02:37:00,VR Queen Street Auckland,2026-09-29,Hotels.com,91
+2026-09-16 02:37:00,VR Queen Street Auckland,2026-09-29,Booking.com,199
+2026-09-16 02:37:00,VR Queen Street Auckland,2026-09-29,Wotif,225
+2026-09-16 02:37:13,VR Queen Street Auckland,2026-09-30,Expedia,98
+2026-09-16 02:37:13,VR Queen Street Auckland,2026-09-30,Hotels.com,189
+2026-09-16 02:37:13,VR Queen Street Auckland,2026-09-30,Booking.com,199
+2026-09-16 02:37:13,VR Queen Street Auckland,2026-09-30,Wotif,233
+2026-09-16 02:37:27,VR Queen Street Auckland,2026-10-01,Hotels.com,110
+2026-09-16 02:37:27,VR Queen Street Auckland,2026-10-01,Expedia,147
+2026-09-16 02:37:27,VR Queen Street Auckland,2026-10-01,Wotif,187
+2026-09-16 02:37:27,VR Queen Street Auckland,2026-10-01,Booking.com,219
+2026-09-16 02:37:39,VR Queen Street Auckland,2026-10-02,Expedia,140
+2026-09-16 02:37:39,VR Queen Street Auckland,2026-10-02,Hotels.com,185
+2026-09-16 02:37:39,VR Queen Street Auckland,2026-10-02,Booking.com,229
+2026-09-16 02:37:39,VR Queen Street Auckland,2026-10-02,Wotif,249
+2026-09-16 02:37:52,VR Queen Street Auckland,2026-10-03,Expedia,143
+2026-09-16 02:37:52,VR Queen Street Auckland,2026-10-03,Hotels.com,185
+2026-09-16 02:37:52,VR Queen Street Auckland,2026-10-03,Booking.com,229
+2026-09-16 02:37:52,VR Queen Street Auckland,2026-10-03,Wotif,249
+2026-09-16 02:38:11,VR Queen Street Auckland,2026-10-04,Expedia,103
+2026-09-16 02:38:11,VR Queen Street Auckland,2026-10-04,Hotels.com,125
+2026-09-16 02:38:11,VR Queen Street Auckland,2026-10-04,Booking.com,229
+2026-09-16 02:38:11,VR Queen Street Auckland,2026-10-04,Wotif,249
+2026-09-16 02:38:23,VR Queen Street Auckland,2026-10-05,Expedia,106
+2026-09-16 02:38:23,VR Queen Street Auckland,2026-10-05,Booking.com,219
+2026-09-16 02:38:23,VR Queen Street Auckland,2026-10-05,Hotels.com,249
+2026-09-16 02:38:23,VR Queen Street Auckland,2026-10-05,Wotif,261
+2026-09-16 02:38:36,VR Queen Street Auckland,2026-10-06,Hotels.com,101
+2026-09-16 02:38:36,VR Queen Street Auckland,2026-10-06,Booking.com,219
+2026-09-16 02:38:36,VR Queen Street Auckland,2026-10-06,Wotif,249
+2026-09-16 02:38:48,VR Queen Street Auckland,2026-10-07,Hotels.com,97
+2026-09-16 02:38:48,VR Queen Street Auckland,2026-10-07,Booking.com,219
+2026-09-16 02:38:48,VR Queen Street Auckland,2026-10-07,Wotif,225
+2026-09-16 02:39:02,VR Queen Street Auckland,2026-10-08,Wotif,125
+2026-09-16 02:39:02,VR Queen Street Auckland,2026-10-08,Hotels.com,128
+2026-09-16 02:39:02,VR Queen Street Auckland,2026-10-08,Booking.com,229
+2026-09-16 02:39:14,VR Queen Street Auckland,2026-10-09,Wotif,225
+2026-09-16 02:39:14,VR Queen Street Auckland,2026-10-09,Expedia,235
+2026-09-16 02:39:14,VR Queen Street Auckland,2026-10-09,Booking.com,269
+2026-09-16 02:39:14,VR Queen Street Auckland,2026-10-09,Official site,292
+2026-09-16 02:39:14,VR Queen Street Auckland,2026-10-09,Hotels.com,369
+2026-09-16 02:39:27,VR Queen Street Auckland,2026-10-10,Wotif,148
+2026-09-16 02:39:27,VR Queen Street Auckland,2026-10-10,Hotels.com,263
+2026-09-16 02:39:27,VR Queen Street Auckland,2026-10-10,Booking.com,669
+2026-09-16 02:39:40,VR Queen Street Auckland,2026-10-11,Hotels.com,122
+2026-09-16 02:39:40,VR Queen Street Auckland,2026-10-11,Wotif,130
+2026-09-16 02:39:40,VR Queen Street Auckland,2026-10-11,Booking.com,219
+2026-09-16 02:39:52,VR Queen Street Auckland,2026-10-12,Hotels.com,109
+2026-09-16 02:39:52,VR Queen Street Auckland,2026-10-12,Wotif,125
+2026-09-16 02:39:52,VR Queen Street Auckland,2026-10-12,Booking.com,219
+2026-09-16 02:40:05,VR Queen Street Auckland,2026-10-13,Hotels.com,109
+2026-09-16 02:40:05,VR Queen Street Auckland,2026-10-13,Wotif,215
+2026-09-16 02:40:05,VR Queen Street Auckland,2026-10-13,Booking.com,219
+2026-09-16 02:40:18,VR Queen Street Auckland,2026-10-14,Hotels.com,109
+2026-09-16 02:40:18,VR Queen Street Auckland,2026-10-14,Wotif,181
+2026-09-16 02:40:18,VR Queen Street Auckland,2026-10-14,Booking.com,219
+2026-09-16 02:40:30,VR Queen Street Auckland,2026-10-15,Expedia,114
+2026-09-16 02:40:30,VR Queen Street Auckland,2026-10-15,Booking.com,219
+2026-09-16 02:40:30,VR Queen Street Auckland,2026-10-15,Hotels.com,249
+2026-09-16 02:40:30,VR Queen Street Auckland,2026-10-15,Wotif,280
+2026-09-16 02:40:43,VR Queen Street Auckland,2026-10-17,Wotif,126
+2026-09-16 02:40:43,VR Queen Street Auckland,2026-10-17,Hotels.com,284
+2026-09-16 02:40:43,VR Queen Street Auckland,2026-10-17,Booking.com,499
+2026-09-16 02:40:56,VR Queen Street Auckland,2026-10-18,Hotels.com,116
+2026-09-16 02:40:56,VR Queen Street Auckland,2026-10-18,Booking.com,269
+2026-09-16 02:40:56,VR Queen Street Auckland,2026-10-18,Wotif,431
+2026-09-16 02:41:09,VR Queen Street Auckland,2026-10-19,Hotels.com,116
+2026-09-16 02:41:09,VR Queen Street Auckland,2026-10-19,Wotif,176
+2026-09-16 02:41:09,VR Queen Street Auckland,2026-10-19,Booking.com,239
+2026-09-16 02:41:21,VR Queen Street Auckland,2026-10-20,Hotels.com,225
+2026-09-16 02:41:21,VR Queen Street Auckland,2026-10-20,Booking.com,379
+2026-09-16 02:41:21,VR Queen Street Auckland,2026-10-20,Wotif,461
+2026-09-16 02:41:34,VR Queen Street Auckland,2026-10-21,Expedia,186
+2026-09-16 02:41:34,VR Queen Street Auckland,2026-10-21,Hotels.com,196
+2026-09-16 02:41:34,VR Queen Street Auckland,2026-10-21,Booking.com,299
+2026-09-16 02:41:34,VR Queen Street Auckland,2026-10-21,Wotif,392
+2026-09-16 02:41:46,VR Queen Street Auckland,2026-10-22,Wotif,125
+2026-09-16 02:41:46,VR Queen Street Auckland,2026-10-22,Hotels.com,146
+2026-09-16 02:41:46,VR Queen Street Auckland,2026-10-22,Booking.com,389
+2026-09-16 02:41:59,VR Queen Street Auckland,2026-10-23,Booking.com,209
+2026-09-16 02:41:59,VR Queen Street Auckland,2026-10-23,Wotif,210
+2026-09-16 02:41:59,VR Queen Street Auckland,2026-10-23,Hotels.com,245
+2026-09-16 02:42:12,VR Queen Street Auckland,2026-10-25,Hotels.com,125
+2026-09-16 02:42:12,VR Queen Street Auckland,2026-10-25,Wotif,239
+2026-09-16 02:42:12,VR Queen Street Auckland,2026-10-25,Official site,278
+2026-09-16 02:42:12,VR Queen Street Auckland,2026-10-25,Booking.com,549
+2026-09-16 02:42:24,VR Queen Street Auckland,2026-10-26,Expedia,114
+2026-09-16 02:42:24,VR Queen Street Auckland,2026-10-26,Wotif,125
+2026-09-16 02:42:24,VR Queen Street Auckland,2026-10-26,Booking.com,219
+2026-09-16 02:42:24,VR Queen Street Auckland,2026-10-26,Hotels.com,239
+2026-09-16 02:42:37,VR Queen Street Auckland,2026-10-27,Hotels.com,116
+2026-09-16 02:42:37,VR Queen Street Auckland,2026-10-27,Booking.com,219
+2026-09-16 02:42:37,VR Queen Street Auckland,2026-10-27,Wotif,317
+2026-09-16 02:42:50,VR Queen Street Auckland,2026-10-28,Expedia,111
+2026-09-16 02:42:50,VR Queen Street Auckland,2026-10-28,Hotels.com,196
+2026-09-16 02:42:50,VR Queen Street Auckland,2026-10-28,Wotif,213
+2026-09-16 02:42:50,VR Queen Street Auckland,2026-10-28,Booking.com,219
+2026-09-16 02:43:03,VR Queen Street Auckland,2026-10-29,Expedia,122
+2026-09-16 02:43:03,VR Queen Street Auckland,2026-10-29,Booking.com,219
+2026-09-16 02:43:03,VR Queen Street Auckland,2026-10-29,Hotels.com,249
+2026-09-16 02:43:03,VR Queen Street Auckland,2026-10-29,Wotif,278
+2026-09-16 02:43:15,VR Queen Street Auckland,2026-10-30,Hotels.com,146
+2026-09-16 02:43:15,VR Queen Street Auckland,2026-10-30,Wotif,309
+2026-09-16 02:43:15,VR Queen Street Auckland,2026-10-30,Booking.com,439
+2026-09-16 02:43:28,VR Queen Street Auckland,2026-10-31,Hotels.com,146
+2026-09-16 02:43:28,VR Queen Street Auckland,2026-10-31,Expedia,185
+2026-09-16 02:43:28,VR Queen Street Auckland,2026-10-31,Wotif,301
+2026-09-16 02:43:28,VR Queen Street Auckland,2026-10-31,Booking.com,449
+2026-09-16 02:43:41,VR Queen Street Auckland,2026-11-02,Hotels.com,121
+2026-09-16 02:43:41,VR Queen Street Auckland,2026-11-02,Wotif,210
+2026-09-16 02:43:41,VR Queen Street Auckland,2026-11-02,Booking.com,259
+2026-09-16 02:43:53,VR Queen Street Auckland,2026-11-03,Hotels.com,120
+2026-09-16 02:43:53,VR Queen Street Auckland,2026-11-03,Booking.com,259
+2026-09-16 02:43:53,VR Queen Street Auckland,2026-11-03,Wotif,431
+2026-09-16 02:44:06,VR Queen Street Auckland,2026-11-04,Hotels.com,162
+2026-09-16 02:44:06,VR Queen Street Auckland,2026-11-04,Wotif,226
+2026-09-16 02:44:06,VR Queen Street Auckland,2026-11-04,Booking.com,369
+2026-09-16 02:44:19,VR Queen Street Auckland,2026-11-05,Hotels.com,178
+2026-09-16 02:44:19,VR Queen Street Auckland,2026-11-05,Wotif,210
+2026-09-16 02:44:19,VR Queen Street Auckland,2026-11-05,Booking.com,259
+2026-09-16 02:44:32,VR Queen Street Auckland,2026-11-06,Wotif,125
+2026-09-16 02:44:32,VR Queen Street Auckland,2026-11-06,Hotels.com,178
+2026-09-16 02:44:32,VR Queen Street Auckland,2026-11-06,Booking.com,369
+2026-09-16 02:44:44,VR Queen Street Auckland,2026-11-07,Wotif,184
+2026-09-16 02:44:44,VR Queen Street Auckland,2026-11-07,Hotels.com,387
+2026-09-16 02:44:44,VR Queen Street Auckland,2026-11-07,Booking.com,559
+2026-09-16 02:44:57,VR Queen Street Auckland,2026-11-08,Wotif,215
+2026-09-16 02:44:57,VR Queen Street Auckland,2026-11-08,Hotels.com,286
+2026-09-16 02:44:57,VR Queen Street Auckland,2026-11-08,Booking.com,299
+2026-09-16 02:45:10,VR Queen Street Auckland,2026-11-09,Hotels.com,204
+2026-09-16 02:45:10,VR Queen Street Auckland,2026-11-09,Wotif,210
+2026-09-16 02:45:10,VR Queen Street Auckland,2026-11-09,Booking.com,259
+2026-09-16 02:45:22,VR Queen Street Auckland,2026-11-11,Hotels.com,182
+2026-09-16 02:45:22,VR Queen Street Auckland,2026-11-11,Booking.com,309
+2026-09-16 02:45:22,VR Queen Street Auckland,2026-11-11,Wotif,395
+2026-09-16 02:45:35,VR Queen Street Auckland,2026-11-12,Wotif,125
+2026-09-16 02:45:35,VR Queen Street Auckland,2026-11-12,Hotels.com,182
+2026-09-16 02:45:35,VR Queen Street Auckland,2026-11-12,Booking.com,259
+2026-09-16 02:45:48,VR Queen Street Auckland,2026-11-13,Expedia,168
+2026-09-16 02:45:48,VR Queen Street Auckland,2026-11-13,Wotif,248
+2026-09-16 02:45:48,VR Queen Street Auckland,2026-11-13,Hotels.com,249
+2026-09-16 02:45:48,VR Queen Street Auckland,2026-11-13,Booking.com,379
+2026-09-16 02:46:01,VR Queen Street Auckland,2026-11-14,Expedia,165
+2026-09-16 02:46:01,VR Queen Street Auckland,2026-11-14,Hotels.com,191
+2026-09-16 02:46:01,VR Queen Street Auckland,2026-11-14,Booking.com,389
+2026-09-16 02:46:01,VR Queen Street Auckland,2026-11-14,Wotif,431
+2026-09-16 02:46:13,VR Queen Street Auckland,2026-11-15,Hotels.com,128
+2026-09-16 02:46:13,VR Queen Street Auckland,2026-11-15,Wotif,233
+2026-09-16 02:46:13,VR Queen Street Auckland,2026-11-15,Booking.com,259
+2026-09-16 02:46:26,VR Queen Street Auckland,2026-11-16,Hotels.com,144
+2026-09-16 02:46:26,VR Queen Street Auckland,2026-11-16,Booking.com,259
+2026-09-16 02:46:26,VR Queen Street Auckland,2026-11-16,Wotif,462
+2026-09-16 02:46:39,VR Queen Street Auckland,2026-11-17,Hotels.com,128
+2026-09-16 02:46:39,VR Queen Street Auckland,2026-11-17,Wotif,129
+2026-09-16 02:46:39,VR Queen Street Auckland,2026-11-17,Booking.com,259
+2026-09-16 02:46:52,VR Auckland City,2026-09-16,Wotif,119
+2026-09-16 02:46:52,VR Auckland City,2026-09-16,Expedia,145
+2026-09-16 02:46:52,VR Auckland City,2026-09-16,Hotels.com,150
+2026-09-16 02:46:52,VR Auckland City,2026-09-16,Booking.com,199
+2026-09-16 02:47:05,VR Auckland City,2026-09-17,Official site,124
+2026-09-16 02:47:05,VR Auckland City,2026-09-17,Expedia,163
+2026-09-16 02:47:05,VR Auckland City,2026-09-17,Hotels.com,203
+2026-09-16 02:47:05,VR Auckland City,2026-09-17,Booking.com,219
+2026-09-16 02:47:05,VR Auckland City,2026-09-17,Wotif,282
+2026-09-16 02:47:18,VR Auckland City,2026-09-18,Expedia,140
+2026-09-16 02:47:18,VR Auckland City,2026-09-18,Wotif,154
+2026-09-16 02:47:18,VR Auckland City,2026-09-18,Booking.com,199
+2026-09-16 02:47:18,VR Auckland City,2026-09-18,Hotels.com,209
+2026-09-16 02:47:30,VR Auckland City,2026-09-19,Hotels.com,83
+2026-09-16 02:47:30,VR Auckland City,2026-09-19,Wotif,143
+2026-09-16 02:47:30,VR Auckland City,2026-09-19,Agoda,145
+2026-09-16 02:47:30,VR Auckland City,2026-09-19,Booking.com,239
+2026-09-16 02:47:43,VR Auckland City,2026-09-20,Hotels.com,83
+2026-09-16 02:47:43,VR Auckland City,2026-09-20,Expedia,108
+2026-09-16 02:47:43,VR Auckland City,2026-09-20,Wotif,140
+2026-09-16 02:47:43,VR Auckland City,2026-09-20,Booking.com,219
+2026-09-16 02:47:56,VR Auckland City,2026-09-21,Official site,84
+2026-09-16 02:47:56,VR Auckland City,2026-09-21,Expedia,108
+2026-09-16 02:47:56,VR Auckland City,2026-09-21,Hotels.com,112
+2026-09-16 02:47:56,VR Auckland City,2026-09-21,Wotif,142
+2026-09-16 02:47:56,VR Auckland City,2026-09-21,Booking.com,199
+2026-09-16 02:48:09,VR Auckland City,2026-09-22,Agoda,112
+2026-09-16 02:48:09,VR Auckland City,2026-09-22,Wotif,115
+2026-09-16 02:48:09,VR Auckland City,2026-09-22,Hotels.com,152
+2026-09-16 02:48:09,VR Auckland City,2026-09-22,Booking.com,199
+2026-09-16 02:48:22,VR Auckland City,2026-09-23,Expedia,112
+2026-09-16 02:48:22,VR Auckland City,2026-09-23,Official site,132
+2026-09-16 02:48:22,VR Auckland City,2026-09-23,Wotif,188
+2026-09-16 02:48:22,VR Auckland City,2026-09-23,Booking.com,219
+2026-09-16 02:48:34,VR Auckland City,2026-09-24,Expedia,112
+2026-09-16 02:48:34,VR Auckland City,2026-09-24,Official site,152
+2026-09-16 02:48:34,VR Auckland City,2026-09-24,Booking.com,219
+2026-09-16 02:48:34,VR Auckland City,2026-09-24,Wotif,349
+2026-09-16 02:48:47,VR Auckland City,2026-09-25,Expedia,149
+2026-09-16 02:48:47,VR Auckland City,2026-09-25,Official site,187
+2026-09-16 02:48:47,VR Auckland City,2026-09-25,Booking.com,219
+2026-09-16 02:48:47,VR Auckland City,2026-09-25,Wotif,318
+2026-09-16 02:49:00,VR Auckland City,2026-09-26,Hotels.com,99
+2026-09-16 02:49:00,VR Auckland City,2026-09-26,Wotif,198
+2026-09-16 02:49:00,VR Auckland City,2026-09-26,Expedia,208
+2026-09-16 02:49:00,VR Auckland City,2026-09-26,Booking.com,399
+2026-09-16 02:49:13,VR Auckland City,2026-09-27,Expedia,140
+2026-09-16 02:49:13,VR Auckland City,2026-09-27,Hotels.com,155
+2026-09-16 02:49:13,VR Auckland City,2026-09-27,Booking.com,199
+2026-09-16 02:49:13,VR Auckland City,2026-09-27,Wotif,268
+2026-09-16 02:49:26,VR Auckland City,2026-09-28,Expedia,108
+2026-09-16 02:49:26,VR Auckland City,2026-09-28,Hotels.com,143
+2026-09-16 02:49:26,VR Auckland City,2026-09-28,Booking.com,199
+2026-09-16 02:49:26,VR Auckland City,2026-09-28,Wotif,260
+2026-09-16 02:49:38,VR Auckland City,2026-09-29,Hotels.com,99
+2026-09-16 02:49:38,VR Auckland City,2026-09-29,Agoda,112
+2026-09-16 02:49:38,VR Auckland City,2026-09-29,Wotif,139
+2026-09-16 02:49:38,VR Auckland City,2026-09-29,Expedia,152
+2026-09-16 02:49:38,VR Auckland City,2026-09-29,Booking.com,199
+2026-09-16 02:49:52,VR Auckland City,2026-09-30,Official site,110
+2026-09-16 02:49:52,VR Auckland City,2026-09-30,Expedia,112
+2026-09-16 02:49:52,VR Auckland City,2026-09-30,Hotels.com,188
+2026-09-16 02:49:52,VR Auckland City,2026-09-30,Booking.com,199
+2026-09-16 02:49:52,VR Auckland City,2026-09-30,Wotif,250
+2026-09-16 02:50:05,VR Auckland City,2026-10-01,Hotels.com,85
+2026-09-16 02:50:05,VR Auckland City,2026-10-01,Agoda,117
+2026-09-16 02:50:05,VR Auckland City,2026-10-01,Wotif,159
+2026-09-16 02:50:05,VR Auckland City,2026-10-01,Booking.com,219
+2026-09-16 02:50:05,VR Auckland City,2026-10-01,Official site,255
+2026-09-16 02:50:18,VR Auckland City,2026-10-02,Hotels.com,83
+2026-09-16 02:50:18,VR Auckland City,2026-10-02,Expedia,136
+2026-09-16 02:50:18,VR Auckland City,2026-10-02,Wotif,185
+2026-09-16 02:50:18,VR Auckland City,2026-10-02,Booking.com,229
+2026-09-16 02:50:18,VR Auckland City,2026-10-02,Official site,269
+2026-09-16 02:50:31,VR Auckland City,2026-10-03,Hotels.com,144
+2026-09-16 02:50:31,VR Auckland City,2026-10-03,Expedia,167
+2026-09-16 02:50:31,VR Auckland City,2026-10-03,Wotif,185
+2026-09-16 02:50:31,VR Auckland City,2026-10-03,Booking.com,229
+2026-09-16 02:50:31,VR Auckland City,2026-10-03,Official site,295
+2026-09-16 02:50:44,VR Auckland City,2026-10-04,Expedia,139
+2026-09-16 02:50:44,VR Auckland City,2026-10-04,Hotels.com,150
+2026-09-16 02:50:44,VR Auckland City,2026-10-04,Booking.com,229
+2026-09-16 02:50:44,VR Auckland City,2026-10-04,Wotif,245
+2026-09-16 02:50:57,VR Auckland City,2026-10-05,Expedia,139
+2026-09-16 02:50:57,VR Auckland City,2026-10-05,Hotels.com,139
+2026-09-16 02:50:57,VR Auckland City,2026-10-05,Booking.com,219
+2026-09-16 02:50:57,VR Auckland City,2026-10-05,Wotif,271
+2026-09-16 02:51:09,VR Auckland City,2026-10-06,Official site,107
+2026-09-16 02:51:09,VR Auckland City,2026-10-06,Expedia,139
+2026-09-16 02:51:09,VR Auckland City,2026-10-06,Booking.com,219
+2026-09-16 02:51:09,VR Auckland City,2026-10-06,Wotif,270
+2026-09-16 02:51:22,VR Auckland City,2026-10-07,Expedia,139
+2026-09-16 02:51:22,VR Auckland City,2026-10-07,Hotels.com,165
+2026-09-16 02:51:22,VR Auckland City,2026-10-07,Booking.com,219
+2026-09-16 02:51:22,VR Auckland City,2026-10-07,Wotif,279
+2026-09-16 02:51:34,VR Auckland City,2026-10-08,Hotels.com,83
+2026-09-16 02:51:34,VR Auckland City,2026-10-08,Wotif,160
+2026-09-16 02:51:34,VR Auckland City,2026-10-08,Expedia,185
+2026-09-16 02:51:34,VR Auckland City,2026-10-08,Booking.com,229
+2026-09-16 02:51:34,VR Auckland City,2026-10-08,Official site,283
+2026-09-16 02:51:48,VR Auckland City,2026-10-09,Official site,102
+2026-09-16 02:51:48,VR Auckland City,2026-10-09,Wotif,185
+2026-09-16 02:51:48,VR Auckland City,2026-10-09,Hotels.com,191
+2026-09-16 02:51:48,VR Auckland City,2026-10-09,Booking.com,269
+2026-09-16 02:52:00,VR Auckland City,2026-10-10,Wotif,468
+2026-09-16 02:52:00,VR Auckland City,2026-10-10,Expedia,590
+2026-09-16 02:52:00,VR Auckland City,2026-10-10,Booking.com,669
+2026-09-16 02:52:00,VR Auckland City,2026-10-10,Official site,669
+2026-09-16 02:52:13,VR Auckland City,2026-10-11,Hotels.com,99
+2026-09-16 02:52:13,VR Auckland City,2026-10-11,Expedia,112
+2026-09-16 02:52:13,VR Auckland City,2026-10-11,Wotif,168
+2026-09-16 02:52:13,VR Auckland City,2026-10-11,Booking.com,219
+2026-09-16 02:52:26,VR Auckland City,2026-10-12,Agoda,131
+2026-09-16 02:52:26,VR Auckland City,2026-10-12,Hotels.com,169
+2026-09-16 02:52:26,VR Auckland City,2026-10-12,Expedia,185
+2026-09-16 02:52:26,VR Auckland City,2026-10-12,Booking.com,219
+2026-09-16 02:52:26,VR Auckland City,2026-10-12,Wotif,300
+2026-09-16 02:52:39,VR Auckland City,2026-10-13,Official site,99
+2026-09-16 02:52:39,VR Auckland City,2026-10-13,Expedia,117
+2026-09-16 02:52:39,VR Auckland City,2026-10-13,Wotif,177
+2026-09-16 02:52:39,VR Auckland City,2026-10-13,Booking.com,219
+2026-09-16 02:52:51,VR Auckland City,2026-10-14,Hotels.com,110
+2026-09-16 02:52:51,VR Auckland City,2026-10-14,Expedia,117
+2026-09-16 02:52:51,VR Auckland City,2026-10-14,Booking.com,219
+2026-09-16 02:52:51,VR Auckland City,2026-10-14,Wotif,409
+2026-09-16 02:53:04,VR Auckland City,2026-10-15,Hotels.com,99
+2026-09-16 02:53:04,VR Auckland City,2026-10-15,Agoda,126
+2026-09-16 02:53:04,VR Auckland City,2026-10-15,Wotif,167
+2026-09-16 02:53:04,VR Auckland City,2026-10-15,Booking.com,219
+2026-09-16 02:53:17,VR Auckland City,2026-10-17,Hotels.com,111
+2026-09-16 02:53:17,VR Auckland City,2026-10-17,Wotif,227
+2026-09-16 02:53:17,VR Auckland City,2026-10-17,Booking.com,499
+2026-09-16 02:53:17,VR Auckland City,2026-10-17,Official site,499
+2026-09-16 02:53:17,VR Auckland City,2026-10-17,Expedia,687
+2026-09-16 02:53:30,VR Auckland City,2026-10-18,Wotif,100
+2026-09-16 02:53:30,VR Auckland City,2026-10-18,Expedia,149
+2026-09-16 02:53:30,VR Auckland City,2026-10-18,Official site,178
+2026-09-16 02:53:30,VR Auckland City,2026-10-18,Booking.com,269
+2026-09-16 02:53:30,VR Auckland City,2026-10-18,Hotels.com,379
+2026-09-16 02:53:42,VR Auckland City,2026-10-19,Official site,165
+2026-09-16 02:53:42,VR Auckland City,2026-10-19,Agoda,183
+2026-09-16 02:53:42,VR Auckland City,2026-10-19,Booking.com,239
+2026-09-16 02:53:42,VR Auckland City,2026-10-19,Hotels.com,389
+2026-09-16 02:53:55,VR Auckland City,2026-10-20,Wotif,99
+2026-09-16 02:53:55,VR Auckland City,2026-10-20,Official site,167
+2026-09-16 02:53:55,VR Auckland City,2026-10-20,Expedia,199
+2026-09-16 02:53:55,VR Auckland City,2026-10-20,Booking.com,379
+2026-09-16 02:53:55,VR Auckland City,2026-10-20,Hotels.com,408
+2026-09-16 02:54:08,VR Auckland City,2026-10-21,Wotif,119
+2026-09-16 02:54:08,VR Auckland City,2026-10-21,Official site,186
+2026-09-16 02:54:08,VR Auckland City,2026-10-21,Hotels.com,187
+2026-09-16 02:54:08,VR Auckland City,2026-10-21,Booking.com,299
+2026-09-16 02:54:21,VR Auckland City,2026-10-22,Wotif,84
+2026-09-16 02:54:21,VR Auckland City,2026-10-22,Hotels.com,182
+2026-09-16 02:54:21,VR Auckland City,2026-10-22,Agoda,218
+2026-09-16 02:54:21,VR Auckland City,2026-10-22,Official site,379
+2026-09-16 02:54:21,VR Auckland City,2026-10-22,Booking.com,389
+2026-09-16 02:54:34,VR Auckland City,2026-10-23,Official site,142
+2026-09-16 02:54:34,VR Auckland City,2026-10-23,Booking.com,209
+2026-09-16 02:54:34,VR Auckland City,2026-10-23,Wotif,320
+2026-09-16 02:54:34,VR Auckland City,2026-10-23,Expedia,465
+2026-09-16 02:54:34,VR Auckland City,2026-10-23,Hotels.com,475
+2026-09-16 02:54:46,VR Auckland City,2026-10-25,Hotels.com,113
+2026-09-16 02:54:46,VR Auckland City,2026-10-25,Agoda,127
+2026-09-16 02:54:46,VR Auckland City,2026-10-25,Wotif,225
+2026-09-16 02:54:46,VR Auckland City,2026-10-25,Booking.com,549
+2026-09-16 02:54:46,VR Auckland City,2026-10-25,Official site,549
+2026-09-16 02:54:59,VR Auckland City,2026-10-26,Hotels.com,129
+2026-09-16 02:54:59,VR Auckland City,2026-10-26,Expedia,140
+2026-09-16 02:54:59,VR Auckland City,2026-10-26,Official site,142
+2026-09-16 02:54:59,VR Auckland City,2026-10-26,Booking.com,219
+2026-09-16 02:54:59,VR Auckland City,2026-10-26,Wotif,284
+2026-09-16 02:55:11,VR Auckland City,2026-10-27,Expedia,140
+2026-09-16 02:55:11,VR Auckland City,2026-10-27,Official site,182
+2026-09-16 02:55:11,VR Auckland City,2026-10-27,Hotels.com,185
+2026-09-16 02:55:11,VR Auckland City,2026-10-27,Booking.com,219
+2026-09-16 02:55:11,VR Auckland City,2026-10-27,Wotif,339
+2026-09-16 02:55:24,VR Auckland City,2026-10-28,Expedia,119
+2026-09-16 02:55:24,VR Auckland City,2026-10-28,Official site,144
+2026-09-16 02:55:24,VR Auckland City,2026-10-28,Hotels.com,149
+2026-09-16 02:55:24,VR Auckland City,2026-10-28,Booking.com,219
+2026-09-16 02:55:37,VR Auckland City,2026-10-29,Expedia,140
+2026-09-16 02:55:37,VR Auckland City,2026-10-29,Official site,149
+2026-09-16 02:55:37,VR Auckland City,2026-10-29,Wotif,149
+2026-09-16 02:55:37,VR Auckland City,2026-10-29,Hotels.com,165
+2026-09-16 02:55:37,VR Auckland City,2026-10-29,Booking.com,219
+2026-09-16 02:55:49,VR Auckland City,2026-10-30,Official site,113
+2026-09-16 02:55:49,VR Auckland City,2026-10-30,Agoda,165
+2026-09-16 02:55:49,VR Auckland City,2026-10-30,Hotels.com,309
+2026-09-16 02:55:49,VR Auckland City,2026-10-30,Booking.com,439
+2026-09-16 02:56:02,VR Auckland City,2026-10-31,Expedia,170
+2026-09-16 02:56:02,VR Auckland City,2026-10-31,Hotels.com,215
+2026-09-16 02:56:02,VR Auckland City,2026-10-31,Booking.com,449
+2026-09-16 02:56:02,VR Auckland City,2026-10-31,Official site,449
+2026-09-16 02:56:14,VR Auckland City,2026-11-02,Expedia,154
+2026-09-16 02:56:14,VR Auckland City,2026-11-02,Official site,178
+2026-09-16 02:56:14,VR Auckland City,2026-11-02,Hotels.com,243
+2026-09-16 02:56:14,VR Auckland City,2026-11-02,Booking.com,332
+2026-09-16 02:56:14,VR Auckland City,2026-11-02,Wotif,379
+2026-09-16 02:56:27,VR Auckland City,2026-11-03,Wotif,153
+2026-09-16 02:56:27,VR Auckland City,2026-11-03,Expedia,157
+2026-09-16 02:56:27,VR Auckland City,2026-11-03,Booking.com,259
+2026-09-16 02:56:27,VR Auckland City,2026-11-03,Official site,408
+2026-09-16 02:56:27,VR Auckland City,2026-11-03,Hotels.com,475
+2026-09-16 02:56:39,VR Auckland City,2026-11-04,Expedia,180
+2026-09-16 02:56:39,VR Auckland City,2026-11-04,Wotif,225
+2026-09-16 02:56:39,VR Auckland City,2026-11-04,Hotels.com,249
+2026-09-16 02:56:39,VR Auckland City,2026-11-04,Booking.com,369
+2026-09-16 02:56:39,VR Auckland City,2026-11-04,Official site,369
+2026-09-16 02:56:52,VR Auckland City,2026-11-05,Official site,203
+2026-09-16 02:56:52,VR Auckland City,2026-11-05,Booking.com,233
+2026-09-16 02:56:52,VR Auckland City,2026-11-05,Wotif,235
+2026-09-16 02:56:52,VR Auckland City,2026-11-05,Expedia,272
+2026-09-16 02:56:52,VR Auckland City,2026-11-05,Hotels.com,397
+2026-09-16 02:57:04,VR Auckland City,2026-11-06,Official site,225
+2026-09-16 02:57:04,VR Auckland City,2026-11-06,Hotels.com,249
+2026-09-16 02:57:04,VR Auckland City,2026-11-06,Booking.com,369
+2026-09-16 02:57:04,VR Auckland City,2026-11-06,Expedia,383
+2026-09-16 02:57:17,VR Auckland City,2026-11-07,Hotels.com,219
+2026-09-16 02:57:17,VR Auckland City,2026-11-07,Booking.com,559
+2026-09-16 02:57:17,VR Auckland City,2026-11-07,Official site,559
+2026-09-16 02:57:17,VR Auckland City,2026-11-07,Expedia,632
+2026-09-16 02:57:17,VR Auckland City,2026-11-07,Wotif,1518
+2026-09-16 02:57:29,VR Auckland City,2026-11-08,Wotif,125
+2026-09-16 02:57:29,VR Auckland City,2026-11-08,Official site,225
+2026-09-16 02:57:29,VR Auckland City,2026-11-08,Hotels.com,249
+2026-09-16 02:57:29,VR Auckland City,2026-11-08,Booking.com,299
+2026-09-16 02:57:29,VR Auckland City,2026-11-08,Expedia,316
+2026-09-16 02:57:43,VR Auckland City,2026-11-09,Expedia,157
+2026-09-16 02:57:43,VR Auckland City,2026-11-09,Hotels.com,225
+2026-09-16 02:57:43,VR Auckland City,2026-11-09,Booking.com,233
+2026-09-16 02:57:43,VR Auckland City,2026-11-09,Wotif,249
+2026-09-16 02:57:43,VR Auckland City,2026-11-09,Official site,259
+2026-09-16 02:57:55,VR Auckland City,2026-11-11,Expedia,224
+2026-09-16 02:57:55,VR Auckland City,2026-11-11,Booking.com,309
+2026-09-16 02:57:55,VR Auckland City,2026-11-11,Official site,309
+2026-09-16 02:57:55,VR Auckland City,2026-11-11,Hotels.com,395
+2026-09-16 02:58:07,VR Auckland City,2026-11-12,Official site,167
+2026-09-16 02:58:07,VR Auckland City,2026-11-12,Expedia,168
+2026-09-16 02:58:07,VR Auckland City,2026-11-12,Booking.com,259
+2026-09-16 02:58:07,VR Auckland City,2026-11-12,Wotif,408
+2026-09-16 02:58:07,VR Auckland City,2026-11-12,Hotels.com,763
+2026-09-16 02:58:20,VR Auckland City,2026-11-13,Expedia,230
+2026-09-16 02:58:20,VR Auckland City,2026-11-13,Booking.com,379
+2026-09-16 02:58:20,VR Auckland City,2026-11-13,Hotels.com,407
+2026-09-16 02:58:20,VR Auckland City,2026-11-13,Official site,427
+2026-09-16 02:58:33,VR Auckland City,2026-11-14,Official site,149
+2026-09-16 02:58:33,VR Auckland City,2026-11-14,Hotels.com,225
+2026-09-16 02:58:33,VR Auckland City,2026-11-14,Expedia,295
+2026-09-16 02:58:33,VR Auckland City,2026-11-14,Booking.com,389
+2026-09-16 02:58:33,VR Auckland City,2026-11-14,Wotif,417
+2026-09-16 02:58:45,VR Auckland City,2026-11-15,Wotif,143
+2026-09-16 02:58:45,VR Auckland City,2026-11-15,Agoda,200
+2026-09-16 02:58:45,VR Auckland City,2026-11-15,Hotels.com,225
+2026-09-16 02:58:45,VR Auckland City,2026-11-15,Booking.com,259
+2026-09-16 02:58:45,VR Auckland City,2026-11-15,Official site,379
+2026-09-16 02:58:58,VR Auckland City,2026-11-16,Hotels.com,142
+2026-09-16 02:58:58,VR Auckland City,2026-11-16,Official site,178
+2026-09-16 02:58:58,VR Auckland City,2026-11-16,Expedia,223
+2026-09-16 02:58:58,VR Auckland City,2026-11-16,Wotif,225
+2026-09-16 02:58:58,VR Auckland City,2026-11-16,Booking.com,259
+2026-09-16 02:59:10,VR Auckland City,2026-11-17,Wotif,129
+2026-09-16 02:59:10,VR Auckland City,2026-11-17,Expedia,246
+2026-09-16 02:59:10,VR Auckland City,2026-11-17,Booking.com,259
+2026-09-16 02:59:10,VR Auckland City,2026-11-17,Hotels.com,531
+2026-09-16 02:59:10,VR Auckland City,2026-11-17,Official site,548
