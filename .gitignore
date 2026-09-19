@@ -22,6 +22,7 @@ local/data/hotel_prices_clean.csv
 local/dashboards/_built.html
 local/dashboards/auckland_*.html
 local/dashboards/stay_plan.html
+local/dashboards/hourly.html
 # 凭据与备份
 local/dida_key.txt
 local/*.bak
