@@ -30,6 +30,7 @@ import re
 import statistics
 import sys
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -47,6 +48,13 @@ CHECKIN, CHECKOUT = dt.date(2026, 9, 20), dt.date(2026, 10, 9)
 # 超过这个就算空档 —— 调度器丢触发时会出现几十分钟到几小时的洞。
 EXPECTED_GAP_MIN = 15
 GAP_ALERT_MIN = 40
+
+# 零售快照里的 timestamp 是**新西兰当地时间**(见 snapshots/README), 云端的
+# ts_utc 是 UTC。两者直接相减会差 12-13 小时, 所以必须显式换算。
+NZ = ZoneInfo("Pacific/Auckland")
+# 本地采集依赖 Yuan 的电脑开着, 夜里关机十来个小时是常态, 不该报警。
+# 超过一天半就不正常了 —— CLAUDE.md 记过一次崩了 10 小时没人发现。
+RETAIL_STALE_H = 36
 
 
 def parse_ts(s):
@@ -181,6 +189,34 @@ def retail_snapshots():
     return out
 
 
+def retail_freshness(snaps):
+    """零售快照里最后一条读数离现在多久。
+
+    这是**决定订哪家的那份数据**, 它陈旧了结论就跟着陈旧 —— 云端再准也替代
+    不了。所以这一项单独报, 不跟云端的健康度混在一起。
+    """
+    if not snaps:
+        return None
+    f = SNAP_DIR / snaps[-1]["file"]
+    try:
+        with open(f, encoding="utf-8-sig") as fh:
+            stamps = [r["timestamp"] for r in csv.DictReader(fh) if r.get("timestamp")]
+    except OSError:
+        return None
+    if not stamps:
+        return None
+    last = dt.datetime.strptime(max(stamps), "%Y-%m-%d %H:%M:%S").replace(tzinfo=NZ)
+    now = dt.datetime.now(dt.timezone.utc)
+    hours = (now - last).total_seconds() / 3600
+    return {
+        "file": snaps[-1]["file"],
+        "last_nz": max(stamps),
+        "last_utc": last.astimezone(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+        "hours": round(hours, 1),
+        "stale": hours > RETAIL_STALE_H,
+    }
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--json")
@@ -190,6 +226,7 @@ def main():
     health = cloud_health(rows)
     move = cloud_movement(rows)
     snaps = retail_snapshots()
+    fresh = retail_freshness(snaps)
     state = load_state()
     inwin = [r for r in rows
              if CHECKIN.isoformat() <= r["checkin"] < CHECKOUT.isoformat()]
@@ -243,6 +280,14 @@ def main():
     print("\n═══ 本地零售快照 (看板的数据源, 依赖 Yuan 的电脑开着) ═══")
     for s in snaps:
         print(f"  {s['file']}   {s['bytes']//1024} KB")
+    if fresh:
+        flag = "**过期**" if fresh["stale"] else "尚可"
+        print(f"  最后一条读数 {fresh['last_nz']} NZ (= {fresh['last_utc']} UTC)")
+        print(f"  距今 {fresh['hours']} 小时 —— {flag} (超过 {RETAIL_STALE_H} 小时算过期)")
+        if fresh["stale"]:
+            print("  -> 本地采集大概率停了。看门狗计划任务装了吗:")
+            print('     schtasks /Create /TN "AucklandHotelWatch" /TR '
+                  '"wscript.exe <仓库>\\local\\watchdog.vbs" /SC MINUTE /MO 10 /F')
     if not snaps:
         print("  没有快照 —— 看板无法生成")
     else:
@@ -253,7 +298,8 @@ def main():
 
     if args.json:
         Path(args.json).write_text(json.dumps(
-            {"health": health, "movement": move, "delta": delta, "snapshots": snaps,
+            {"health": health, "movement": move, "delta": delta,
+             "snapshots": snaps, "retail_freshness": fresh,
              "generated": dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")},
             ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"\n-> {args.json}")
