@@ -202,9 +202,9 @@
   </section>
 
   <section>
-    <div class="sec-head"><h2>关键证据：两天的小时曲线对不上</h2><span class="finer">云端 DIDA · 相对各自中位数的偏离</span></div>
+    <div class="sec-head"><h2>关键证据：各天的小时曲线对不上</h2><span class="finer">云端 DIDA + 零售，全部成对一致性检验</span></div>
     <p class="sec-note fine" id="repro-note"></p>
-    <div class="chartbox"><svg class="chart" id="reprochart" role="img" aria-labelledby="rc-t"><title id="rc-t">两个观测日的小时剖面对比，以及中位数曲线</title></svg></div>
+    <div class="chartbox"><svg class="chart" id="reprochart" role="img" aria-labelledby="rc-t"><title id="rc-t">各观测日的小时剖面对比，以及中位数曲线</title></svg></div>
     <div class="legend" id="repro-legend"></div>
   </section>
 
@@ -267,7 +267,7 @@ const md = d => (+d.slice(5,7)) + "/" + (+d.slice(8,10));
 /* ---------------------------------------------------------------- 页头 */
 document.getElementById("lede").textContent =
   `云端采集器 15 分钟一轮，到现在 ${C.rounds} 轮，把 NZ 当地时间 0–23 点全盖住了。` +
-  `这是第一次有足够覆盖来检验「几点订更便宜」—— 检验的做法是看同一个小时在两天里对不对得上。`;
+  `这是第一次有足够覆盖来检验「几点订更便宜」—— 检验的做法是看同一个小时在不同日子里对不对得上。`;
 
 document.getElementById("prov").innerHTML = [
   ["观测窗口", `${C.first} → ${C.last} NZ`],
@@ -280,6 +280,18 @@ document.getElementById("prov").innerHTML = [
 const rep = C.repro[0];
 const hourRange = rep ? Math.max(rep.range_a, rep.range_b) : 0;
 
+/* 所有成对检验(云端 + 零售)。单看一组 r 容易被当成信号, 放在一起才看得出
+   符号是随机的 —— 这是"没有钟点规律"最硬的那条证据。 */
+const ALLPAIRS = [
+  ...C.repro.map(r => ({ ...r, src: "云端" })),
+  ...(R.repro || []).map(r => ({ ...r, src: "零售" })),
+].filter(r => r.r !== null);
+const nPos = ALLPAIRS.filter(r => r.r > 0).length;
+const nNeg = ALLPAIRS.filter(r => r.r < 0).length;
+/* 两天都有数据、因而可对照的小时 */
+const CMP_HOURS = [...new Set(C.repro.flatMap(r => r.hours))].sort((a, b) => a - b);
+const CELLS = Object.keys(C.hour).length + Object.keys(R.hour).length;
+
 document.getElementById("verdict").innerHTML = `
   <div class="verdict-top">
     <div>
@@ -289,24 +301,24 @@ document.getElementById("verdict").innerHTML = `
         把每条序列除以它自己的中位数再按小时聚合，<b>中位数在${C.median_all_zero ? "每一个" : "几乎每一个"}小时上都是 0.0%</b>
         （云端 ${Object.keys(C.hour).length} 个格子、零售 ${Object.keys(R.hour).length} 个格子${C.median_all_zero && R.median_all_zero ? "，无一例外" : ""}）——
         也就是说，典型的那一格在一天之内<b>根本不动</b>。
-        少数序列确实在动，但它们动的<b>时刻在两天之间对不上</b>：
-        单看两天都有数据的那 ${rep ? rep.hours.length : 0} 个小时，
-        <b>同一个小时在两天之间平均差 ${rep ? rep.mean_abs_diff : "—"} 个百分点</b>，
-        而同一天里这几个小时彼此之间只差 ${hourRange.toFixed(1)} 个百分点 ——
-        <b>「同一钟点、不同天」的差异比「同一天、不同钟点」还大几倍</b>，
-        说明起作用的是日子不是钟点。
+        少数序列确实在动，但它们动的<b>时刻在不同日子之间对不上</b>。
+        把每两天在共同覆盖的小时上做相关，一共 ${ALLPAIRS.length} 组
+        （云端 ${C.repro.length} 组、零售 ${(R.repro || []).length} 组）：
+        <b>${ALLPAIRS.map(r => (r.r > 0 ? "+" : "") + r.r.toFixed(2)).join("、")}</b> ——
+        ${nPos} 正 ${nNeg} 负，<b>符号跟掷硬币一样</b>。
+        真有钟点规律的话，这些数该一致为正才对。
         按项目自己的判据 —— 两天对不上就说明看到的是当天的偶然波动、不是时段规律 ——
         <b>这条结论不成立</b>。
       </p>
     </div>
     <div class="vside">
       <div class="bignum"><span class="val num">0.0</span><span class="u">%</span></div>
-      <div class="finer" style="margin-top:4px">典型序列的小时波动（中位数，${Object.keys(C.hour).length + Object.keys(R.hour).length} 个「日期×小时」格子全部为 0）</div>
+      <div class="finer" style="margin-top:4px">典型序列的小时波动（中位数，${CELLS} 个「日期×小时」格子无一例外）</div>
       <div style="margin-top:14px">
         <div class="kv"><span class="k">一分钱没动的序列</span><span class="v num">${C.flat} / ${C.n_series}</span></div>
-        <div class="kv"><span class="k">两天同一小时的平均差</span><span class="v num">${rep ? rep.mean_abs_diff : "—"} pp</span></div>
-        <div class="kv"><span class="k">同一天内这几小时的差异</span><span class="v num">${hourRange.toFixed(1)} pp</span></div>
-        <div class="kv"><span class="k">两天曲线的相关系数</span><span class="v num">${rep && rep.r !== null ? (rep.r > 0 ? "+" : "") + rep.r : "—"}</span></div>
+        <div class="kv"><span class="k">成对一致性检验</span><span class="v num">${nPos} 正 / ${nNeg} 负</span></div>
+        <div class="kv"><span class="k">观测天数（云端／零售）</span><span class="v num">${C.days.length} / ${R.days.length}</span></div>
+        <div class="kv"><span class="k">可对照的小时</span><span class="v num">${CMP_HOURS.length} 个</span></div>
       </div>
     </div>
   </div>`;
@@ -332,7 +344,7 @@ function showTip(html, ev, el) {
 function hideTip(){ tip.classList.remove("on"); tip.setAttribute("aria-hidden","true"); }
 
 /* ---------------------------------------------------------------- 小时剖面 */
-const DAYCOL = ["var(--s1)","var(--s2)"];
+const DAYCOL = ["var(--s1)","var(--s2)","var(--s3)","var(--s4)"];
 (function reproChart(){
   const W=880,H=300,L=52,Rr=46,T=20,B=44, iw=W-L-Rr, ih=H-T-B;
   const days = C.days;
@@ -353,7 +365,7 @@ const DAYCOL = ["var(--s1)","var(--s2)"];
        + `<text x="${L-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v>0?"+":""}${v.toFixed(1)}</text>`;
   }
   // 两天都有数据的小时: 底色标出来, 这几个小时才是可检验的
-  (rep ? rep.hours : []).forEach(h => {
+  CMP_HOURS.forEach(h => {
     s += `<rect x="${(X(h)-iw/46).toFixed(1)}" y="${T}" width="${(iw/23).toFixed(1)}" height="${ih}" fill="var(--accent)" opacity=".07"/>`;
   });
   for (let h=0;h<24;h+=2) {
@@ -366,16 +378,16 @@ const DAYCOL = ["var(--s1)","var(--s2)"];
     // 断档处不连线
     let path="", prevH=null;
     pts.forEach(([h,v]) => { path += (prevH===null||h-prevH>1 ? "M":"L") + X(h).toFixed(1) + " " + Y(v).toFixed(1) + " "; prevH=h; });
-    s += `<path d="${path}" fill="none" stroke="${DAYCOL[k]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s += `<path d="${path}" fill="none" stroke="${DAYCOL[k % DAYCOL.length]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
     pts.forEach(([h,v]) => {
-      s += `<circle class="hp" cx="${X(h).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="4" fill="${DAYCOL[k]}" stroke="var(--panel)" stroke-width="2" data-d="${d}" data-h="${h}"/>`;
+      s += `<circle class="hp" cx="${X(h).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="4" fill="${DAYCOL[k % DAYCOL.length]}" stroke="var(--panel)" stroke-width="2" data-d="${d}" data-h="${h}"/>`;
     });
     const last = pts[pts.length-1];
     s += `<text x="${(X(last[0])+8).toFixed(1)}" y="${(Y(last[1])+4).toFixed(1)}" font-size="10.5" fill="var(--ink-2)">${md(d)}</text>`;
   });
   // 中位数: 恒为 0
   s += `<line x1="${L}" y1="${Y(0).toFixed(1)}" x2="${L+iw}" y2="${Y(0).toFixed(1)}" stroke="var(--dim)" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round"/>`;
-  s += `<text x="${L+6}" y="${(Y(0)-7).toFixed(1)}" font-size="10" fill="var(--ink-3)">中位数：24 小时全部 0.0%</text>`;
+  s += `<text x="${L+6}" y="${(Y(0)-7).toFixed(1)}" font-size="10" fill="var(--ink-3)">中位数：${Object.keys(C.hour).length} 个格子全部 0.0%</text>`;
 
   const sv=document.getElementById("reprochart");
   sv.setAttribute("viewBox",`0 0 ${W} ${H}`); sv.insertAdjacentHTML("beforeend",s);
@@ -391,18 +403,38 @@ const DAYCOL = ["var(--s1)","var(--s2)"];
 })();
 
 document.getElementById("repro-note").innerHTML =
-  `两条彩线是两个观测日各自的小时剖面（相对每条序列自己的中位数）。` +
-  `<b>如果真有「几点更便宜」，两条线该重合</b>。实际是：` +
-  `${rep ? `${md(rep.a)} 那天从 ${pc(C.hour[`${rep.a}|${rep.hours[0]}`].mean)} 一路爬到高位，` +
-  `${md(rep.b)} 同样这几个小时几乎是平的，相关系数 ${rep.r > 0 ? "+" : ""}${rep.r}。` : ""}` +
-  `蓝底标出的是两天都有数据、因而可以对照的 ${rep ? rep.hours.length : 0} 个小时 —— ` +
-  `<b>上面结论里的数字只在这几个小时上算</b>，蓝线在蓝底之外那段大摆幅是「跨小时又跨半天」的混合，不作数。` +
-  `灰色虚线是中位数 —— 它在 24 个小时上<b>全部为 0.0%</b>，彩线的起伏完全由少数几条在动的序列贡献。`;
+  `每条彩线是一个观测日各自的小时剖面（相对每条序列自己的中位数）。` +
+  `<b>如果真有「几点更便宜」，这些线该重合</b>。实际是各走各的：` +
+  C.repro.map(r => `${md(r.a)} 对 ${md(r.b)} 在共同的 ${r.hours.length} 个小时上 r=${r.r > 0 ? "+" : ""}${r.r}`).join("，") +
+  `。蓝底标出的是至少两天都有数据、因而可以对照的 ${CMP_HOURS.length} 个小时 —— ` +
+  `<b>相关系数只在这些小时上算</b>；线在蓝底之外那段摆幅是「跨小时又跨半天」的混合，不作数。` +
+  `灰色虚线是中位数，在全部 ${Object.keys(C.hour).length} 个格子上都是 0.0%，` +
+  `彩线的起伏完全由少数几条在动的序列贡献。`;
+
+/* 成对检验表: 把所有组摊开, 符号一眼看清 */
+document.getElementById("repro-legend").insertAdjacentHTML("afterend",
+  `<div class="scroller" style="margin-top:18px"><table class="grid">
+     <thead><tr><th>数据源</th><th>两天</th><th>共同小时</th><th>相关系数 r</th><th>同一小时平均差</th><th>各自小时间幅度</th></tr></thead>
+     <tbody>` +
+  ALLPAIRS.map(r => `<tr><td>${r.src}</td>` +
+    `<td class="num">${md(r.a)} vs ${md(r.b)}</td>` +
+    `<td class="num">${r.hours.length}</td>` +
+    `<td class="num" style="color:${r.r > 0 ? "var(--crit)" : "var(--accent)"};font-weight:600">${r.r > 0 ? "+" : ""}${r.r.toFixed(3)}</td>` +
+    `<td class="num">${r.mean_abs_diff !== undefined ? r.mean_abs_diff + " pp" : "—"}</td>` +
+    `<td class="num">${r.range_a !== undefined ? r.range_a + " / " + r.range_b + " pp" : "—"}</td></tr>`).join("") +
+  `</tbody></table></div>
+   <p class="fine" style="margin-top:10px">
+     ${nPos} 组为正、${nNeg} 组为负。<b>若存在真实的时段规律，这一列应当一致为正、量级也相当</b>；
+     符号各半就是「没有信号」在数字上的样子。量级同样说明问题：最大的一组
+     ${Math.max(...ALLPAIRS.map(r => Math.abs(r.r))).toFixed(2)} 建立在两条振幅相差好几倍的曲线上
+     （${C.repro[0] ? C.repro[0].range_a + " pp 对 " + C.repro[0].range_b + " pp" : ""}），
+     形状勉强相似不等于同一个规律。
+   </p>`);
 
 document.getElementById("repro-legend").innerHTML =
-  C.days.map((d,k)=>`<span class="key"><span class="ln" style="border-top-color:${DAYCOL[k]}"></span>${md(d)}（均值）</span>`).join("") +
+  C.days.map((d,k)=>`<span class="key"><span class="ln" style="border-top-color:${DAYCOL[k % DAYCOL.length]}"></span>${md(d)}（均值）</span>`).join("") +
   `<span class="key"><span class="ln" style="border-top-color:var(--dim);border-top-style:dashed"></span>中位数（恒为 0）</span>` +
-  `<span class="key"><span class="sw" style="background:var(--accent);opacity:.25"></span>两天都有覆盖、可对照</span>`;
+  `<span class="key"><span class="sw" style="background:var(--accent);opacity:.25"></span>≥2 天有覆盖、可对照</span>`;
 
 /* ---------------------------------------------------------------- 全部序列 */
 const MOVERS = C.series.filter(s=>s.big).sort((a,b)=>b.spread_pct-a.spread_pct).slice(0,4);
