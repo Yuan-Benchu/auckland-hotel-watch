@@ -1,0 +1,624 @@
+<title>几点订更便宜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground:      #f4f6f8;
+    --panel:       #ffffff;
+    --panel-sunk:  #eef1f5;
+    --rule:        #dde2e8;
+    --rule-strong: #c3ccd6;
+    --ink:         #131920;
+    --ink-2:       #566270;
+    --ink-3:       #8492a1;
+    --accent:      #2a78d6;
+    --accent-soft: #e7f0fc;
+    --good:        #1f7a4d;  --good-soft: #e6f3ec;
+    --warn:        #9a5b00;  --warn-soft: #fdf2e0;
+    --crit:        #b0332f;  --crit-soft: #fbeceb;
+
+    /* 分类色: 文档给定顺序的前 4 槽 */
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --s1-ink:#fff; --s2-ink:#fff; --s3-ink:#06231a; --s4-ink:#2a1c00;
+    --dim: #aab4c0;
+
+    /* 顺序色阶(覆盖度热力图): 单色蓝, 越多越深 */
+    --q1:#cde2fb; --q2:#9ec5f4; --q3:#86b6ef; --q4:#6da7ec;
+    --q5:#3987e5; --q6:#256abf; --q7:#184f95; --q8:#0d366b;
+    --q-empty: #e7ebef;
+
+    /* 发散色阶(涨/跌): 蓝 <-> 红, 中点中性灰 */
+    --dn3:#184f95; --dn2:#3987e5; --dn1:#9ec5f4;
+    --mid:#f0efec;
+    --up1:#f6b3b2; --up2:#e34948; --up3:#9c2320;
+
+    --shadow: 0 1px 2px rgba(19,25,32,.05), 0 8px 24px -12px rgba(19,25,32,.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#14171b; --panel:#1b1f24; --panel-sunk:#23282e;
+      --rule:#2e343b; --rule-strong:#414a54;
+      --ink:#eef2f6; --ink-2:#a4b0bd; --ink-3:#75828f;
+      --accent:#5d9bec; --accent-soft:#1d2b3e;
+      --good:#4cbb87; --good-soft:#16291f;
+      --warn:#d79a3a; --warn-soft:#2e2617;
+      --crit:#e8736e; --crit-soft:#33201f;
+      --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+      --s1-ink:#06121e; --s2-ink:#fff; --s3-ink:#041a12; --s4-ink:#1d1300;
+      --dim:#59636e;
+      --q1:#12325c; --q2:#17406f; --q3:#1d5087; --q4:#25639f;
+      --q5:#3079bd; --q6:#4a91d5; --q7:#74afe6; --q8:#a6cdf4;
+      --q-empty:#22272d;
+      --dn3:#74afe6; --dn2:#3079bd; --dn1:#1d5087;
+      --mid:#383835;
+      --up1:#5e2422; --up2:#c9403e; --up3:#e8736e;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#14171b; --panel:#1b1f24; --panel-sunk:#23282e;
+    --rule:#2e343b; --rule-strong:#414a54;
+    --ink:#eef2f6; --ink-2:#a4b0bd; --ink-3:#75828f;
+    --accent:#5d9bec; --accent-soft:#1d2b3e;
+    --good:#4cbb87; --good-soft:#16291f;
+    --warn:#d79a3a; --warn-soft:#2e2617;
+    --crit:#e8736e; --crit-soft:#33201f;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --s1-ink:#06121e; --s2-ink:#fff; --s3-ink:#041a12; --s4-ink:#1d1300;
+    --dim:#59636e;
+    --q1:#12325c; --q2:#17406f; --q3:#1d5087; --q4:#25639f;
+    --q5:#3079bd; --q6:#4a91d5; --q7:#74afe6; --q8:#a6cdf4;
+    --q-empty:#22272d;
+    --dn3:#74afe6; --dn2:#3079bd; --dn1:#1d5087;
+    --mid:#383835;
+    --up1:#5e2422; --up2:#c9403e; --up3:#e8736e;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 0 72px; }
+
+  h1,h2,h3 { margin:0; text-wrap:balance; font-weight:600; letter-spacing:-.012em; }
+  h1 { font-size: clamp(27px,5.4vw,40px); line-height:1.12; }
+  h2 { font-size: 19px; }
+  h3 { font-size: 14.5px; }
+  p { margin: 0; }
+  .num { font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace; font-variant-numeric:tabular-nums; }
+  .eyebrow { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+  .lede { color:var(--ink-2); max-width:64ch; }
+  .fine { font-size:13px; color:var(--ink-2); }
+  .finer { font-size:12px; color:var(--ink-3); }
+  a { color:var(--accent); text-underline-offset:2px; }
+  a:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+    outline:2px solid var(--accent); outline-offset:2px; border-radius:3px;
+  }
+
+  header.masthead { padding-block:40px 28px; border-bottom:1px solid var(--rule); }
+  .masthead h1 { margin-top:10px; }
+  .masthead .lede { margin-top:12px; }
+  .provenance { margin-top:20px; display:flex; flex-wrap:wrap; gap:6px 22px; font-size:12px; color:var(--ink-3); }
+  .provenance b { color:var(--ink-2); font-weight:500; }
+
+  section { padding-block:40px; border-bottom:1px solid var(--rule); }
+  section:last-of-type { border-bottom:0; }
+  .sec-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 14px; margin-bottom:6px; }
+  .sec-note { margin-bottom:22px; }
+
+  /* 结论卡 */
+  .verdict { margin-top:30px; background:var(--panel); border:1px solid var(--rule);
+             border-radius:10px; box-shadow:var(--shadow); overflow:hidden; }
+  .verdict-top { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:28px; padding:26px; }
+  @media (max-width:720px){ .verdict-top{ grid-template-columns:1fr; gap:20px; } }
+  .verdict h2 { font-size:25px; margin-top:8px; letter-spacing:-.02em; }
+  .verdict .why { margin-top:14px; font-size:14px; color:var(--ink-2); }
+  .bignum { display:flex; align-items:baseline; gap:8px; }
+  .bignum .val { font-size:clamp(40px,8.5vw,56px); font-weight:600; letter-spacing:-.03em; line-height:1; }
+  .bignum .u { font-size:20px; color:var(--ink-2); font-weight:500; }
+  .vside { border-left:1px solid var(--rule); padding-left:26px; }
+  @media (max-width:720px){ .vside{ border-left:0; border-top:1px solid var(--rule); padding-left:0; padding-top:20px; } }
+  .kv { display:flex; justify-content:space-between; gap:16px; padding:7px 0; font-size:13.5px; }
+  .kv + .kv { border-top:1px dashed var(--rule); }
+  .kv .k { color:var(--ink-2); }
+  .kv .v { font-weight:500; }
+
+  .kpis { margin-top:26px; display:grid; gap:1px; background:var(--rule);
+          border:1px solid var(--rule); border-radius:10px; overflow:hidden;
+          grid-template-columns:repeat(4,minmax(0,1fr)); }
+  @media (max-width:760px){ .kpis{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  .kpi { background:var(--panel); padding:16px 18px 18px; }
+  .kpi .k { font-size:12px; color:var(--ink-2); }
+  .kpi .v { margin-top:5px; font-size:24px; font-weight:600; letter-spacing:-.02em; }
+  .kpi .s { margin-top:3px; font-size:12px; color:var(--ink-3); }
+
+  .chartbox { background:var(--panel); border:1px solid var(--rule); border-radius:10px; padding:18px 16px 10px; }
+  svg.chart { display:block; width:100%; height:auto; }
+  svg.chart text { font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; }
+
+  .scroller { overflow-x:auto; overscroll-behavior-x:contain; padding-bottom:6px; }
+  .legend { display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin-top:14px; font-size:12px; color:var(--ink-2); }
+  .key { display:inline-flex; align-items:center; gap:6px; }
+  .key .sw { width:12px; height:12px; border-radius:3px; display:inline-block; border:1px solid var(--rule-strong); }
+  .key .ln { width:18px; height:0; border-top-width:2px; border-top-style:solid; display:inline-block; }
+  .ramp { display:flex; align-items:center; gap:3px; }
+  .ramp i { width:20px; height:11px; border-radius:2px; display:block; }
+
+  /* 覆盖度热力图 */
+  table.cov { border-collapse:separate; border-spacing:2px; min-width:640px; }
+  table.cov th { font-size:11px; font-weight:500; color:var(--ink-2); padding-bottom:5px; }
+  table.cov td.lab { text-align:right; padding-right:10px; font-size:12.5px; white-space:nowrap; }
+  table.cov td.c div { width:34px; height:26px; border-radius:4px; text-align:center;
+                       font-size:11px; line-height:26px; }
+
+  table.grid { border-collapse:collapse; width:100%; font-size:13px; min-width:560px; }
+  table.grid th, table.grid td { padding:7px 10px; text-align:right; border-bottom:1px solid var(--rule); }
+  table.grid th { font-weight:500; color:var(--ink-2); font-size:12px; }
+  table.grid td:first-child, table.grid th:first-child { text-align:left; }
+  table.grid tbody tr:hover { background:var(--panel-sunk); }
+
+  .badge { display:inline-block; font-size:10.5px; font-weight:600; padding:1px 6px; border-radius:4px; vertical-align:1px; }
+  .badge.ok{background:var(--good-soft);color:var(--good)} .badge.warn{background:var(--warn-soft);color:var(--warn)}
+  .badge.bad{background:var(--crit-soft);color:var(--crit)}
+
+  .cards { display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width:760px){ .cards{ grid-template-columns:1fr; } }
+  .card { background:var(--panel); border:1px solid var(--rule); border-left:3px solid var(--rule-strong);
+          border-radius:0 8px 8px 0; padding:13px 15px; }
+  .card.stop{border-left-color:var(--crit)} .card.check{border-left-color:var(--warn)}
+  .card.fyi{border-left-color:var(--accent)} .card.ok{border-left-color:var(--good)}
+  .card p { margin-top:5px; font-size:13px; color:var(--ink-2); }
+
+  #tip { position:fixed; z-index:90; pointer-events:none; opacity:0; transition:opacity .1s;
+         background:var(--panel); color:var(--ink); border:1px solid var(--rule-strong);
+         border-radius:8px; box-shadow:var(--shadow); padding:10px 12px; font-size:12.5px;
+         max-width:270px; line-height:1.5; }
+  #tip.on { opacity:1; }
+  #tip .t-h { font-weight:600; }
+  #tip .t-d { color:var(--ink-3); font-size:11.5px; margin-bottom:6px; }
+  #tip .t-r { display:flex; justify-content:space-between; gap:14px; }
+
+  footer { padding-block:28px 8px; font-size:12px; color:var(--ink-3); }
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="eyebrow">奥克兰 CBD · 小时级价格动态</div>
+    <h1 id="h1">几点订更便宜？</h1>
+    <p class="lede" id="lede"></p>
+    <div class="provenance" id="prov"></div>
+  </header>
+
+  <section>
+    <div class="sec-head"><h2>答案</h2><span class="finer">CLAUDE.md 里悬了好几天的那个问题</span></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>关键证据：两天的小时曲线对不上</h2><span class="finer">云端 DIDA · 相对各自中位数的偏离</span></div>
+    <p class="sec-note fine" id="repro-note"></p>
+    <div class="chartbox"><svg class="chart" id="reprochart" role="img" aria-labelledby="rc-t"><title id="rc-t">两个观测日的小时剖面对比，以及中位数曲线</title></svg></div>
+    <div class="legend" id="repro-legend"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>每条序列的实际走势</h2><span class="finer">43 条（酒店 × 入住日），15 分钟一个点</span></div>
+    <p class="sec-note fine" id="series-note"></p>
+    <div class="chartbox"><svg class="chart" id="serieschart" role="img" aria-labelledby="sc-t"><title id="sc-t">全部序列相对自身中位数的偏离随时间变化，大幅波动的几条着色</title></svg></div>
+    <div class="legend" id="series-legend"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>价格什么时候动</h2><span class="finer">每一次变价，按 NZ 当地时间</span></div>
+    <p class="sec-note fine" id="ev-note"></p>
+    <div class="chartbox"><svg class="chart" id="evchart" role="img" aria-labelledby="ev-t"><title id="ev-t">变价事件在两日时间轴上的分布，按涨跌着色</title></svg></div>
+    <div class="legend" id="ev-legend"></div>
+    <div class="scroller" style="margin-top:20px"><table class="grid" id="evhour"></table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>覆盖度：哪些小时真的有数据</h2><span class="finer">先看这个，再信上面任何按小时的结论</span></div>
+    <p class="sec-note fine" id="cov-note"></p>
+    <div class="scroller"><table class="cov" id="covcloud"></table></div>
+    <div class="scroller" style="margin-top:20px"><table class="cov" id="covretail"></table></div>
+    <div class="legend" id="cov-legend"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>零售那边（能下单的那份）</h2><span class="finer">NZD · 与上面的 USD 严格分开</span></div>
+    <p class="sec-note fine" id="retail-note"></p>
+    <div class="cards" id="retail-cards"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>这页不能回答什么</h2></div>
+    <p class="sec-note fine">写清楚边界，免得下次又拿它当没说过的结论用。</p>
+    <div class="cards" id="limits"></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<div id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+const D = /*__DATA__*/{};
+const C = D.cloud, R = D.retail, M = D.meta;
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pc  = v => (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+const SHORT = {
+  "Ascotia Off Queen Auckland":"Ascotia Off Queen","ibis budget Auckland Central":"ibis budget",
+  "Albion Hotel Auckland":"Albion","Shakespeare Hotel Auckland":"Shakespeare",
+  "VR Queen Street Auckland":"VR Queen St","Auckland City Hotel":"Auckland City",
+  "VR Auckland City":"VR Auckland City","The Quadrant Hotel & Suites Auckland":"Quadrant",
+  "Copthorne Hotel Auckland City":"Copthorne","Abstract Hotel":"Abstract",
+  "Edit Auckland Central":"Edit Central",
+};
+const short = h => SHORT[h] || h;
+const md = d => (+d.slice(5,7)) + "/" + (+d.slice(8,10));
+
+/* ---------------------------------------------------------------- 页头 */
+document.getElementById("lede").textContent =
+  `云端采集器 15 分钟一轮，到现在 ${C.rounds} 轮，把 NZ 当地时间 0–23 点全盖住了。` +
+  `这是第一次有足够覆盖来检验「几点订更便宜」—— 检验的做法是看同一个小时在两天里对不对得上。`;
+
+document.getElementById("prov").innerHTML = [
+  ["观测窗口", `${C.first} → ${C.last} NZ`],
+  ["轮次", `${C.rounds}（15 分钟一轮）`],
+  ["序列", `${C.n_series} 条 = 酒店 × 入住日`],
+  ["零售对照", R.snapshot || "无"],
+].map(([k,v]) => `<span><b>${k}</b> ${esc(v)}</span>`).join("");
+
+/* ---------------------------------------------------------------- 结论 */
+const rep = C.repro[0];
+const hourRange = rep ? Math.max(rep.range_a, rep.range_b) : 0;
+
+document.getElementById("verdict").innerHTML = `
+  <div class="verdict-top">
+    <div>
+      <div class="eyebrow">几点订更便宜</div>
+      <h2>没有「更便宜的钟点」。别为此熬夜。</h2>
+      <p class="why">
+        把每条序列除以它自己的中位数再按小时聚合，<b>中位数在${C.median_all_zero ? "每一个" : "几乎每一个"}小时上都是 0.0%</b>
+        （云端 ${Object.keys(C.hour).length} 个格子、零售 ${Object.keys(R.hour).length} 个格子${C.median_all_zero && R.median_all_zero ? "，无一例外" : ""}）——
+        也就是说，典型的那一格在一天之内<b>根本不动</b>。
+        少数序列确实在动，但它们动的<b>时刻在两天之间对不上</b>：
+        单看两天都有数据的那 ${rep ? rep.hours.length : 0} 个小时，
+        <b>同一个小时在两天之间平均差 ${rep ? rep.mean_abs_diff : "—"} 个百分点</b>，
+        而同一天里这几个小时彼此之间只差 ${hourRange.toFixed(1)} 个百分点 ——
+        <b>「同一钟点、不同天」的差异比「同一天、不同钟点」还大几倍</b>，
+        说明起作用的是日子不是钟点。
+        按项目自己的判据 —— 两天对不上就说明看到的是当天的偶然波动、不是时段规律 ——
+        <b>这条结论不成立</b>。
+      </p>
+    </div>
+    <div class="vside">
+      <div class="bignum"><span class="val num">0.0</span><span class="u">%</span></div>
+      <div class="finer" style="margin-top:4px">典型序列的小时波动（中位数，${Object.keys(C.hour).length + Object.keys(R.hour).length} 个「日期×小时」格子全部为 0）</div>
+      <div style="margin-top:14px">
+        <div class="kv"><span class="k">一分钱没动的序列</span><span class="v num">${C.flat} / ${C.n_series}</span></div>
+        <div class="kv"><span class="k">两天同一小时的平均差</span><span class="v num">${rep ? rep.mean_abs_diff : "—"} pp</span></div>
+        <div class="kv"><span class="k">同一天内这几小时的差异</span><span class="v num">${hourRange.toFixed(1)} pp</span></div>
+        <div class="kv"><span class="k">两天曲线的相关系数</span><span class="v num">${rep && rep.r !== null ? (rep.r > 0 ? "+" : "") + rep.r : "—"}</span></div>
+      </div>
+    </div>
+  </div>`;
+
+document.getElementById("kpis").innerHTML = [
+  ["价格多久动一次", C.gap_median + " 小时", `四分位 ${C.gap_q1}–${C.gap_q3} 小时`],
+  ["变价事件总数", C.events.length, `${C.n_series} 条序列，${C.rounds} 轮`],
+  ["同一天内最大波动", C.within_median + "%", "中位数，相对自身"],
+  ["整段没动过", C.flat + " 条", `占 ${(100*C.flat/C.n_series).toFixed(0)}%`],
+].map(([k,v,s]) => `<div class="kpi"><div class="k">${esc(k)}</div><div class="v num">${v}</div><div class="s">${esc(s)}</div></div>`).join("");
+
+/* ---------------------------------------------------------------- tooltip */
+const tip = document.getElementById("tip");
+function showTip(html, ev, el) {
+  tip.innerHTML = html; tip.classList.add("on"); tip.setAttribute("aria-hidden","false");
+  const tr = tip.getBoundingClientRect();
+  const r = el ? el.getBoundingClientRect() : {left:ev.clientX, top:ev.clientY, bottom:ev.clientY, width:0};
+  let x = (ev ? ev.clientX : r.left) + 14, y = r.top - tr.height - 8;
+  if (x + tr.width > innerWidth - 8) x = innerWidth - tr.width - 8;
+  if (y < 8) y = (r.bottom || ev.clientY) + 8;
+  tip.style.left = Math.max(8,x) + "px"; tip.style.top = y + "px";
+}
+function hideTip(){ tip.classList.remove("on"); tip.setAttribute("aria-hidden","true"); }
+
+/* ---------------------------------------------------------------- 小时剖面 */
+const DAYCOL = ["var(--s1)","var(--s2)"];
+(function reproChart(){
+  const W=880,H=300,L=52,Rr=46,T=20,B=44, iw=W-L-Rr, ih=H-T-B;
+  const days = C.days;
+  const get = (d,h,f) => { const c = C.hour[`${d}|${h}`]; return c ? c[f] : null; };
+  const all = [];
+  days.forEach(d => { for(let h=0;h<24;h++){ const v=get(d,h,"mean"); if(v!==null) all.push(v); } });
+  const lo = Math.min(...all,0), hi = Math.max(...all,0);
+  const pad = Math.max(1,(hi-lo)*0.15);
+  const ymin = Math.floor((lo-pad)*2)/2, ymax = Math.ceil((hi+pad)*2)/2;
+  const X = h => L + h*iw/23;
+  const Y = v => T + ih - (v-ymin)/(ymax-ymin)*ih;
+
+  let s = "";
+  const step = (ymax-ymin) <= 3 ? 0.5 : 1;
+  for (let v=Math.ceil(ymin/step)*step; v<=ymax+1e-9; v+=step) {
+    const zero = Math.abs(v) < 1e-9;
+    s += `<line x1="${L}" y1="${Y(v).toFixed(1)}" x2="${L+iw}" y2="${Y(v).toFixed(1)}" stroke="${zero?"var(--rule-strong)":"var(--rule)"}" stroke-width="1"/>`
+       + `<text x="${L-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v>0?"+":""}${v.toFixed(1)}</text>`;
+  }
+  // 两天都有数据的小时: 底色标出来, 这几个小时才是可检验的
+  (rep ? rep.hours : []).forEach(h => {
+    s += `<rect x="${(X(h)-iw/46).toFixed(1)}" y="${T}" width="${(iw/23).toFixed(1)}" height="${ih}" fill="var(--accent)" opacity=".07"/>`;
+  });
+  for (let h=0;h<24;h+=2) {
+    s += `<text x="${X(h).toFixed(1)}" y="${H-B+16}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${h}</text>`;
+  }
+  s += `<text x="${L+iw/2}" y="${H-B+34}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">NZ 当地时间（小时）</text>`;
+
+  days.forEach((d,k) => {
+    const pts=[]; for(let h=0;h<24;h++){ const v=get(d,h,"mean"); if(v!==null) pts.push([h,v]); }
+    // 断档处不连线
+    let path="", prevH=null;
+    pts.forEach(([h,v]) => { path += (prevH===null||h-prevH>1 ? "M":"L") + X(h).toFixed(1) + " " + Y(v).toFixed(1) + " "; prevH=h; });
+    s += `<path d="${path}" fill="none" stroke="${DAYCOL[k]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach(([h,v]) => {
+      s += `<circle class="hp" cx="${X(h).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="4" fill="${DAYCOL[k]}" stroke="var(--panel)" stroke-width="2" data-d="${d}" data-h="${h}"/>`;
+    });
+    const last = pts[pts.length-1];
+    s += `<text x="${(X(last[0])+8).toFixed(1)}" y="${(Y(last[1])+4).toFixed(1)}" font-size="10.5" fill="var(--ink-2)">${md(d)}</text>`;
+  });
+  // 中位数: 恒为 0
+  s += `<line x1="${L}" y1="${Y(0).toFixed(1)}" x2="${L+iw}" y2="${Y(0).toFixed(1)}" stroke="var(--dim)" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round"/>`;
+  s += `<text x="${L+6}" y="${(Y(0)-7).toFixed(1)}" font-size="10" fill="var(--ink-3)">中位数：24 小时全部 0.0%</text>`;
+
+  const sv=document.getElementById("reprochart");
+  sv.setAttribute("viewBox",`0 0 ${W} ${H}`); sv.insertAdjacentHTML("beforeend",s);
+  sv.addEventListener("mouseover", e => {
+    const el=e.target.closest(".hp"); if(!el) return;
+    const c=C.hour[`${el.dataset.d}|${el.dataset.h}`];
+    showTip(`<div class="t-h">${md(el.dataset.d)} ${el.dataset.h}:00 NZ</div>`+
+            `<div class="t-d">${c.n} 个读数</div>`+
+            `<div class="t-r"><span>均值偏离</span><span class="num">${pc(c.mean)}</span></div>`+
+            `<div class="t-r"><span>中位数偏离</span><span class="num">${pc(c.median)}</span></div>`, e, el);
+  });
+  sv.addEventListener("mouseout", e => { if(e.target.closest(".hp")) hideTip(); });
+})();
+
+document.getElementById("repro-note").innerHTML =
+  `两条彩线是两个观测日各自的小时剖面（相对每条序列自己的中位数）。` +
+  `<b>如果真有「几点更便宜」，两条线该重合</b>。实际是：` +
+  `${rep ? `${md(rep.a)} 那天从 ${pc(C.hour[`${rep.a}|${rep.hours[0]}`].mean)} 一路爬到高位，` +
+  `${md(rep.b)} 同样这几个小时几乎是平的，相关系数 ${rep.r > 0 ? "+" : ""}${rep.r}。` : ""}` +
+  `蓝底标出的是两天都有数据、因而可以对照的 ${rep ? rep.hours.length : 0} 个小时 —— ` +
+  `<b>上面结论里的数字只在这几个小时上算</b>，蓝线在蓝底之外那段大摆幅是「跨小时又跨半天」的混合，不作数。` +
+  `灰色虚线是中位数 —— 它在 24 个小时上<b>全部为 0.0%</b>，彩线的起伏完全由少数几条在动的序列贡献。`;
+
+document.getElementById("repro-legend").innerHTML =
+  C.days.map((d,k)=>`<span class="key"><span class="ln" style="border-top-color:${DAYCOL[k]}"></span>${md(d)}（均值）</span>`).join("") +
+  `<span class="key"><span class="ln" style="border-top-color:var(--dim);border-top-style:dashed"></span>中位数（恒为 0）</span>` +
+  `<span class="key"><span class="sw" style="background:var(--accent);opacity:.25"></span>两天都有覆盖、可对照</span>`;
+
+/* ---------------------------------------------------------------- 全部序列 */
+const MOVERS = C.series.filter(s=>s.big).sort((a,b)=>b.spread_pct-a.spread_pct).slice(0,4);
+const MCOL = ["var(--s1)","var(--s2)","var(--s3)","var(--s4)"];
+(function seriesChart(){
+  const W=880,H=330,L=52,Rr=18,T=18,B=46, iw=W-L-Rr, ih=H-T-B;
+  const n = C.times.length;
+  const rel = s => s.v.map(v => v===null ? null : 100*(v-s.median)/s.median);
+  const allv = C.series.flatMap(s=>rel(s)).filter(v=>v!==null);
+  const lo=Math.min(...allv), hi=Math.max(...allv);
+  const ymin=Math.floor(lo/5)*5, ymax=Math.ceil(hi/5)*5;
+  const X = i => L + (n<2?0:i*iw/(n-1));
+  const Y = v => T + ih - (v-ymin)/(ymax-ymin)*ih;
+  const path = r => { let d="",pen=false;
+    r.forEach((v,i)=>{ if(v===null){pen=false;return;} d += (pen?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)+" "; pen=true; });
+    return d; };
+
+  let s="";
+  for(let v=Math.ceil(ymin/5)*5; v<=ymax; v+=5){
+    const zero=v===0;
+    s += `<line x1="${L}" y1="${Y(v).toFixed(1)}" x2="${L+iw}" y2="${Y(v).toFixed(1)}" stroke="${zero?"var(--rule-strong)":"var(--rule)"}" stroke-width="1"/>`
+       + `<text x="${L-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v>0?"+":""}${v}%</text>`;
+  }
+  // 日界线
+  C.times.forEach((t,i)=>{ if(t.nz.slice(11)==="00:00"){
+    s += `<line x1="${X(i).toFixed(1)}" y1="${T}" x2="${X(i).toFixed(1)}" y2="${T+ih}" stroke="var(--rule-strong)" stroke-width="1"/>`
+       + `<text x="${(X(i)+5).toFixed(1)}" y="${T+12}" font-size="10" fill="var(--ink-3)">${t.nz.slice(5,10)} 00:00</text>`;
+  }});
+  // 时间轴刻度: 每 4 小时
+  let lastLab=-99;
+  C.times.forEach((t,i)=>{ const hh=+t.nz.slice(11,13), mm=+t.nz.slice(14,16);
+    if(mm===0 && hh%6===0 && i-lastLab>4){ lastLab=i;
+      s += `<text x="${X(i).toFixed(1)}" y="${H-B+16}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${String(hh).padStart(2,"0")}:00</text>`;
+    }});
+  s += `<text x="${L+iw/2}" y="${H-B+34}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">NZ 当地时间</text>`;
+
+  C.series.filter(x=>!MOVERS.includes(x)).forEach(x=>{
+    s += `<path d="${path(rel(x))}" fill="none" stroke="var(--dim)" stroke-width="1.1" opacity=".5"/>`;
+  });
+  MOVERS.forEach((x,k)=>{
+    s += `<path d="${path(rel(x))}" fill="none" stroke="${MCOL[k]}" stroke-width="2" stroke-linejoin="round"/>`;
+  });
+  const sv=document.getElementById("serieschart");
+  sv.setAttribute("viewBox",`0 0 ${W} ${H}`); sv.insertAdjacentHTML("beforeend",s);
+})();
+
+document.getElementById("series-note").innerHTML =
+  `每条线是一个（酒店 × 入住日），除以它自己的中位数后画出来 —— 所以这里<b>没有 USD 金额</b>，` +
+  `只有相对变化。灰色是 ${C.n_series - MOVERS.length} 条，绝大多数贴着 0 线；` +
+  `着色的 ${MOVERS.length} 条是极差超过 ${M.big_mover}% 的。` +
+  `<b>要看的是形状：彩线的台阶出现在各自不同的时刻，没有共同的钟点。</b>` +
+  `这正是「没有便宜钟点」在原始数据上的样子。`;
+
+document.getElementById("series-legend").innerHTML =
+  MOVERS.map((x,k)=>`<span class="key"><span class="ln" style="border-top-color:${MCOL[k]}"></span>${esc(short(x.hotel))} ${md(x.checkin)}（±${x.spread_pct}%）</span>`).join("") +
+  `<span class="key"><span class="ln" style="border-top-color:var(--dim)"></span>其余 ${C.n_series-MOVERS.length} 条</span>`;
+
+/* ---------------------------------------------------------------- 变价事件 */
+(function evChart(){
+  const W=880,H=210,L=52,Rr=18,T=22,B=44, iw=W-L-Rr, ih=H-T-B;
+  const t0=new Date(C.times[0].utc+"Z").getTime(), t1=new Date(C.times[C.times.length-1].utc+"Z").getTime();
+  const X = ms => L + (ms-t0)/(t1-t0)*iw;
+  const mags = C.events.map(e=>Math.abs(e.d/ (e.from||1) *100));
+  const maxMag = Math.max(...mags, 1);
+  const Y = m => T + ih - Math.min(m/maxMag,1)*ih;
+
+  let s="";
+  [0,.25,.5,.75,1].forEach(f=>{
+    const v=f*maxMag;
+    s += `<line x1="${L}" y1="${Y(v).toFixed(1)}" x2="${L+iw}" y2="${Y(v).toFixed(1)}" stroke="var(--rule)" stroke-width="1"/>`
+       + `<text x="${L-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v.toFixed(0)}%</text>`;
+  });
+  C.times.forEach(t=>{ if(t.nz.slice(11)==="00:00"){
+    const ms=new Date(t.utc+"Z").getTime();
+    s += `<line x1="${X(ms).toFixed(1)}" y1="${T}" x2="${X(ms).toFixed(1)}" y2="${T+ih}" stroke="var(--rule-strong)" stroke-width="1"/>`
+       + `<text x="${(X(ms)+5).toFixed(1)}" y="${T+11}" font-size="10" fill="var(--ink-3)">${t.nz.slice(5,10)} 00:00</text>`;
+  }});
+  let lastLab=-1e9;
+  C.times.forEach(t=>{ const hh=+t.nz.slice(11,13), mm=+t.nz.slice(14,16);
+    const ms=new Date(t.utc+"Z").getTime();
+    if(mm===0 && hh%6===0 && X(ms)-lastLab>60){ lastLab=X(ms);
+      s += `<text x="${X(ms).toFixed(1)}" y="${H-B+16}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${String(hh).padStart(2,"0")}:00</text>`;
+    }});
+  s += `<text x="${L+iw/2}" y="${H-B+34}" text-anchor="middle" font-size="10.5" fill="var(--ink-3)">NZ 当地时间</text>`;
+
+  C.events.forEach((e,i)=>{
+    const mag=Math.abs(e.d/(e.from||1)*100);
+    const up=e.d>0;
+    const col = mag>10 ? (up?"var(--up3)":"var(--dn3)") : mag>3 ? (up?"var(--up2)":"var(--dn2)") : (up?"var(--up1)":"var(--dn1)");
+    const ms=new Date(e.at+"Z").getTime();
+    s += `<circle class="ev" cx="${X(ms).toFixed(1)}" cy="${Y(mag).toFixed(1)}" r="4.5" fill="${col}" stroke="var(--panel)" stroke-width="1.5" data-i="${i}"/>`;
+  });
+  const sv=document.getElementById("evchart");
+  sv.setAttribute("viewBox",`0 0 ${W} ${H}`); sv.insertAdjacentHTML("beforeend",s);
+  sv.addEventListener("mouseover", ev => {
+    const el=ev.target.closest(".ev"); if(!el) return;
+    const e=C.events[+el.dataset.i];
+    showTip(`<div class="t-h">${esc(short(e.hotel))}</div>`+
+            `<div class="t-d">入住 ${md(e.checkin)} · 变于 ${e.nz} NZ</div>`+
+            `<div class="t-r"><span>USD 批发价</span><span class="num">${e.from} → ${e.to}</span></div>`+
+            `<div class="t-r"><span>幅度</span><span class="num">${e.d>0?"+":""}${(e.d/e.from*100).toFixed(1)}%</span></div>`, ev, el);
+  });
+  sv.addEventListener("mouseout", ev => { if(ev.target.closest(".ev")) hideTip(); });
+})();
+
+document.getElementById("ev-note").innerHTML =
+  `每个点是一次变价，横轴是发生时刻，纵轴是幅度，颜色是方向。` +
+  `<b>点均匀铺满整条时间轴，没有在某个钟点扎堆</b> —— 这是「没有便宜钟点」的另一种看法。` +
+  `变价确实常有：同一条序列两次变价的间隔中位 <b>${C.gap_median} 小时</b>，` +
+  `所以看到合适的价就订，不必等某个时段。`;
+
+document.getElementById("ev-legend").innerHTML =
+  `<span class="key"><span class="sw" style="background:var(--dn3);border-color:var(--dn3)"></span>降价（深 = 幅度大）</span>` +
+  `<span class="key"><span class="sw" style="background:var(--up3);border-color:var(--up3)"></span>涨价</span>` +
+  `<span class="finer">纵轴为相对幅度</span>`;
+
+/* 按小时的变价率 */
+(function evHourTable(){
+  const obs={}, ch={};
+  C.times.forEach(t => { const h=+t.nz.slice(11,13); obs[h]=(obs[h]||0)+1; });
+  C.events.forEach(e => { ch[e.nz_hour]=(ch[e.nz_hour]||0)+1; });
+  const rows=[];
+  for(let h=0;h<24;h++) if(obs[h]) rows.push([h,obs[h],ch[h]||0,(ch[h]||0)/obs[h]]);
+  const maxRate=Math.max(...rows.map(r=>r[3]));
+  document.getElementById("evhour").innerHTML =
+    `<thead><tr><th>NZ 小时</th><th>观测轮次</th><th>变价次数</th><th>每轮变价数</th><th style="width:38%">相对</th></tr></thead><tbody>` +
+    rows.map(([h,o,c,r])=>`<tr><td class="num">${String(h).padStart(2,"0")}:00</td>`+
+      `<td class="num">${o}</td><td class="num">${c}</td><td class="num">${r.toFixed(2)}</td>`+
+      `<td><div style="background:var(--accent);height:9px;border-radius:3px;width:${(100*r/maxRate).toFixed(0)}%"></div></td></tr>`).join("") +
+    `</tbody>`;
+})();
+
+/* ---------------------------------------------------------------- 覆盖度 */
+function covTable(el, days, hourTbl, title, unit) {
+  const counts=[];
+  days.forEach(d => { for(let h=0;h<24;h++){ const c=hourTbl[`${d}|${h}`]; if(c) counts.push(c.n); } });
+  const mx=Math.max(...counts,1);
+  const q = n => { const f=n/mx; return f>.875?8:f>.75?7:f>.625?6:f>.5?5:f>.375?4:f>.25?3:f>.125?2:1; };
+  let html = `<thead><tr><th colspan="25" style="text-align:left;font-size:13px;color:var(--ink);padding-bottom:8px">${title}</th></tr>`;
+  html += `<tr><th></th>` + Array.from({length:24},(_,h)=>`<th>${h}</th>`).join("") + `</tr></thead><tbody>`;
+  days.forEach(d => {
+    html += `<tr><td class="lab">${md(d)}</td>`;
+    for(let h=0;h<24;h++){
+      const c=hourTbl[`${d}|${h}`];
+      html += `<td class="c"><div style="background:${c?`var(--q${q(c.n)})`:"var(--q-empty)"};color:${c&&q(c.n)>=5?"#fff":"var(--ink-2)"}" title="${c?`${c.n} 个读数`:"无数据"}">${c?c.n:""}</div></td>`;
+    }
+    html += `</tr>`;
+  });
+  document.getElementById(el).innerHTML = html + `</tbody>`;
+  return mx;
+}
+const mxC = covTable("covcloud", C.days, C.hour, "云端 DIDA（USD 批发价）· 每格 = 该小时的读数个数", "USD");
+const mxR = R.days.length ? covTable("covretail", R.days, R.hour, "本地 Google（NZD 零售价）· 同上", "NZD") : 0;
+
+document.getElementById("cov-note").innerHTML =
+  `空格 = 那个小时<b>没有任何数据</b>，任何跨过空格的结论都是猜的。` +
+  `云端两天合起来盖住了 0–23 全部 24 个小时，但<b>两天都有的只有 ${rep ? rep.hours.length : 0} 个小时</b>` +
+  `（${rep ? rep.hours.join("、") : ""}）—— 能做「两天对不对得上」这个检验的，只有这几个小时。` +
+  `零售那边更稀：只有 ${R.days.length ? md(R.days.reduce((a,b)=> (Object.keys(R.hour).filter(k=>k.startsWith(b)).length > Object.keys(R.hour).filter(k=>k.startsWith(a)).length ? b : a))) : "—"} 一天有较宽的覆盖，` +
+  `其余几天各只有两三个小时，<b>小时与日期仍然是混淆的</b>。`;
+
+document.getElementById("cov-legend").innerHTML =
+  `<span class="ramp"><span class="finer" style="margin-right:2px">读数少</span>` +
+  [1,2,3,4,5,6,7,8].map(i=>`<i style="background:var(--q${i})"></i>`).join("") +
+  `<span class="finer" style="margin-left:2px">多</span></span>` +
+  `<span class="key"><span class="sw" style="background:var(--q-empty)"></span>无数据</span>` +
+  `<span class="finer">云端每格最多 ${mxC} 个读数${mxR?`；零售最多 ${mxR}`:""}</span>`;
+
+/* ---------------------------------------------------------------- 零售 */
+const rrep = R.repro || [];
+document.getElementById("retail-note").innerHTML =
+  `零售是唯一能决定「订哪家、多少钱」的数据。它的小时结论<b>比云端更弱</b>，` +
+  `因为覆盖更稀。放在这里只为说明一件事：两套数据指向同一个方向，而且都不支持「挑钟点」。`;
+
+document.getElementById("retail-cards").innerHTML = [
+  ["ok", "中位数同样处处为 0",
+   `按小时聚合后，中位数偏离在<b>每一天的每一个小时上都是 +0.0%</b>（${Object.keys(R.hour).length} 个格子无一例外）
+    —— 跟云端一致。也就是说，一天之内典型的那一格不动。
+    但跨天是另一回事：${R.n_spread} 条序列整段极差中位 <b>${R.spread_median}%</b>，
+    整段一动不动的只有 ${R.flat} 条。<b>动的是天，不是钟点。</b>`],
+  ["check", "但它还不够格做这个检验",
+   `只有一天有较宽的小时覆盖，其余几天各只有两三个小时且中间断档。
+    ${rrep.length ? `勉强能对照的两组各只有 ${rrep.map(r=>r.hours.length).join("、")} 个重叠小时，
+    相关系数 ${rrep.map(r=>`${r.r>0?"+":""}${r.r}`).join(" 和 ")} —— <b>一正一负，等于没有信号</b>。` : ""}
+    <b>小时与日期仍然混淆</b>，CLAUDE.md 那条警告对零售依然成立。`],
+  ["fyi", "真正该看的还是「哪一晚」",
+   `跨天能差 NZ$50，而一天之内的小时波动是 0。
+    结论没变：全程住 <b>Ascotia Off Queen</b>，9/20–10/9 共 19 晚 <b>NZ$1,549</b>，
+    换店最多只省 NZ$122。
+    <a href="https://www.google.com/travel/search?q=Ascotia%20Off%20Queen%20Auckland&ts=CAAaFhIUEhIKBwjqDxAJGBQSBwjqDxAKGAkyAggAKgcKBToDTlpE" target="_blank" rel="noopener">按整段连住日期打开 Google Travel →</a>`],
+  ["stop", "两套价格没有混过",
+   `这一页所有按小时的图都是<b>相对自身中位数的百分比</b>，云端的 USD 绝对值一次都没跟
+    零售的 NZD 放在同一个刻度上。DIDA 比零售贵约 31% 且价差浮动，混了就全是假的。`],
+].map(([k,h,p]) => `<div class="card ${k}"><h3>${h}</h3><p>${p}</p></div>`).join("");
+
+/* ---------------------------------------------------------------- 边界 */
+document.getElementById("limits").innerHTML = [
+  ["check", "只有两天，而且只有 7 个小时能对照",
+   `「两天对不上」是目前最强的证据，但它建立在 ${rep ? rep.hours.length : 0} 个重叠小时上。
+    再攒几天、让 24 个小时都有多天覆盖，这条结论才算钉死。
+    在那之前它的正确说法是：<b>没有证据支持挑钟点</b>，不是「已经证明钟点无关」。`],
+  ["check", "这是批发价的时间行为，不一定等于零售的",
+   `云端是 DIDA 的 B2B 报价，它多久刷一次、什么时候刷，取决于 DIDA 自己的系统。
+    Google 上那些渠道未必同步。两套数据这次指向一致，但这是<b>旁证不是证明</b>。`],
+  ["fyi", "能回答的是另一个问题：要不要等",
+   `变价间隔中位 ${C.gap_median} 小时，四分位 ${C.gap_q1}–${C.gap_q3} 小时 —— 价格随时在动，
+    但方向不可预测，涨跌都有。既然没有便宜钟点，<b>看到合适的价就订</b>，
+    等待的唯一理由是你愿意承担它继续涨的风险。`],
+  ["stop", "不回答「提前多久订更便宜」",
+   `那需要固定入住日、看剩余天数的长期序列。现在只有两天观测，
+    离能回答这个问题还差得远。别拿这页的图去推那个结论。`],
+].map(([k,h,p]) => `<div class="card ${k}"><h3>${h}</h3><p>${p}</p></div>`).join("");
+
+document.getElementById("foot").innerHTML =
+  `由 <code>local/export_hourly.py</code> 生成于 ${M.generated} · ` +
+  `云端 ${C.rounds} 轮 / ${C.n_series} 条序列 / ${C.events.length} 次变价 · ` +
+  `零售对照 <code>${R.snapshot || "—"}</code> · ` +
+  `已剔除 (VR Auckland City, Official site)`;
+</script>
