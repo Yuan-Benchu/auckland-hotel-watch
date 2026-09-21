@@ -55,6 +55,22 @@ HOTELS = [
 CHECKINS = ["2026-09-26", "2026-10-03",   # 周六 x2
             "2026-10-06", "2026-10-13"]   # 周二 x2
 
+# 某几家额外多盯几天。上面那段"单轮 2 分钟"的预算是**旧模型**下写的
+# (一次触发 = 一轮)。现在 workflow 是一次触发跑 5h45m 的长循环, 轮间
+# sleep 到下一个 :07/:22/:37/:52 —— Actions 分钟数按墙钟计, 跟每轮调
+# 几次 API 无关。真正的约束只剩一条: 单轮必须塞进 15 分钟的间隔。
+# 现在 11 家 x 4 日 = 44 次 x ~3.5s ~= 154s, 加下面这几次也才 ~168s。
+#
+# 只给点名的酒店加, 不给所有家加: 全加就是 11 x 8 = 88 次 ~= 308s,
+# 仍在 15 分钟内, 但数据量翻倍而多出来的日子只有一家用得上。
+EXTRA_CHECKINS = {
+    # Yuan 在盯这家的周一到周五那一段, 而本地 Google 采集依赖开机、
+    # 已经停了几十小时。云端补上这几天, 至少"动没动"有人看着。
+    # 注意这仍是 USD 批发价, 不能用来下单。
+    "VR Auckland City": ["2026-09-21", "2026-09-22",
+                         "2026-09-23", "2026-09-24"],
+}
+
 FIELDS = ["ts_utc", "hotel", "checkin", "room", "price", "currency",
           "cancelable", "meal", "n_plans"]
 
@@ -141,7 +157,7 @@ def main():
     out = DATA_DIR / (datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M") + ".csv")
     rows, ok, bad = [], 0, 0
     for h in HOTELS:
-        for ci in CHECKINS:
+        for ci in CHECKINS + EXTRA_CHECKINS.get(h, []):
             j, err = detail(h, ci, sid)
             plans = (j or {}).get("roomRatePlans") or []
             if not plans:
