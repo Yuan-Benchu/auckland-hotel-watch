@@ -23,8 +23,9 @@ import json
 import re
 import statistics
 import sys
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 HERE = Path(__file__).resolve().parent
 BASE_DIR = HERE / "data"
@@ -64,6 +65,20 @@ PROVIDER_NOTE = ("CSV 里记的渠道名来自旧的白名单解析器, 会把�
 # 不把 playwright 拖进这个纯分析脚本的依赖里 (导入 hotel_fast 会连带 import
 # playwright, 云端/无浏览器环境直接炸)。改动必须与 hotel_fast 保持一致。
 CURRENCY = "NZD"
+
+
+
+# 快照里的时间戳是 NZ 本地时间, 云端是 UTC —— 不能拿字符串直接比。
+# 阈值跟 local/watch_status.py 一致, 两处口径必须一样, 否则巡检说"过期"
+# 而看板说"新鲜", 看板会赢, 因为它是给人看的那个。
+NZ = ZoneInfo("Pacific/Auckland")
+STALE_H = 36
+
+
+def stale_hours(last_ts):
+    """快照最后一条读数距今多少小时。last_ts 是 NZ 本地时间的字符串。"""
+    t = datetime.strptime(last_ts, "%Y-%m-%d %H:%M:%S").replace(tzinfo=NZ)
+    return (datetime.now(timezone.utc) - t).total_seconds() / 3600
 
 
 def _varint(n):
@@ -285,6 +300,8 @@ def main():
             "checkin": CHECKIN.isoformat(),
             "checkout": CHECKOUT.isoformat(),
             "generated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "stale_hours": round(stale_hours(max(r["timestamp"] for r in rows)), 1),
+            "stale_limit": STALE_H,
         },
     }
 

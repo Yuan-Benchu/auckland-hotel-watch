@@ -209,7 +209,7 @@
   </section>
 
   <section>
-    <div class="sec-head"><h2>每条序列的实际走势</h2><span class="finer">43 条（酒店 × 入住日），15 分钟一个点</span></div>
+    <div class="sec-head"><h2>每条序列的实际走势</h2><span class="finer" id="sh-series"></span></div>
     <p class="sec-note fine" id="series-note"></p>
     <div class="chartbox"><svg class="chart" id="serieschart" role="img" aria-labelledby="sc-t"><title id="sc-t">全部序列相对自身中位数的偏离随时间变化，大幅波动的几条着色</title></svg></div>
     <div class="legend" id="series-legend"></div>
@@ -290,7 +290,22 @@ const nPos = ALLPAIRS.filter(r => r.r > 0).length;
 const nNeg = ALLPAIRS.filter(r => r.r < 0).length;
 /* 两天都有数据、因而可对照的小时 */
 const CMP_HOURS = [...new Set(C.repro.flatMap(r => r.hours))].sort((a, b) => a - b);
+// 把量程切成大约 target 格, 步长取 1/2/5 × 10^n。
+function niceStep(range, target) {
+  if (!(range > 0)) return 0.5;
+  const raw = range / Math.max(1, target);
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  for (const m of [1, 2, 5]) if (raw <= m * mag) return m * mag;
+  return 10 * mag;
+}
+
 const CELLS = Object.keys(C.hour).length + Object.keys(R.hour).length;
+// 两套数据合起来, 中位偏离不为 0 的格子。0.0% 这个大字必须配得上它:
+// 只要有一个格子不为 0, 页面就说"99 个里 98 个", 不说"无一例外"。
+const NZCELLS = {
+  n: (C.median_nonzero?.n || 0) + (R.median_nonzero?.n || 0),
+  max_abs: Math.max(C.median_nonzero?.max_abs || 0, R.median_nonzero?.max_abs || 0),
+};
 
 document.getElementById("verdict").innerHTML = `
   <div class="verdict-top">
@@ -313,7 +328,7 @@ document.getElementById("verdict").innerHTML = `
     </div>
     <div class="vside">
       <div class="bignum"><span class="val num">0.0</span><span class="u">%</span></div>
-      <div class="finer" style="margin-top:4px">典型序列的小时波动（中位数，${CELLS} 个「日期×小时」格子无一例外）</div>
+      <div class="finer" style="margin-top:4px">典型序列的小时波动（中位数，${CELLS} 个「日期×小时」格子${NZCELLS.n ? `里 ${CELLS - NZCELLS.n} 个` : "无一例外"}）</div>
       <div style="margin-top:14px">
         <div class="kv"><span class="k">一分钱没动的序列</span><span class="v num">${C.flat} / ${C.n_series}</span></div>
         <div class="kv"><span class="k">成对一致性检验</span><span class="v num">${nPos} 正 / ${nNeg} 负</span></div>
@@ -358,11 +373,14 @@ const DAYCOL = ["var(--s1)","var(--s2)","var(--s3)","var(--s4)"];
   const Y = v => T + ih - (v-ymin)/(ymax-ymin)*ih;
 
   let s = "";
-  const step = (ymax-ymin) <= 3 ? 0.5 : 1;
+  // 刻度步长要跟量程走。写死 0.5/1 时, 量程一旦被离群值撑到几十,
+  // 就会画出六十多条网格线, 标签糊成一条竖线 —— VR Queen Street 的
+  // 低价房型下架(相对偏离 +400%)就把这张图撑成过那样。
+  const step = niceStep(ymax - ymin, 7);
   for (let v=Math.ceil(ymin/step)*step; v<=ymax+1e-9; v+=step) {
     const zero = Math.abs(v) < 1e-9;
     s += `<line x1="${L}" y1="${Y(v).toFixed(1)}" x2="${L+iw}" y2="${Y(v).toFixed(1)}" stroke="${zero?"var(--rule-strong)":"var(--rule)"}" stroke-width="1"/>`
-       + `<text x="${L-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v>0?"+":""}${v.toFixed(1)}</text>`;
+       + `<text x="${L-8}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="10.5" fill="var(--ink-3)">${v>0?"+":""}${v.toFixed(step<1?1:0)}</text>`;
   }
   // 两天都有数据的小时: 底色标出来, 这几个小时才是可检验的
   CMP_HOURS.forEach(h => {
@@ -387,7 +405,7 @@ const DAYCOL = ["var(--s1)","var(--s2)","var(--s3)","var(--s4)"];
   });
   // 中位数: 恒为 0
   s += `<line x1="${L}" y1="${Y(0).toFixed(1)}" x2="${L+iw}" y2="${Y(0).toFixed(1)}" stroke="var(--dim)" stroke-width="2" stroke-dasharray="1 4" stroke-linecap="round"/>`;
-  s += `<text x="${L+6}" y="${(Y(0)-7).toFixed(1)}" font-size="10" fill="var(--ink-3)">中位数：${Object.keys(C.hour).length} 个格子全部 0.0%</text>`;
+  s += `<text x="${L+6}" y="${(Y(0)-7).toFixed(1)}" font-size="10" fill="var(--ink-3)">中位数：${Object.keys(C.hour).length} 个格子里 ${Object.keys(C.hour).length - (C.median_nonzero?.n || 0)} 个是 0.0%</text>`;
 
   const sv=document.getElementById("reprochart");
   sv.setAttribute("viewBox",`0 0 ${W} ${H}`); sv.insertAdjacentHTML("beforeend",s);
@@ -402,14 +420,24 @@ const DAYCOL = ["var(--s1)","var(--s2)","var(--s3)","var(--s4)"];
   sv.addEventListener("mouseout", e => { if(e.target.closest(".hp")) hideTip(); });
 })();
 
+document.getElementById("sh-series").textContent =
+  `${C.n_series} 条（酒店 × 入住日），15 分钟一个点`;
+
 document.getElementById("repro-note").innerHTML =
   `每条彩线是一个观测日各自的小时剖面（相对每条序列自己的中位数）。` +
   `<b>如果真有「几点更便宜」，这些线该重合</b>。实际是各走各的：` +
   C.repro.map(r => `${md(r.a)} 对 ${md(r.b)} 在共同的 ${r.hours.length} 个小时上 r=${r.r > 0 ? "+" : ""}${r.r}`).join("，") +
   `。蓝底标出的是至少两天都有数据、因而可以对照的 ${CMP_HOURS.length} 个小时 —— ` +
   `<b>相关系数只在这些小时上算</b>；线在蓝底之外那段摆幅是「跨小时又跨半天」的混合，不作数。` +
-  `灰色虚线是中位数，在全部 ${Object.keys(C.hour).length} 个格子上都是 0.0%，` +
-  `彩线的起伏完全由少数几条在动的序列贡献。`;
+  `灰色虚线是中位数：云端 ${Object.keys(C.hour).length} 个格子里 ${Object.keys(C.hour).length - (C.median_nonzero?.n || 0)} 个正好是 0.0%${(C.median_nonzero?.n || 0) ? `，剩下 ${C.median_nonzero.n} 个也只偏 ${C.median_nonzero.max_abs}%` : ""}，` +
+  `彩线的起伏完全由少数几条在动的序列贡献。` +
+  ((C.breaks || []).length
+    ? `<br><b>已剔除 ${C.breaks.length} 条结构性断裂的序列</b>（${C.n_hour_series} / ${C.n_series} 条进入本节统计）：`
+      + C.breaks.map(b => `${esc(b.hotel)} ${md(b.checkin)} 在 ${esc(b.at_nz)} 从 ${b.from} 跳到 ${b.to}（${esc(b.room_from)} → ${esc(b.room_to)}）`).join("；")
+      + `。最便宜的房型整类从返回里消失、方案总数却没掉，这是<b>那一档不卖了，不是重新定价</b>；`
+      + `折算成相对偏离能到 +${Math.round((Math.max(...C.breaks.map(b => b.ratio)) - 1) * 100)}%，一条就能把当天的剖面整个带偏，`
+      + `所以不进小时统计 —— 但它们仍然照原样画在下面「每条序列的实际走势」里。`
+    : "");
 
 /* 成对检验表: 把所有组摊开, 符号一眼看清 */
 document.getElementById("repro-legend").insertAdjacentHTML("afterend",
@@ -611,7 +639,7 @@ document.getElementById("retail-note").innerHTML =
 
 document.getElementById("retail-cards").innerHTML = [
   ["ok", "中位数同样处处为 0",
-   `按小时聚合后，中位数偏离在<b>每一天的每一个小时上都是 +0.0%</b>（${Object.keys(R.hour).length} 个格子无一例外）
+   `按小时聚合后，中位数偏离在<b>${R.median_all_zero ? "每一天的每一个小时上都是 +0.0%" : "几乎每一个小时上都是 +0.0%"}</b>（${Object.keys(R.hour).length} 个格子${R.median_all_zero ? "无一例外" : `里 ${Object.keys(R.hour).length - (R.median_nonzero?.n || 0)} 个`}）
     —— 跟云端一致。也就是说，一天之内典型的那一格不动。
     但跨天是另一回事：${R.n_spread} 条序列整段极差中位 <b>${R.spread_median}%</b>，
     整段一动不动的只有 ${R.flat} 条。<b>动的是天，不是钟点。</b>`],

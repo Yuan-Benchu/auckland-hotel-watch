@@ -84,15 +84,52 @@ def load_cloud():
 
 
 def cloud_series(rows):
-    """(酒店, 入住日) -> {ts_utc: 当轮最低价}。只保留住宿区间内的入住日。"""
+    """(酒店, 入住日) -> ({ts_utc: 当轮最低价}, {ts_utc: 该价对应的房型})。
+
+    房型要一起记: 最低价换了房型还翻了几倍, 那是"便宜房型下架", 不是"涨价"。
+    这两件事混在一张小时波动图里, 图就废了 —— 见 structural_breaks()。
+    """
     ser = collections.defaultdict(dict)
+    room = collections.defaultdict(dict)
     for r in rows:
         if not (CHECKIN.isoformat() <= r["checkin"] < CHECKOUT.isoformat()):
             continue
         k = (r["hotel"], r["checkin"])
         t = r["ts_utc"]
-        ser[k][t] = min(r["_p"], ser[k].get(t, r["_p"]))
-    return ser
+        if t not in ser[k] or r["_p"] < ser[k][t]:
+            ser[k][t] = r["_p"]
+            room[k][t] = (r.get("room") or "").strip()
+    return ser, room
+
+
+# 最低价档位跳动到这个倍数以上, 且换了房型, 就当结构性断裂
+BREAK_RATIO = 2.0
+
+
+def structural_breaks(ser, room):
+    """认出"最便宜的房型整类没了"这种序列。
+
+    2026-09-20 12:07 UTC 起, VR Queen Street 四个入住日的 Compact Single /
+    Double Standard 同时从 DIDA 的返回里消失, 最低价从 USD 50 跳到 473 ——
+    方案总数没掉, 就是那一档不卖了。这不是重新定价, 把它算进"几点订更便宜"
+    会让相对偏离冲到 +400%, 一条序列就能把当天的小时剖面整个带偏。
+    所以单独拎出来, 不进小时统计, 但要在页面上明说。
+    """
+    out = {}
+    for k, s in ser.items():
+        ts = sorted(s)
+        for a, b in zip(ts, ts[1:]):
+            if s[a] <= 0:
+                continue
+            ratio = max(s[a], s[b]) / min(s[a], s[b])
+            if ratio >= BREAK_RATIO and room[k].get(a) != room[k].get(b):
+                out[k] = {"hotel": k[0], "checkin": k[1], "at": b,
+                          "at_nz": utc(b).astimezone(NZ).strftime("%m-%d %H:%M"),
+                          "from": s[a], "to": s[b],
+                          "room_from": room[k].get(a, ""), "room_to": room[k].get(b, ""),
+                          "ratio": round(ratio, 1)}
+                break
+    return out
 
 
 def rel_profile(ser, to_nz):
@@ -163,9 +200,13 @@ def main():
 
     # ---- 云端 ----
     craw = load_cloud()
-    ser = cloud_series(craw)
+    ser, croom = cloud_series(craw)
     if not ser:
         sys.exit("云端没有落在住宿区间内的入住日")
+
+    # 结构性断裂的序列不进小时统计 —— 它衡量的不是同一个东西。
+    breaks = structural_breaks(ser, croom)
+    ser_hours = {k: v for k, v in ser.items() if k not in breaks}
 
     stamps = sorted({t for s in ser.values() for t in s})
     idx = {t: i for i, t in enumerate(stamps)}
@@ -186,6 +227,8 @@ def main():
             "lo": min(vals), "hi": max(vals),
             "n": len(vals),
             "big": spread >= BIG_MOVER,
+            # 结构性断裂的序列照画(原始走势图要如实), 但标出来, 并且不进小时统计
+            "brk": (h, d) in breaks,
             "v": pts,
         })
 
@@ -214,13 +257,13 @@ def main():
                     gaps.append((tt - last).total_seconds() / 3600)
                 last = tt
 
-    crel = rel_profile(ser, lambda t: utc(t).astimezone(NZ))
+    crel = rel_profile(ser_hours, lambda t: utc(t).astimezone(NZ))
     cdays, ctbl = hour_table(crel)
     crepro = reproducibility(crel, cdays)
 
     # 同一天内 vs 跨天
     within, across = [], []
-    for s in ser.values():
+    for s in ser_hours.values():
         med = statistics.median(s.values())
         if med <= 0:
             continue
@@ -267,9 +310,18 @@ def main():
     # 各小时中位数偏离全为 0 吗 —— 两套数据都要单独核, 不能靠印象
     rzero = all(c["median"] == 0 for c in rtbl.values()) if rtbl else False
 
+    def nonzero(tbl):
+        """中位偏离不为 0 的格子: 个数 + 最大绝对值。"""
+        bad = [c["median"] for c in tbl.values() if c["median"] != 0]
+        return {"n": len(bad), "of": len(tbl),
+                "max_abs": round(max((abs(x) for x in bad), default=0.0), 2)}
+
     payload = {
         "cloud": {
             "median_all_zero": all(c["median"] == 0 for c in ctbl.values()) if ctbl else False,
+            "median_nonzero": nonzero(ctbl),
+            "breaks": sorted(breaks.values(), key=lambda b: (b["hotel"], b["checkin"])),
+            "n_hour_series": len(ser_hours),
             "times": times,
             "series": series,
             "events": events,
@@ -296,6 +348,7 @@ def main():
             "lt2": sum(1 for x in rspreads if x < 2),
             "n_spread": len(rspreads),
             "median_all_zero": rzero,
+            "median_nonzero": nonzero(rtbl),
         },
         "meta": {
             "generated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),

@@ -143,6 +143,16 @@
   }
   .provenance b { color: var(--ink-2); font-weight: 500; }
 
+  /* 快照一旧, 下面每一个结论都跟着旧。这条必须在读到任何价格之前撞见,
+     所以放在 masthead 里、结论之上, 而不是塞进页尾的注意事项。 */
+  .stale {
+    margin-top: 22px; padding: 12px 16px; border-radius: 10px;
+    border: 1px solid var(--warn); background: var(--warn-soft);
+    color: var(--ink); font-size: 13.5px; line-height: 1.55;
+  }
+  .stale b { font-weight: 600; }
+  .stale.ok { border-color: var(--rule); background: transparent; color: var(--ink-3); font-size: 12px; padding: 0; border: 0; margin-top: 10px; }
+
   section { padding-block: 40px; border-bottom: 1px solid var(--rule); }
   section:last-of-type { border-bottom: 0; }
   .sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 6px; }
@@ -317,6 +327,7 @@
     <h1 id="h-title">9 月 20 日到 10 月 9 日，住哪家</h1>
     <p class="lede" id="h-lede"></p>
     <div class="provenance" id="prov"></div>
+    <div id="stale"></div>
   </header>
 
   <section id="s-verdict">
@@ -326,20 +337,20 @@
   </section>
 
   <section id="s-heat">
-    <div class="sec-head"><h2>逐晚价格表</h2><span class="finer">9 家 × 20 晚，每格是那一晚全渠道最低价</span></div>
+    <div class="sec-head"><h2>逐晚价格表</h2><span class="finer" id="sh-heat"></span></div>
     <p class="sec-note fine" id="heat-note"></p>
     <div class="scroller"><table class="heat" id="heat"></table></div>
     <div class="legend" id="heat-legend"></div>
   </section>
 
   <section id="s-line">
-    <div class="sec-head"><h2>三个候选的逐晚走势</h2><span class="finer">虚线为 9 家当晚中位数</span></div>
+    <div class="sec-head"><h2>三个候选的逐晚走势</h2><span class="finer" id="sh-trend"></span></div>
     <p class="sec-note fine" id="line-note"></p>
     <div class="chartbox"><svg class="line" id="linechart" role="img" aria-labelledby="lc-title"><title id="lc-title">三家候选酒店在 9/20–10/8 每晚的最低价走势，以及 9 家的中位数</title></svg></div>
   </section>
 
   <section id="s-plans">
-    <div class="sec-head"><h2>换店换来多少钱</h2><span class="finer">同样 19 晚，不同换店次数下最省的住法</span></div>
+    <div class="sec-head"><h2>换店换来多少钱</h2><span class="finer" id="sh-plans"></span></div>
     <p class="sec-note fine" id="plan-note"></p>
     <div class="plans" id="plans"></div>
   </section>
@@ -420,12 +431,35 @@ document.getElementById("h-lede").textContent =
   `${hotels.length} 家 CBD 酒店，每晚取全渠道最低的可订价，` +
   `再算“全程不换”和“换店”各要多少钱。`;
 
+document.getElementById("sh-heat").textContent =
+  `${hotels.length} 家 × ${dates.length} 晚，每格是那一晚全渠道最低价`;
+document.getElementById("sh-trend").textContent = `虚线为 ${hotels.length} 家当晚中位数`;
+document.getElementById("sh-plans").textContent =
+  `同样 ${nights.length} 晚，不同换店次数下最省的住法`;
+
 document.getElementById("prov").innerHTML = [
   ["数据", `${M.snapshot}（Google 零售价）`],
   ["可用行数", `${M.rows_used.toLocaleString()} / ${M.rows_total.toLocaleString()}`],
   ["观测窗口", `${M.first_ts.slice(5, 16)} → ${M.last_ts.slice(5, 16)}`],
   ["最后一轮", `${M.last_scrape_min.slice(5, 16)} → ${M.last_scrape_max.slice(5, 16)}`],
 ].map(([k, v]) => `<span><b>${k}</b> ${esc(v)}</span>`).join("");
+
+/* 快照新鲜度。价格每天都在动、跨天能差 NZ$50, 所以"这份数据多旧"跟
+   "哪家最便宜"一样重要 —— 旧快照给出的排序可能还对, 具体数字一定不对。 */
+{
+  const h = M.stale_hours, lim = M.stale_limit;
+  const el = document.getElementById("stale");
+  if (h > lim) {
+    el.className = "stale";
+    el.innerHTML = `<b>这份快照已经 ${h.toFixed(0)} 小时没更新了</b>（最后一条读数 `
+      + `${esc(M.last_ts)} NZ，超过 ${lim} 小时即视为过期）。零售价每天都在动，跨天能差 NZ$50，`
+      + `所以下面的<b>排序大体还可信，具体数字请点链接以页面为准</b>。`
+      + `要刷新：在本地跑一轮 <code>hotel_fast.py</code> 并更新 <code>data/snapshots/</code>。`;
+  } else {
+    el.className = "stale ok";
+    el.textContent = `快照 ${h.toFixed(1)} 小时前更新（阈值 ${lim} 小时）。`;
+  }
+}
 
 /* ---------------------------------------------------------------- 结论 */
 const ranked = D.singles.filter(([, h]) => !UNTRUSTED.has(h));
