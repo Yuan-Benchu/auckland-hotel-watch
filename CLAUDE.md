@@ -133,7 +133,16 @@ NZ$32。修法是只认独占一行的价格（`PRICE_LINE_RE` + `HARD_STOP`）�
 local/audit_offers.py     拿 raw_archive.tgz 逐张核对解析器: 最低价对不对、
                           渠道认全没有。新解析一致率 99.8%, 旧的 91.6%。
 local/watch_status.py     巡检: 两套采集还活着吗、价格动了没有、结论要不要改。
+local/channel_watch.py    渠道级监测: 哪个渠道在卖、贵多少、换没换人。
 ```
+
+`channel_watch.py` 只用 `raw_archive.tgz` 算渠道 —— **云端 DIDA 没有渠道字段**
+(ts_utc/hotel/checkin/room/price/currency/cancelable/meal/n_plans 里没有),
+渠道只能来自本地 Google 抓取, 所以它跟着本地采集一起依赖开机。CSV 的
+`provider` 列覆盖全但名字不可信, 脚本只拿它统计"跟存档对不上的比例"。
+状态文件 `.channel_state.json` 是全局的, 而 `--hotel` 可以只跑一部分 ——
+比对时必须按本轮实际跑了哪些酒店/入住日限定范围, 否则"这轮没查"会被报成
+"渠道消失"(这个假警报踩过)。
 
 判断"结论还成不成立"的逻辑（写在 `watch_status.py` 的模块说明里）：
 有更新的零售快照 → 重跑 `export_stay_plan.py`；没有 → 看云端在两个数据集
