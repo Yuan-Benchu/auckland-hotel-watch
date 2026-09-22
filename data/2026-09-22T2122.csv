@@ -1,0 +1,45 @@
+ts_utc,hotel,checkin,room,price,currency,cancelable,meal,n_plans
+2026-09-22 21:22:00,VR Queen Street Auckland,2026-09-26,Standard King Room,72,USD,False,Room Only,30
+2026-09-22 21:22:00,VR Queen Street Auckland,2026-10-03,Compact Single Room,70,USD,False,Room Only,56
+2026-09-22 21:22:00,VR Queen Street Auckland,2026-10-06,Compact Single Room,51,USD,False,Room Only,63
+2026-09-22 21:22:00,VR Queen Street Auckland,2026-10-13,Compact Single Room,42,USD,False,Room Only,62
+2026-09-22 21:22:00,VR Auckland City,2026-09-26,Studio Apartment,106,USD,False,Room Only,7
+2026-09-22 21:22:00,VR Auckland City,2026-10-03,Studio Apartment,83,USD,False,Room Only,25
+2026-09-22 21:22:00,VR Auckland City,2026-10-06,Studio Apartment,70,USD,False,Room Only,30
+2026-09-22 21:22:00,VR Auckland City,2026-10-13,Studio Apartment,58,USD,False,Room Only,28
+2026-09-22 21:22:00,Shakespeare Hotel Auckland,2026-09-26,Double Room,230,USD,False,Room Only,48
+2026-09-22 21:22:00,Shakespeare Hotel Auckland,2026-10-03,Triple Room,291,USD,False,Room Only,49
+2026-09-22 21:22:00,Shakespeare Hotel Auckland,2026-10-06,Triple Room,164,USD,False,Room Only,60
+2026-09-22 21:22:00,Shakespeare Hotel Auckland,2026-10-13,Triple Room,181,USD,False,Room Only,84
+2026-09-22 21:22:00,Auckland City Hotel,2026-09-26,Standard Twin Room,65,USD,False,Room Only,59
+2026-09-22 21:22:00,Auckland City Hotel,2026-10-03,Standard Queen Room,67,USD,False,Room Only,52
+2026-09-22 21:22:00,Auckland City Hotel,2026-10-06,Standard Twin Room,67,USD,False,Room Only,104
+2026-09-22 21:22:00,Auckland City Hotel,2026-10-13,Standard Twin Room,61,USD,False,Room Only,78
+2026-09-22 21:22:00,ibis budget Auckland Central,2026-09-26,Double Studio,58,USD,False,Room Only,32
+2026-09-22 21:22:00,ibis budget Auckland Central,2026-10-03,Double Studio,72,USD,False,Room Only,34
+2026-09-22 21:22:00,ibis budget Auckland Central,2026-10-06,Double Studio,55,USD,False,Room Only,34
+2026-09-22 21:22:00,ibis budget Auckland Central,2026-10-13,Double Studio,58,USD,False,Room Only,32
+2026-09-22 21:22:00,The Quadrant Hotel & Suites Auckland,2026-09-26,Deluxe Queen Studio,77,USD,False,Room Only,23
+2026-09-22 21:22:00,The Quadrant Hotel & Suites Auckland,2026-10-03,Deluxe Queen Studio,78,USD,False,Room Only,29
+2026-09-22 21:22:00,The Quadrant Hotel & Suites Auckland,2026-10-06,Deluxe Queen Studio,60,USD,False,Room Only,36
+2026-09-22 21:22:00,The Quadrant Hotel & Suites Auckland,2026-10-13,Deluxe Queen Studio,58,USD,False,Room Only,57
+2026-09-22 21:22:00,Copthorne Hotel Auckland City,2026-09-26,"Superior Room, 1 King Bed",81,USD,True,Room Only,18
+2026-09-22 21:22:00,Copthorne Hotel Auckland City,2026-10-03,"Superior Room, 2 Double Beds",87,USD,False,Room Only,65
+2026-09-22 21:22:00,Copthorne Hotel Auckland City,2026-10-06,"Superior Room, 1 King Bed",63,USD,False,Room Only,65
+2026-09-22 21:22:00,Copthorne Hotel Auckland City,2026-10-13,"Superior Room, 1 King Bed",62,USD,False,Room Only,32
+2026-09-22 21:22:00,Albion Hotel Auckland,2026-09-26,Standard Double Room,61,USD,False,Room Only,10
+2026-09-22 21:22:00,Albion Hotel Auckland,2026-10-03,Triple Studio,72,USD,False,Room Only,26
+2026-09-22 21:22:00,Albion Hotel Auckland,2026-10-06,Standard Double Room,48,USD,False,Room Only,26
+2026-09-22 21:22:00,Albion Hotel Auckland,2026-10-13,Standard Double Room,48,USD,False,Room Only,24
+2026-09-22 21:22:00,Ascotia Off Queen Auckland,2026-09-26,Queen Room,77,USD,False,Room Only,36
+2026-09-22 21:22:00,Ascotia Off Queen Auckland,2026-10-03,Queen Room,61,USD,True,Room Only,34
+2026-09-22 21:22:00,Ascotia Off Queen Auckland,2026-10-06,Twin Room,47,USD,True,Room Only,48
+2026-09-22 21:22:00,Ascotia Off Queen Auckland,2026-10-13,Queen Room,58,USD,True,Room Only,54
+2026-09-22 21:22:00,Abstract Hotel,2026-09-26,Accessible Studio,72,USD,False,Room Only,81
+2026-09-22 21:22:00,Abstract Hotel,2026-10-03,Cozy Studio,85,USD,False,Room Only,91
+2026-09-22 21:22:00,Abstract Hotel,2026-10-06,Cozy Studio,61,USD,False,Room Only,91
+2026-09-22 21:22:00,Abstract Hotel,2026-10-13,Cozy Studio,61,USD,False,Room Only,86
+2026-09-22 21:22:00,Edit Auckland Central,2026-09-26,STUDIO Corporate King,81,USD,False,Room Only,66
+2026-09-22 21:22:00,Edit Auckland Central,2026-10-03,STUDIO Snug,73,USD,False,Room Only,98
+2026-09-22 21:22:00,Edit Auckland Central,2026-10-06,STUDIO Snug,54,USD,False,Room Only,103
+2026-09-22 21:22:00,Edit Auckland Central,2026-10-13,STUDIO Snug,54,USD,False,Room Only,94
