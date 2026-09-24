@@ -28,6 +28,8 @@ from urllib.parse import quote
 
 from playwright.sync_api import sync_playwright
 
+import offer_parse as _offer_parse
+
 # ---------------------------------------------------------------- 配置区
 
 BASE_DIR = Path(__file__).resolve().parent / "data"
@@ -52,6 +54,14 @@ HOTELS = [
     # 卫浴情况未知 —— 那是订房前打电话确认的事, 不是不监测的理由。
     "Albion Hotel Auckland",
     "Ascotia Off Queen Auckland",
+    # 2026-09-18 补: 云端 collect.py 盯 11 家, 这边只有 9 家 —— 差的两家里
+    # Abstract Hotel 确认 Google 不卖(已记在 CLAUDE.md), 但 Edit Auckland
+    # Central 只是**从来没加进来过**, 不是查过没有。
+    # 而云端 DIDA 显示它跟目前的头名在同一个价位段(住宿区间内的三个入住日,
+    # USD 批发价 73/57/53, 对比 Ascotia 的 72/59/49) —— 批发价不能换算成
+    # 零售价, 但"在同一段"足够说明它值得抓一次零售价来看。
+    # **位置与卫浴均未核实**: 名字里的 "Central" 不等于在 CBD, 下单前要自己查。
+    "Edit Auckland Central",
 ]
 
 # Google 把 VR Auckland Airport (bookings.vrhotels.co.nz hotelID=116052) 的订房引擎
@@ -198,9 +208,11 @@ ROOM_DETAIL = re.compile(r"^\s*\d|^\s*·|guests?", re.I)
 
 
 def parse_offers(text, with_rooms=False):
-    """状态机解析, 但只接受"整行就是一个金额"的价格行。
+    """**已弃用**, 采集走的是 offer_parse.parse_offers。这里留作对照基准。
 
-    每个渠道保留最低价(同渠道多房型时取最便宜的可订房)。
+    两个已核实的缺陷见调用点的注释: 渠道白名单造成渠道名错位;
+    报价区起点匹配 "prices" 会把搜索结果列表里别家酒店的报价圈进来。
+    价格数值不受影响(整格最低价仍等于 Google 自己印的头条价), 错的是归属。
     """
     lines = scope_to_hotel([ln.strip() for ln in text.splitlines() if ln.strip()])
     best = {}
@@ -318,7 +330,19 @@ class Scraper:
             text = page.inner_text("body")
         else:
             text = self._wait_settled(page)
-        offers = parse_offers(text, with_rooms=True)
+        # 2026-09-18: 换成 offer_parse 的结构化解析器。旧的 parse_offers 有两个
+        # 已核实的毛病, 都会让"这个价是谁家的"变成假的(价格本身仍是对的):
+        #   * 渠道靠白名单认。名单外的渠道(HotelsCombined / nz.KAYAK.com /
+        #     klook / Amimir.com …)那一行既不算渠道也不算房型, cur_prov 保持
+        #     不变, 它的价格就记到了上一个渠道头上。
+        #   * 报价区起点匹配 "prices", 而搜索结果页顶部的 "View prices" 就含这个
+        #     词 —— 于是整个搜索结果列表(别家酒店)都被圈进了本店报价区。
+        #     Wotif 就是这么进来的: CSV 里 1857 行, 而在 5181 张归档页面里,
+        #     它只在 1 张的本店报价区真正出现过。
+        # 旧函数留着, diagnose.py 还在用它做对照。
+        parsed = _offer_parse.parse_offers(text, hotel)
+        offers = {k: (v, parsed["rooms"].get(k, ""))
+                  for k, v in parsed["offers"].items()}
         # 便宜的报价最可能是解析错误(历史上 NZ$32 就是把 "Save $33" 当成了房价)。
         # 把原始页面留下来, 事后可以逐条核对, 不必再靠回忆。
         # 丢掉已知归属错误的渠道(见 PROVIDER_BLOCK)

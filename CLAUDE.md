@@ -66,6 +66,35 @@ local/                          本地采集 (抓 Google), 依赖开机
   的实际值。
 - **DIDA 不便宜。** 同一批酒店实测 NZ$1,096 vs Google 的 NZ$835，贵约 31%。
   已测过，不必再测。
+- **渠道名靠白名单是错的，已换成结构判断。** 旧 `hotel_fast.parse_offers`
+  用写死的 PROVIDERS 列表认渠道，名单外的（HotelsCombined / nz.KAYAK.com /
+  klook / EaseMyTrip / Traveloka / Amimir…）那一行既不算渠道也不算房型，
+  `cur_prov` 保持不变，它的价格就记到了**上一个**渠道头上。
+  9/30 Ascotia 记的是 "Expedia $64"，页面上 Expedia 其实 $76，$64 是
+  Hotelscombined 的。现在走 `local/offer_parse.py` 的排除法：不是价格、
+  不是房型、不是房型细节、不是宣传语，剩下的就是渠道名。
+  **2026-09-19 之前采的数据，渠道名一律不可信；价格可信。**
+
+- **报价区起点不能匹配 `prices`。** 搜索结果页顶部的 "View prices" 就含这个
+  词，用它当起点会把整个搜索结果列表（别家酒店）圈进本店报价区。
+  Wotif 就是这么进来的：CSV 里 1857 行，而 5181 张归档页面里它真正出现在
+  本店报价区的只有 **1 张**。起点只能锚在 `Featured options` / `All options`。
+
+- **页面没显示的渠道不会更便宜。** 每页底部 "View more options from $X"
+  说明还有渠道没渲染出来。5181 张存档里 **5181 张满足 X ≥ 页面已显示的
+  最低价，0 例外** —— Google 按价格升序排。所以：渠道清单不完整，
+  **最低价完整**。不必为了"抓全渠道"去点那个展开。
+
+- **VR Auckland City 不是"数据存疑"**（2026-09-18 更正过一次错判）。
+  它的 `Official site` 挂的是机场店、必须剔除，这条没变。但**不能**拿
+  "剔过的最低价"去对"没剔的页面头条价" —— 795 张存档里 757 张的头条价就
+  等于那条机场报价。剔掉之后最便宜的是 Super.com（741 张）。它的价格跟
+  别家一样可信，真实限制只有一条：**这家没法用头条价做交叉校验**。
+
+- **Copthorne 从来没被页面核对过。** `ARCHIVE_BELOW = 100` 只存"出现过
+  NZ$100 以下报价"的页面，Copthorne 最低 NZ$103，所以一张存档都没有。
+  它是最贵的一家，目前不影响结论，但别说它"核过了"。
+
 - **"几点订更便宜"目前还答不了。** 小时与日期是**混淆**的：覆盖最密的那天
   (9/18, 13 小时) 三条线里两条极差只有 NZ$1 和 NZ$3，但跨天能差 NZ$50。
   前两天各只有 3 小时覆盖且中间断档，无法区分"凌晨更便宜"和"那天整体降价"。
@@ -98,6 +127,35 @@ NZ$32。修法是只认独占一行的价格（`PRICE_LINE_RE` + `HARD_STOP`）�
 提交数据用 `git add data/*.csv`，**不要 `git add data/`**——后者会把任何
 掉进那个目录的东西一起提交（看门狗日志曾因路径 bug 掉进去过）。
 
+## 核对与监测的两个工具
+
+```
+local/audit_offers.py     拿 raw_archive.tgz 逐张核对解析器: 最低价对不对、
+                          渠道认全没有。新解析一致率 99.8%, 旧的 91.6%。
+local/watch_status.py     巡检: 两套采集还活着吗、价格动了没有、结论要不要改。
+local/channel_watch.py    渠道级监测: 哪个渠道在卖、贵多少、换没换人。
+local/vr_alert.py         VR 两家: 零售跌破 NZ$80 提醒 + 云端批发新低早警。
+```
+
+`channel_watch.py` 只用 `raw_archive.tgz` 算渠道 —— **云端 DIDA 没有渠道字段**
+(ts_utc/hotel/checkin/room/price/currency/cancelable/meal/n_plans 里没有),
+渠道只能来自本地 Google 抓取, 所以它跟着本地采集一起依赖开机。CSV 的
+`provider` 列覆盖全但名字不可信, 脚本只拿它统计"跟存档对不上的比例"。
+状态文件 `.channel_state.json` 是全局的, 而 `--hotel` 可以只跑一部分 ——
+比对时必须按本轮实际跑了哪些酒店/入住日限定范围, 否则"这轮没查"会被报成
+"渠道消失"(这个假警报踩过)。
+
+`vr_alert.py` 分两节, **各用各的判据, 永不相加**: 零售(NZD)跌破 NZ$80 才是
+真提醒, 云端(USD 批发)只报"刷新了自身历史最低"。**NZ$80 这个门槛不能套到
+USD 上** —— 币种和市场都不是一回事, 批发比零售贵约 31%, 套上去每一条都是假的。
+零售快照过期(>36 小时)时只列当前值、**不触发提醒**: 拿几天前的价当成"现在
+跌破了", 是假提醒里最骗人的一种。
+
+判断"结论还成不成立"的逻辑（写在 `watch_status.py` 的模块说明里）：
+有更新的零售快照 → 重跑 `export_stay_plan.py`；没有 → 看云端在两个数据集
+重叠的入住日上动了多少。**动得少是"快照还能用"的弱证据，不是替代品** ——
+批发和零售不是一回事，只是同一个市场。
+
 ## 当前状态（2026-09-19）
 
 - 云端采集在跑，但调度不稳，偶有数小时空档
@@ -105,3 +163,9 @@ NZ$32。修法是只认独占一行的价格（`PRICE_LINE_RE` + `HARD_STOP`）�
   `schtasks /Create /TN "AucklandHotelWatch" /TR "wscript.exe <仓库>\local\watchdog.vbs" /SC MINUTE /MO 10 /F`
   没装的时候崩了就一直崩着（已经发生过：9/18 17:42 崩，10 小时无人发现）
 - 可视化发布在 Claude Artifact 上，数据来自 `export_viz.py` + `export_cloud.py`
+- 连住看板（9/20 入住、10/9 退房，19 晚）：`local/export_stay_plan.py`
+  结论是全程住 Ascotia Off Queen NZ$1549；理论下限 NZ$1427，
+  **换店最多只省 NZ$122（7.9%），不值得搬**
+- 本地零售名单 2026-09-18 补上 `Edit Auckland Central`：云端盯 11 家而本地
+  只有 9 家，差的两家里 Abstract Hotel 确认 Google 不卖，Edit 只是从来没加
+  过。它的 DIDA 批发价跟 Ascotia 在同一段。**位置与卫浴均未核实**
